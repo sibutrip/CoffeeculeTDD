@@ -41,6 +41,19 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual([newUser], fetchedRecords)
     }
     
+    func test_save_failsIfRecordAlreadyExists() async throws {
+        let sut = try await makeSUT()
+        let newUser = User(name: "Cory")
+        try await sut.save(record: newUser)
+        do {
+            try await sut.save(record: newUser)
+        } catch {
+            XCTAssert(true)
+            return
+        }
+        XCTFail("Did not throw error when saving second record")
+    }
+    
     func test_fetch_fetchesAllUsersFromStore() async throws {
         let existingUsers = [
             User(name: "Cory"),
@@ -98,6 +111,9 @@ class MockDataStore: DataStore {
     }
     
     func save(_ record: CKRecord) async throws -> CKRecord {
+        if records.contains(where: {$0.recordID == record.recordID }) {
+            throw NSError()
+        }
         records.append(record)
         return records.first { $0.recordID == record.recordID }!
     }
