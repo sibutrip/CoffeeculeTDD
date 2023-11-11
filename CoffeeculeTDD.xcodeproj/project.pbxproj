@@ -11,20 +11,13 @@
 		741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E82B00144600E0AA09 /* ContentView.swift */; };
 		741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0EA2B00144700E0AA09 /* Assets.xcassets */; };
 		741EA0EE2B00144700E0AA09 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0ED2B00144700E0AA09 /* Preview Assets.xcassets */; };
-		741EA0F82B00144700E0AA09 /* CoffeeculeTDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0F72B00144700E0AA09 /* CoffeeculeTDDTests.swift */; };
-		741EA1022B00144700E0AA09 /* CoffeeculeTDDUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA1012B00144700E0AA09 /* CoffeeculeTDDUITests.swift */; };
-		741EA1042B00144700E0AA09 /* CoffeeculeTDDUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA1032B00144700E0AA09 /* CoffeeculeTDDUITestsLaunchTests.swift */; };
+		741EA1132B00148D00E0AA09 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA1122B00148D00E0AA09 /* CloudKitService.swift */; };
+		74D8DAE92B00169E005811AD /* CoffeeculeTDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAE82B00169E005811AD /* CoffeeculeTDDTests.swift */; };
+		74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		741EA0F42B00144700E0AA09 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 741EA0DB2B00144600E0AA09 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 741EA0E22B00144600E0AA09;
-			remoteInfo = CoffeeculeTDD;
-		};
-		741EA0FE2B00144700E0AA09 /* PBXContainerItemProxy */ = {
+		74D8DAEA2B00169E005811AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 741EA0DB2B00144600E0AA09 /* Project object */;
 			proxyType = 1;
@@ -39,11 +32,10 @@
 		741EA0E82B00144600E0AA09 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		741EA0EA2B00144700E0AA09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		741EA0ED2B00144700E0AA09 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		741EA0F32B00144700E0AA09 /* CoffeeculeTDDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		741EA0F72B00144700E0AA09 /* CoffeeculeTDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDTests.swift; sourceTree = "<group>"; };
-		741EA0FD2B00144700E0AA09 /* CoffeeculeTDDUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		741EA1012B00144700E0AA09 /* CoffeeculeTDDUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDUITests.swift; sourceTree = "<group>"; };
-		741EA1032B00144700E0AA09 /* CoffeeculeTDDUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		741EA1122B00148D00E0AA09 /* CloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitService.swift; sourceTree = "<group>"; };
+		74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		74D8DAE82B00169E005811AD /* CoffeeculeTDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDTests.swift; sourceTree = "<group>"; };
+		74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +46,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		741EA0F02B00144700E0AA09 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		741EA0FA2B00144700E0AA09 /* Frameworks */ = {
+		74D8DAE32B00169E005811AD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -75,8 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				741EA0E52B00144600E0AA09 /* CoffeeculeTDD */,
-				741EA0F62B00144700E0AA09 /* CoffeeculeTDDTests */,
-				741EA1002B00144700E0AA09 /* CoffeeculeTDDUITests */,
+				74D8DAE72B00169E005811AD /* CoffeeculeTDDTests */,
 				741EA0E42B00144600E0AA09 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,8 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				741EA0E32B00144600E0AA09 /* CoffeeculeTDD.app */,
-				741EA0F32B00144700E0AA09 /* CoffeeculeTDDTests.xctest */,
-				741EA0FD2B00144700E0AA09 /* CoffeeculeTDDUITests.xctest */,
+				74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -96,6 +79,7 @@
 			children = (
 				741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */,
 				741EA0E82B00144600E0AA09 /* ContentView.swift */,
+				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
 				741EA0EA2B00144700E0AA09 /* Assets.xcassets */,
 				741EA0EC2B00144700E0AA09 /* Preview Content */,
 			);
@@ -110,21 +94,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		741EA0F62B00144700E0AA09 /* CoffeeculeTDDTests */ = {
+		74D8DAE72B00169E005811AD /* CoffeeculeTDDTests */ = {
 			isa = PBXGroup;
 			children = (
-				741EA0F72B00144700E0AA09 /* CoffeeculeTDDTests.swift */,
+				74D8DAE82B00169E005811AD /* CoffeeculeTDDTests.swift */,
+				74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */,
 			);
 			path = CoffeeculeTDDTests;
-			sourceTree = "<group>";
-		};
-		741EA1002B00144700E0AA09 /* CoffeeculeTDDUITests */ = {
-			isa = PBXGroup;
-			children = (
-				741EA1012B00144700E0AA09 /* CoffeeculeTDDUITests.swift */,
-				741EA1032B00144700E0AA09 /* CoffeeculeTDDUITestsLaunchTests.swift */,
-			);
-			path = CoffeeculeTDDUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -147,41 +123,23 @@
 			productReference = 741EA0E32B00144600E0AA09 /* CoffeeculeTDD.app */;
 			productType = "com.apple.product-type.application";
 		};
-		741EA0F22B00144700E0AA09 /* CoffeeculeTDDTests */ = {
+		74D8DAE52B00169E005811AD /* CoffeeculeTDDTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 741EA10A2B00144700E0AA09 /* Build configuration list for PBXNativeTarget "CoffeeculeTDDTests" */;
+			buildConfigurationList = 74D8DAEC2B00169E005811AD /* Build configuration list for PBXNativeTarget "CoffeeculeTDDTests" */;
 			buildPhases = (
-				741EA0EF2B00144700E0AA09 /* Sources */,
-				741EA0F02B00144700E0AA09 /* Frameworks */,
-				741EA0F12B00144700E0AA09 /* Resources */,
+				74D8DAE22B00169E005811AD /* Sources */,
+				74D8DAE32B00169E005811AD /* Frameworks */,
+				74D8DAE42B00169E005811AD /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				741EA0F52B00144700E0AA09 /* PBXTargetDependency */,
+				74D8DAEB2B00169E005811AD /* PBXTargetDependency */,
 			);
 			name = CoffeeculeTDDTests;
 			productName = CoffeeculeTDDTests;
-			productReference = 741EA0F32B00144700E0AA09 /* CoffeeculeTDDTests.xctest */;
+			productReference = 74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		741EA0FC2B00144700E0AA09 /* CoffeeculeTDDUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 741EA10D2B00144700E0AA09 /* Build configuration list for PBXNativeTarget "CoffeeculeTDDUITests" */;
-			buildPhases = (
-				741EA0F92B00144700E0AA09 /* Sources */,
-				741EA0FA2B00144700E0AA09 /* Frameworks */,
-				741EA0FB2B00144700E0AA09 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				741EA0FF2B00144700E0AA09 /* PBXTargetDependency */,
-			);
-			name = CoffeeculeTDDUITests;
-			productName = CoffeeculeTDDUITests;
-			productReference = 741EA0FD2B00144700E0AA09 /* CoffeeculeTDDUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -196,11 +154,7 @@
 					741EA0E22B00144600E0AA09 = {
 						CreatedOnToolsVersion = 15.0;
 					};
-					741EA0F22B00144700E0AA09 = {
-						CreatedOnToolsVersion = 15.0;
-						TestTargetID = 741EA0E22B00144600E0AA09;
-					};
-					741EA0FC2B00144700E0AA09 = {
+					74D8DAE52B00169E005811AD = {
 						CreatedOnToolsVersion = 15.0;
 						TestTargetID = 741EA0E22B00144600E0AA09;
 					};
@@ -220,8 +174,7 @@
 			projectRoot = "";
 			targets = (
 				741EA0E22B00144600E0AA09 /* CoffeeculeTDD */,
-				741EA0F22B00144700E0AA09 /* CoffeeculeTDDTests */,
-				741EA0FC2B00144700E0AA09 /* CoffeeculeTDDUITests */,
+				74D8DAE52B00169E005811AD /* CoffeeculeTDDTests */,
 			);
 		};
 /* End PBXProject section */
@@ -236,14 +189,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		741EA0F12B00144700E0AA09 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		741EA0FB2B00144700E0AA09 /* Resources */ = {
+		74D8DAE42B00169E005811AD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -257,40 +203,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				741EA1132B00148D00E0AA09 /* CloudKitService.swift in Sources */,
 				741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */,
 				741EA0E72B00144600E0AA09 /* CoffeeculeTDDApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		741EA0EF2B00144700E0AA09 /* Sources */ = {
+		74D8DAE22B00169E005811AD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				741EA0F82B00144700E0AA09 /* CoffeeculeTDDTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		741EA0F92B00144700E0AA09 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				741EA1042B00144700E0AA09 /* CoffeeculeTDDUITestsLaunchTests.swift in Sources */,
-				741EA1022B00144700E0AA09 /* CoffeeculeTDDUITests.swift in Sources */,
+				74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */,
+				74D8DAE92B00169E005811AD /* CoffeeculeTDDTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		741EA0F52B00144700E0AA09 /* PBXTargetDependency */ = {
+		74D8DAEB2B00169E005811AD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 741EA0E22B00144600E0AA09 /* CoffeeculeTDD */;
-			targetProxy = 741EA0F42B00144700E0AA09 /* PBXContainerItemProxy */;
-		};
-		741EA0FF2B00144700E0AA09 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 741EA0E22B00144600E0AA09 /* CoffeeculeTDD */;
-			targetProxy = 741EA0FE2B00144700E0AA09 /* PBXContainerItemProxy */;
+			targetProxy = 74D8DAEA2B00169E005811AD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -472,16 +406,14 @@
 			};
 			name = Release;
 		};
-		741EA10B2B00144700E0AA09 /* Debug */ = {
+		74D8DAED2B00169E005811AD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3UR85MK9RT;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.CoffeeculeTDDTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -492,16 +424,14 @@
 			};
 			name = Debug;
 		};
-		741EA10C2B00144700E0AA09 /* Release */ = {
+		74D8DAEE2B00169E005811AD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3UR85MK9RT;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.CoffeeculeTDDTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -509,42 +439,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CoffeeculeTDD.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CoffeeculeTDD";
-			};
-			name = Release;
-		};
-		741EA10E2B00144700E0AA09 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3UR85MK9RT;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.CoffeeculeTDDUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = CoffeeculeTDD;
-			};
-			name = Debug;
-		};
-		741EA10F2B00144700E0AA09 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3UR85MK9RT;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.CoffeeculeTDDUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = CoffeeculeTDD;
 			};
 			name = Release;
 		};
@@ -569,20 +463,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		741EA10A2B00144700E0AA09 /* Build configuration list for PBXNativeTarget "CoffeeculeTDDTests" */ = {
+		74D8DAEC2B00169E005811AD /* Build configuration list for PBXNativeTarget "CoffeeculeTDDTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				741EA10B2B00144700E0AA09 /* Debug */,
-				741EA10C2B00144700E0AA09 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		741EA10D2B00144700E0AA09 /* Build configuration list for PBXNativeTarget "CoffeeculeTDDUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				741EA10E2B00144700E0AA09 /* Debug */,
-				741EA10F2B00144700E0AA09 /* Release */,
+				74D8DAED2B00169E005811AD /* Debug */,
+				74D8DAEE2B00169E005811AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
