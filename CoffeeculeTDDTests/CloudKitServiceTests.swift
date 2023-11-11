@@ -47,7 +47,7 @@ final class CloudKitServiceTests: XCTestCase {
         try await sut.save(record: newUser)
         do {
             try await sut.save(record: newUser)
-        } catch {
+        } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
         }
@@ -72,7 +72,7 @@ final class CloudKitServiceTests: XCTestCase {
             User(name: "Zoe")
         ]
         let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
-
+        
         let updatedUsers = existingUsers.map { user in
             var user = user
             if user.name == "Cory" {
@@ -87,6 +87,24 @@ final class CloudKitServiceTests: XCTestCase {
         
         
         XCTAssertEqual(updatedUser, dataStoreUpdatedUser)
+    }
+    
+    func test_update_failsIfUserDoesntExist() async throws {
+        let existingUsers = [
+            User(name: "Cory"),
+            User(name: "Tom"),
+            User(name: "Zoe")
+        ]
+        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
+        
+        let newUser = User(name: "Tariq")
+        do {
+            let _ = try await sut.update(record: newUser, fields: [.name])
+        } catch CloudKitService.CloudKitError.invalidRequest {
+            XCTAssert(true)
+            return
+        }
+        XCTFail("update failed to throw error")
     }
     
     // MARK: - Helper Methods

@@ -37,8 +37,12 @@ class CloudKitService {
     private let dataStore: DataStore
     
     func save<SomeRecord: Record>(record: SomeRecord) async throws {
-        let ckRecord = record.ckRecord
-        let _ = try await dataStore.save(ckRecord)
+        do {
+            let ckRecord = record.ckRecord
+            let _ = try await dataStore.save(ckRecord)
+        } catch {
+            throw CloudKitError.invalidRequest
+        }
     }
     
     func fetch<SomeRecord: Record>() async throws -> [SomeRecord] {
@@ -54,17 +58,20 @@ class CloudKitService {
         return someRecords
     }
     
-    func update<SomeRecord: Record>(record: SomeRecord, fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord{
-        let (saveResults,_) = try await dataStore.modifyRecords(saving: [record.ckRecord], deleting: [])
-        let ckRecords = saveResults.compactMap { result in
-            try? result.1.get()
+    func update<SomeRecord: Record>(record: SomeRecord, fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord {
+        do {
+            let (saveResults,_) = try await dataStore.modifyRecords(saving: [record.ckRecord], deleting: [])
+            let ckRecords = saveResults.compactMap { result in
+                try? result.1.get()
+            }
+            let someRecords: [SomeRecord] = ckRecords.compactMap { SomeRecord(from: $0) }
+            guard let modifiedRecord = someRecords.first else {
+                throw CloudKitError.unexpectedResultFromServer
+            }
+            return modifiedRecord
+        } catch {
+            throw CloudKitError.invalidRequest
         }
-        let someRecords: [SomeRecord] = ckRecords.compactMap { SomeRecord(from: $0) }
-        guard let modifiedRecord = someRecords.first else {
-            throw CloudKitError.unexpectedResultFromServer
-        }
-        return modifiedRecord
-        
     }
     
     init(dataStore: DataStore) async throws {
