@@ -10,15 +10,17 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 final class CloudKitServiceTests: XCTestCase {
-    func test_save_addsNewUserToStore() async throws {
-        let sut = try await makeSUT()
-        let newUser = User(name: "Cory")
-        try await sut.save(record: newUser)
-        let fetchedRecords: [User] = try await sut.fetch()
-        XCTAssertEqual([newUser], fetchedRecords)
+    
+    func test_init_succeedsIfUserHasCloudAccess() async throws {
+        do {
+            let _ = try await makeSUT()
+            XCTAssert(true)
+        } catch {
+            XCTFail("CloudKitService init threw an error")
+        }
     }
     
-    func test_save_failsIfNoCloudAccess() async throws {
+    func test_init_failsIfNoCloudAccess() async throws {
         do {
             let _ = try await makeSUT(accountStatus: .noAccount)
             XCTFail("CloudKitService init did not throw an error")
@@ -29,6 +31,14 @@ final class CloudKitServiceTests: XCTestCase {
             }
             XCTAssert(CloudKitService.AuthenticationError.allCases.contains([authenticationError]))
         }
+    }
+    
+    func test_save_addsNewUserToStore() async throws {
+        let sut = try await makeSUT()
+        let newUser = User(name: "Cory")
+        try await sut.save(record: newUser)
+        let fetchedRecords: [User] = try await sut.fetch()
+        XCTAssertEqual([newUser], fetchedRecords)
     }
     
     func test_fetch_fetchesAllUsersFromStore() async throws {
@@ -75,6 +85,10 @@ final class CloudKitServiceTests: XCTestCase {
 }
 
 class MockDataStore: DataStore {
+    
+    private var userAccountStatus: CKAccountStatus = .available
+    private var records: [CKRecord] = []
+    
     func userRecordID() async throws -> CKRecord.ID {
         return .init(recordName: "TestRecord")
     }
@@ -115,9 +129,6 @@ class MockDataStore: DataStore {
         let saveResultsWithIDs = Dictionary(uniqueKeysWithValues: zippedSavedRecords)
         return (saveResults: saveResultsWithIDs, deleteResults: [:])
     }
-    
-    private var userAccountStatus: CKAccountStatus = .available
-    private var records: [CKRecord] = []
     
     init(with records: [CKRecord] = [], accountStatus: CKAccountStatus) {
         self.records = records

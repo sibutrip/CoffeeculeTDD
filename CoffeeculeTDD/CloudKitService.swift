@@ -47,12 +47,12 @@ class CloudKitService {
             inZoneWith: nil,
             desiredKeys: nil,
             resultsLimit: CKQueryOperation.maximumResults)
-        let ckRecords = try results.map { result in
+        let ckRecords = results.compactMap { result in
             switch result.1 {
             case .success (let record):
                 return record
             case .failure (_):
-                throw CloudKitError.invalidRequest
+                return nil
             }
         }
         let someRecords: [SomeRecord] = ckRecords.compactMap { SomeRecord(from: $0) }
