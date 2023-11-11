@@ -11,11 +11,24 @@ import CloudKit
 
 final class CloudKitServiceTests: XCTestCase {
     func test_save_addsNewUserToStore() async throws {
-        let sut = makeSUT()
+        let sut = try await makeSUT()
         let newUser = User(name: "Cory")
         try await sut.save(record: newUser)
         let fetchedRecords: [User] = try await sut.fetch()
         XCTAssertEqual([newUser], fetchedRecords)
+    }
+    
+    func test_save_failsIfNoCloudAccess() async throws {
+        do {
+            let _ = try await makeSUT(accountStatus: .noAccount)
+            XCTFail("CloudKitService init did not throw an error")
+        } catch {
+            guard let authenticationError = error as? CloudKitService.AuthenticationError else {
+                XCTFail("CloudKit Service threw an error, but it was not an Authentication Error")
+                return
+            }
+            XCTAssert(CloudKitService.AuthenticationError.allCases.contains([authenticationError]))
+        }
     }
     
     func test_fetch_fetchesAllUsersFromStore() async throws {
@@ -24,7 +37,7 @@ final class CloudKitServiceTests: XCTestCase {
             User(name: "Tom"),
             User(name: "Zoe")
         ]
-        let sut = makeSUT(with: existingUsers.map { $0.ckRecord })
+        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
         let fetchedUsers: [User] = try await sut.fetch()
         XCTAssertEqual(existingUsers, fetchedUsers)
     }
@@ -35,7 +48,7 @@ final class CloudKitServiceTests: XCTestCase {
             User(name: "Tom"),
             User(name: "Zoe")
         ]
-        let sut = makeSUT(with: existingUsers.map { $0.ckRecord })
+        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
 
         let updatedUsers = existingUsers.map { user in
             var user = user
@@ -53,15 +66,19 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual(updatedUser, dataStoreUpdatedUser)
     }
     
-    // -MARK: Helper Methods
+    // MARK: - Helper Methods
     
-    func makeSUT(with ckRecords: [CKRecord] = [], accountStatus: CKAccountStatus = .available) -> CloudKitService {
+    func makeSUT(with ckRecords: [CKRecord] = [], accountStatus: CKAccountStatus = .available) async throws -> CloudKitService {
         let dataStore = MockDataStore(with: ckRecords, accountStatus: accountStatus)
-        return CloudKitService(dataStore: dataStore)
+        return try await CloudKitService(dataStore: dataStore)
     }
 }
 
 class MockDataStore: DataStore {
+    func userRecordID() async throws -> CKRecord.ID {
+        return .init(recordName: "TestRecord")
+    }
+    
     func accountStatus() async throws -> CKAccountStatus {
         return self.userAccountStatus
     }
