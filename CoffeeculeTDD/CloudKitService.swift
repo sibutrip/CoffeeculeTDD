@@ -43,17 +43,12 @@ class CloudKitService {
     
     func fetch<SomeRecord: Record>() async throws -> [SomeRecord] {
         let (results,_) = try await dataStore.records(
-            matching: CKQuery(recordType: "something", predicate: NSPredicate(value: true)),
+            matching: CKQuery(recordType: SomeRecord.recordType, predicate: NSPredicate(value: true)),
             inZoneWith: nil,
             desiredKeys: nil,
             resultsLimit: CKQueryOperation.maximumResults)
         let ckRecords = results.compactMap { result in
-            switch result.1 {
-            case .success (let record):
-                return record
-            case .failure (_):
-                return nil
-            }
+            try? result.1.get()
         }
         let someRecords: [SomeRecord] = ckRecords.compactMap { SomeRecord(from: $0) }
         return someRecords
@@ -61,13 +56,8 @@ class CloudKitService {
     
     func update<SomeRecord: Record>(record: SomeRecord, fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord{
         let (saveResults,_) = try await dataStore.modifyRecords(saving: [record.ckRecord], deleting: [])
-        let ckRecords = try saveResults.map { result in
-            switch result.1 {
-            case .success (let record):
-                return record
-            case .failure (_):
-                throw CloudKitError.invalidRequest
-            }
+        let ckRecords = saveResults.compactMap { result in
+            try? result.1.get()
         }
         let someRecords: [SomeRecord] = ckRecords.compactMap { SomeRecord(from: $0) }
         guard let modifiedRecord = someRecords.first else {
