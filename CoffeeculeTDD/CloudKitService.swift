@@ -9,6 +9,8 @@ import CloudKit
 
 protocol DataStore {
     
+    func accountStatus() async throws -> CKAccountStatus
+    
     func save(_ record: CKRecord) async throws -> CKRecord
     
     func records(

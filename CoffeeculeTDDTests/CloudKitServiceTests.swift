@@ -11,8 +11,7 @@ import CloudKit
 
 final class CloudKitServiceTests: XCTestCase {
     func test_save_addsNewUserToStore() async throws {
-        let dataStore = MockDataStore()
-        let sut = CloudKitService(dataStore: dataStore)
+        let sut = makeSUT()
         let newUser = User(name: "Cory")
         try await sut.save(record: newUser)
         let fetchedRecords: [User] = try await sut.fetch()
@@ -25,8 +24,7 @@ final class CloudKitServiceTests: XCTestCase {
             User(name: "Tom"),
             User(name: "Zoe")
         ]
-        let dataStore = MockDataStore(records: existingUsers.map { $0.ckRecord })
-        let sut = CloudKitService(dataStore: dataStore)
+        let sut = makeSUT(with: existingUsers.map { $0.ckRecord })
         let fetchedUsers: [User] = try await sut.fetch()
         XCTAssertEqual(existingUsers, fetchedUsers)
     }
@@ -37,8 +35,8 @@ final class CloudKitServiceTests: XCTestCase {
             User(name: "Tom"),
             User(name: "Zoe")
         ]
-        let dataStore = MockDataStore(records: existingUsers.map { $0.ckRecord })
-        let sut = CloudKitService(dataStore: dataStore)
+        let sut = makeSUT(with: existingUsers.map { $0.ckRecord })
+
         let updatedUsers = existingUsers.map { user in
             var user = user
             if user.name == "Cory" {
@@ -55,9 +53,19 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual(updatedUser, dataStoreUpdatedUser)
     }
     
+    // -MARK: Helper Methods
+    
+    func makeSUT(with ckRecords: [CKRecord] = [], accountStatus: CKAccountStatus = .available) -> CloudKitService {
+        let dataStore = MockDataStore(with: ckRecords, accountStatus: accountStatus)
+        return CloudKitService(dataStore: dataStore)
+    }
 }
 
 class MockDataStore: DataStore {
+    func accountStatus() async throws -> CKAccountStatus {
+        return self.userAccountStatus
+    }
+    
     func save(_ record: CKRecord) async throws -> CKRecord {
         records.append(record)
         return records.first { $0.recordID == record.recordID }!
@@ -91,10 +99,11 @@ class MockDataStore: DataStore {
         return (saveResults: saveResultsWithIDs, deleteResults: [:])
     }
     
-    
+    private var userAccountStatus: CKAccountStatus = .available
     private var records: [CKRecord] = []
     
-    init(records: [CKRecord] = []) {
+    init(with records: [CKRecord] = [], accountStatus: CKAccountStatus) {
         self.records = records
+        self.userAccountStatus = accountStatus
     }
 }
