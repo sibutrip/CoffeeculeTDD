@@ -18,15 +18,19 @@ class CloudKitService<Container: DataContainer> {
         return userID.recordName == coffeeculeID ? Container.private : Container.shared
     }
     
+    private func assignCoffeeculeIdAndUserId() async throws {
+        self.userID = try await dataStore.userRecordID()
+        let coffeecules: [Coffeecule] = try await fetch()
+        if let coffecule = coffeecules.first {
+            coffeeculeID = coffecule.coffeeculeIdentifier
+        }
+    }
+    
     func authenticate() async throws {
         switch try await dataStore.accountStatus() {
         case .available:
             do {
-                self.userID = try await dataStore.userRecordID()
-                let coffeecules: [Coffeecule] = try await fetch()
-                if let coffecule = coffeecules.first {
-                    coffeeculeID = coffecule.coffeeculeIdentifier
-                }
+                try await assignCoffeeculeIdAndUserId()
             } catch {
                 throw AuthenticationError.iCloudDriveDisabled
             }
@@ -46,7 +50,7 @@ class CloudKitService<Container: DataContainer> {
     enum CloudKitError: Error {
         case invalidRequest, unexpectedResultFromServer
     }
-        
+    
     func save<SomeRecord: Record>(record: SomeRecord) async throws {
         do {
             let ckRecord = record.ckRecord
@@ -86,11 +90,7 @@ class CloudKitService<Container: DataContainer> {
     }
     
     init() async throws {
-        do {
-            try await authenticate()
-        } catch {
-            throw error
-        }
+        try await authenticate()
     }
 }
 

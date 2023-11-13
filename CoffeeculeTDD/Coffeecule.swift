@@ -16,7 +16,6 @@ struct Coffeecule: Record {
     
     var id: String
     var coffeeculeIdentifier: String
-
     
     init?(from record: CKRecord) {
         guard let coffeeculeIdentifier = record["coffeeculeIdentifier"] as? String else {
