@@ -2,8 +2,8 @@
 //  Record.swift
 //  CoffeeculeTDD
 //
-//  Created by Cory Tripathy on 11/11/23.
-//
+//  Created by Zoe Cutler in Attendance
+//  With small changes by Cory Tripathy
 
 import CloudKit
 

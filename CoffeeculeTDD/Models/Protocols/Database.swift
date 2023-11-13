@@ -1,5 +1,5 @@
 //
-//  DataStore.swift
+//  Database.swift
 //  CoffeeculeTDD
 //
 //  Created by Cory Tripathy on 11/11/23.
@@ -7,12 +7,8 @@
 
 import CloudKit
 
-protocol DataStore {
-    
-    var databaseScope: CKDatabase.Scope { get }
-
-    func accountStatus() async throws -> CKAccountStatus
-    
+protocol Database {
+        
     func save(_ record: CKRecord) async throws -> CKRecord
     
     func records(
@@ -25,5 +21,4 @@ protocol DataStore {
     func modifyRecords(
         saving recordsToSave: [CKRecord],
         deleting recordIDsToDelete: [CKRecord.ID]) async throws -> (saveResults: [CKRecord.ID : Result<CKRecord, Error>], deleteResults: [CKRecord.ID : Result<Void, Error>])
-    func userRecordID() async throws -> CKRecord.ID
 }

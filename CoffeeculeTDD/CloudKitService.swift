@@ -8,18 +8,14 @@
 import CloudKit
 
 class CloudKitService<Container: DataContainer> {
-    
+    private let container: Container
     private var coffeeculeID: String = ""
     private var userID: CKRecord.ID?
     
-    var dataStore: DataStore {
-        if coffeeculeID.isEmpty { return Container.private }
-        guard let userID else { return Container.private }
-        return userID.recordName == coffeeculeID ? Container.private : Container.shared
-    }
+    lazy var database: Database = container.public
     
     private func assignCoffeeculeIdAndUserId() async throws {
-        self.userID = try await dataStore.userRecordID()
+        self.userID = try await container.userRecordID()
         let coffeecules: [Coffeecule] = try await fetch()
         if let coffecule = coffeecules.first {
             coffeeculeID = coffecule.coffeeculeIdentifier
@@ -27,7 +23,7 @@ class CloudKitService<Container: DataContainer> {
     }
     
     func authenticate() async throws {
-        switch try await dataStore.accountStatus() {
+        switch try await container.accountStatus() {
         case .available:
             do {
                 try await assignCoffeeculeIdAndUserId()
@@ -48,20 +44,20 @@ class CloudKitService<Container: DataContainer> {
     }
     
     enum CloudKitError: Error {
-        case invalidRequest, unexpectedResultFromServer
+        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist
     }
     
     func save<SomeRecord: Record>(record: SomeRecord) async throws {
         do {
             let ckRecord = record.ckRecord
-            let _ = try await dataStore.save(ckRecord)
+            let _ = try await database.save(ckRecord)
         } catch {
             throw CloudKitError.invalidRequest
         }
     }
     
     func fetch<SomeRecord: Record>() async throws -> [SomeRecord] {
-        let (results,_) = try await dataStore.records(
+        let (results,_) = try await database.records(
             matching: CKQuery(recordType: SomeRecord.recordType, predicate: NSPredicate(value: true)),
             inZoneWith: nil,
             desiredKeys: nil,
@@ -75,7 +71,7 @@ class CloudKitService<Container: DataContainer> {
     
     func update<SomeRecord: Record>(record: SomeRecord, fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord {
         do {
-            let (saveResults,_) = try await dataStore.modifyRecords(saving: [record.ckRecord], deleting: [])
+            let (saveResults,_) = try await database.modifyRecords(saving: [record.ckRecord], deleting: [])
             let ckRecords = saveResults.compactMap { result in
                 try? result.1.get()
             }
@@ -89,7 +85,8 @@ class CloudKitService<Container: DataContainer> {
         }
     }
     
-    init() async throws {
+    init(with container: Container) async throws {
+        self.container = container
         try await authenticate()
     }
 }

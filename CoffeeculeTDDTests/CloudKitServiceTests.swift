@@ -21,7 +21,7 @@ final class CloudKitServiceTests: XCTestCase {
         }
     }
     
-    func test_init_failsIfNoCloudAccess() async throws {
+    func test_init_throwsAuthenticationErrorIfNoCloudAccess() async throws {
         do {
             let _ = try await makeSUT(accountStatus: .noAccount)
             XCTFail("CloudKitService init did not throw an error")
@@ -42,7 +42,7 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual([newUser], fetchedRecords)
     }
     
-    func test_save_failsIfRecordAlreadyExists() async throws {
+    func test_save_throwsInvalidRequestIfRecordAlreadyExists() async throws {
         let sut = try await makeSUT()
         let newUser = User(name: "Cory")
         try await sut.save(record: newUser)
@@ -51,22 +51,14 @@ final class CloudKitServiceTests: XCTestCase {
         } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
+        } catch {
+            XCTFail("Threw incorrect error")
+            return
         }
         XCTFail("Did not throw error when saving second record")
     }
     
     func test_fetch_fetchesAllUsersFromStore() async throws {
-        let existingUsers = [
-            User(name: "Cory"),
-            User(name: "Tom"),
-            User(name: "Zoe")
-        ]
-        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
-        let fetchedUsers: [User] = try await sut.fetch()
-        XCTAssertEqual(existingUsers, fetchedUsers)
-    }
-    
-    func test_fetch_fetchesUsersFromAllZones() async throws {
         let existingUsers = [
             User(name: "Cory"),
             User(name: "Tom"),
@@ -95,13 +87,13 @@ final class CloudKitServiceTests: XCTestCase {
         }
         let updatedUser = updatedUsers.first { $0.name == "Cory T." }!
         
-        let dataStoreUpdatedUser = try await sut.update(record: updatedUser, fields: [.name])
+        let databaseUpdatedUser = try await sut.update(record: updatedUser, fields: [.name])
         
         
-        XCTAssertEqual(updatedUser, dataStoreUpdatedUser)
+        XCTAssertEqual(updatedUser, databaseUpdatedUser)
     }
     
-    func test_update_failsIfUserDoesntExist() async throws {
+    func test_update_throwsInvalidRequestIfUserDoesntExist() async throws {
         let existingUsers = [
             User(name: "Cory"),
             User(name: "Tom"),
@@ -115,75 +107,35 @@ final class CloudKitServiceTests: XCTestCase {
         } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
+        } catch {
+            XCTFail("Threw incorrect error when modifiying nonexistant record")
+            return
         }
         XCTFail("update failed to throw error")
     }
     
-    func test_authenticate_assignsPrivateDatabaseIfUserIsCoffeeculeOwner() async throws {
-        let sut = try await makeSUT(userID: .init(recordName: "CorysUniqueID"))
-        let coffeecule = Coffeecule(coffeeculeIdentifier: "CorysUniqueID")
-        try await sut.save(record: coffeecule)
-        try await sut.authenticate()
-        XCTAssert(MockDataContainer.private.databaseScope == sut.dataStore.databaseScope)
-    }
-    
-    func test_authenticate_assignsSharedDatabaseIfUserIsNotCoffeeculeOwner() async throws {
-        let sut = try await makeSUT(userID: .init(recordName: "ZoesUniqueID"))
-        let coffeecule = Coffeecule(coffeeculeIdentifier: "CorysUniqueID")
-        try await sut.save(record: coffeecule)
-        try await sut.authenticate()
-        XCTAssert(MockDataContainer.shared.databaseScope == sut.dataStore.databaseScope)
-    }
-    
-    func test_authenticate_assignsPrivateDatabaseIfNoCoffeeculeIsCreated() async throws {
-        let sut = try await makeSUT(userID: .init(recordName: "ZoesUniqueID"))
-        try await sut.authenticate()
-        XCTAssert(MockDataContainer.private.databaseScope == sut.dataStore.databaseScope)
-    }
-    
     // MARK: - Helper Methods
     
-    func makeSUT(with ckRecords: [CKRecord] = [],
+    private func makeSUT(with ckRecords: [CKRecord] = [],
                  accountStatus: CKAccountStatus = .available,
-                 databaseScope: CKDatabase.Scope = .private,
                  userID: CKRecord.ID = .init(recordName: "test")) async throws -> CloudKitService {
-        let dataStore = MockDataStore(with: ckRecords, accountStatus: accountStatus, databaseScope: databaseScope, userID: userID)
-        switch databaseScope {
-        case .public:
-            MockDataContainer.public = dataStore
-        case .private:
-            MockDataContainer.private = dataStore
-        case .shared:
-            MockDataContainer.shared = dataStore
-        @unknown default:
-            break
-        }
-        return try await CloudKitService()
+        
+        let database = MockDatabase(with: ckRecords)
+        let mockDataContainer = MockDataContainer(with: database, userRecordID: userID, accountStatus: accountStatus)
+        
+        return try await CloudKitService(with: mockDataContainer)
     }
 }
 
-class MockDataStore: DataStore {
+class MockDatabase: Database {
     
-    private var userAccountStatus: CKAccountStatus = .available
     private var records: [CKRecord] = []
-    private var userRecordID: CKRecord.ID
-    var databaseScope: CKDatabase.Scope = .private
-    
-    func userRecordID() async throws -> CKRecord.ID {
-        return userRecordID
-    }
-    
-    func accountStatus() async throws -> CKAccountStatus {
-        return self.userAccountStatus
-    }
     
     func save(_ record: CKRecord) async throws -> CKRecord {
         if records.contains(where: {$0.recordID == record.recordID }) {
             throw NSError()
         }
         records.append(record)
-        MockDataContainer.private = MockDataStore(with: records, accountStatus: userAccountStatus, databaseScope: .private, userID: userRecordID)
-        MockDataContainer.shared = MockDataStore(with: records, accountStatus: userAccountStatus, databaseScope: .shared, userID: userRecordID)
         return records.first { $0.recordID == record.recordID }!
     }
     
@@ -197,7 +149,7 @@ class MockDataStore: DataStore {
     
     func modifyRecords(saving recordsToSave: [CKRecord], deleting recordIDsToDelete: [CKRecord.ID]) async throws -> (saveResults: [CKRecord.ID : Result<CKRecord, Error>], deleteResults: [CKRecord.ID : Result<Void, Error>]) {
         var savedRecords = [CKRecord]()
-        let allRecords = records.map { existingRecord in
+        self.records = records.map { existingRecord in
             if recordsToSave.contains(where: { $0.recordID == existingRecord.recordID }) {
                 let recordToSave = recordsToSave.first { $0.recordID == existingRecord.recordID } ?? existingRecord
                 savedRecords.append(recordToSave)
@@ -206,8 +158,6 @@ class MockDataStore: DataStore {
                 return existingRecord
             }
         }
-        MockDataContainer.private = MockDataStore(with: allRecords, accountStatus: userAccountStatus, databaseScope: .private, userID: userRecordID)
-        MockDataContainer.shared = MockDataStore(with: allRecords, accountStatus: userAccountStatus, databaseScope: .shared, userID: userRecordID)
         
         let saveResults: [Result<CKRecord, Error>] = savedRecords.map {
             .success($0)
@@ -218,14 +168,8 @@ class MockDataStore: DataStore {
         return (saveResults: saveResultsWithIDs, deleteResults: [:])
     }
     
-    init(with records: [CKRecord] = [],
-         accountStatus: CKAccountStatus = .available,
-         databaseScope: CKDatabase.Scope = .private,
-         userID: CKRecord.ID = .init(recordName: "test")) {
+    init(with records: [CKRecord] = []) {
         self.records = records
-        self.userAccountStatus = accountStatus
-        self.userRecordID = userID
-        self.databaseScope = databaseScope
     }
 }
 
@@ -245,7 +189,24 @@ extension CKDatabase.Scope {
 }
 
 class MockDataContainer: DataContainer {
-    static var `private`: DataStore = MockDataStore()
-    static var shared: DataStore = MockDataStore()
-    static var `public`: DataStore = MockDataStore()
+    let `public`: Database
+    
+    private var userAccountStatus: CKAccountStatus
+    private var userRecordID: CKRecord.ID
+
+    func userRecordID() async throws -> CKRecord.ID {
+        return userRecordID
+    }
+
+    func accountStatus() async throws -> CKAccountStatus {
+        return self.userAccountStatus
+    }
+    
+    init(with database: Database,
+        userRecordID: CKRecord.ID,
+         accountStatus: CKAccountStatus = .available) {
+        self.userAccountStatus = accountStatus
+        self.userRecordID = userRecordID
+        self.public = database
+    }
 }
