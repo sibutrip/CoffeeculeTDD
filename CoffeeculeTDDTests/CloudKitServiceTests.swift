@@ -34,20 +34,20 @@ final class CloudKitServiceTests: XCTestCase {
         }
     }
     
-    func test_save_addsNewUserToStore() async throws {
+    func test_save_addsNewRecordToStore() async throws {
         let sut = try await makeSUT()
-        let newUser = User(name: "Cory")
-        try await sut.save(record: newUser)
-        let fetchedRecords: [User] = try await sut.fetch()
-        XCTAssertEqual([newUser], fetchedRecords)
+        let mockRecord = MockRecord()
+        try await sut.save(record: mockRecord)
+        let fetchedRecords: [MockRecord] = try await sut.fetch()
+        XCTAssertEqual([mockRecord], fetchedRecords)
     }
     
     func test_save_throwsInvalidRequestIfRecordAlreadyExists() async throws {
         let sut = try await makeSUT()
-        let newUser = User(name: "Cory")
-        try await sut.save(record: newUser)
+        let mockRecord = MockRecord()
+        try await sut.save(record: mockRecord)
         do {
-            try await sut.save(record: newUser)
+            try await sut.save(record: mockRecord)
         } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
@@ -58,52 +58,50 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("Did not throw error when saving second record")
     }
     
-    func test_fetch_fetchesAllUsersFromStore() async throws {
-        let existingUsers = [
-            User(name: "Cory"),
-            User(name: "Tom"),
-            User(name: "Zoe")
+    func test_fetch_fetchesAllRecordsFromStore() async throws {
+        let existingRecords = [
+            MockRecord(),
+            MockRecord(),
+            MockRecord()
         ]
-        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
-        let fetchedUsers: [User] = try await sut.fetch()
-        XCTAssertEqual(existingUsers, fetchedUsers)
+        let sut = try await makeSUT(with: existingRecords.map { $0.ckRecord })
+        let fetchedRecords: [MockRecord] = try await sut.fetch()
+        XCTAssertEqual(existingRecords, fetchedRecords)
     }
     
-    func test_update_modifiesExistingUser() async throws {
-        let existingUsers = [
-            User(name: "Cory"),
-            User(name: "Tom"),
-            User(name: "Zoe")
+    func test_update_modifiesExistingRecord() async throws {
+        let recordToModify = MockRecord()
+        let existingRecords = [
+            recordToModify,
+            MockRecord(),
+            MockRecord()
         ]
-        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
-        
-        let updatedUsers = existingUsers.map { user in
-            var user = user
-            if user.name == "Cory" {
-                user.name = "Cory T."
-                return user
+        let sut = try await makeSUT(with: existingRecords.map { $0.ckRecord })
+        let newTestField1 = UUID().uuidString
+
+        let updatedRecords = existingRecords.map { record in
+            var record = record
+            if record == recordToModify {
+                record.testField1 = newTestField1
             }
-            return user
+            return record
         }
-        let updatedUser = updatedUsers.first { $0.name == "Cory T." }!
-        
-        let databaseUpdatedUser = try await sut.update(record: updatedUser, fields: [.name])
-        
-        
-        XCTAssertEqual(updatedUser, databaseUpdatedUser)
+        let updatedRecord = updatedRecords.first { $0.testField1 == newTestField1 }!
+        let databaseUpdatedRecord = try await sut.update(record: updatedRecord, fields: [.testField1])
+        XCTAssertEqual(updatedRecord, databaseUpdatedRecord)
     }
     
-    func test_update_throwsInvalidRequestIfUserDoesntExist() async throws {
-        let existingUsers = [
-            User(name: "Cory"),
-            User(name: "Tom"),
-            User(name: "Zoe")
+    func test_update_throwsInvalidRequestIfRecordDoesntExist() async throws {
+        let existingRecords = [
+            MockRecord(),
+            MockRecord(),
+            MockRecord()
         ]
-        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
+        let sut = try await makeSUT(with: existingRecords.map { $0.ckRecord })
         
-        let newUser = User(name: "Tariq")
+        let newRecord = MockRecord()
         do {
-            let _ = try await sut.update(record: newUser, fields: [.name])
+            let _ = try await sut.update(record: newRecord, fields: [.testField1])
         } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
@@ -122,7 +120,6 @@ final class CloudKitServiceTests: XCTestCase {
         
         let database = MockDatabase(with: ckRecords)
         let mockDataContainer = MockDataContainer(with: database, userRecordID: userID, accountStatus: accountStatus)
-        
         return try await CloudKitService(with: mockDataContainer)
     }
 }
@@ -173,18 +170,31 @@ class MockDatabase: Database {
     }
 }
 
-extension CKDatabase.Scope {
-    var recordID: CKRecord.ID {
-        switch self {
-        case .public:
-            CKRecord.ID(recordName: "public")
-        case .private:
-            CKRecord.ID(recordName: "private")
-        case .shared:
-            CKRecord.ID(recordName: "shared")
-        @unknown default:
-            CKRecord.ID(recordName: "private")
+struct MockRecord: Record {
+    static let recordType = "MockRecord"
+    
+    enum RecordKeys: String, CaseIterable {
+        case testField1, testField2
+    }
+    
+    var id: String
+    var testField1: String
+    var testField2: String
+    
+    init?(from record: CKRecord) {
+        guard let testField1 = record["testField1"] as? String,
+        let testField2 = record["testField2"] as? String else {
+            return nil
         }
+        self.id = record.recordID.recordName
+        self.testField1 = testField1
+        self.testField2 = testField2
+    }
+    
+    init() {
+        self.id = UUID().uuidString
+        self.testField1 = UUID().uuidString
+        self.testField2 = UUID().uuidString
     }
 }
 
