@@ -37,7 +37,7 @@ final class CloudKitServiceTests: XCTestCase {
     func test_save_addsNewRecordToStore() async throws {
         let sut = try await makeSUT()
         let mockRecord = MockRecord()
-        try await sut.save(record: mockRecord)
+        _ = try await sut.save(record: mockRecord)
         let fetchedRecords: [MockRecord] = try await sut.fetch()
         XCTAssertEqual([mockRecord], fetchedRecords)
     }
@@ -45,9 +45,9 @@ final class CloudKitServiceTests: XCTestCase {
     func test_save_throwsInvalidRequestIfRecordAlreadyExists() async throws {
         let sut = try await makeSUT()
         let mockRecord = MockRecord()
-        try await sut.save(record: mockRecord)
+        _ = try await sut.save(record: mockRecord)
         do {
-            try await sut.save(record: mockRecord)
+            _ = try await sut.save(record: mockRecord)
         } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
@@ -87,7 +87,9 @@ final class CloudKitServiceTests: XCTestCase {
             return record
         }
         let updatedRecord = updatedRecords.first { $0.testField1 == newTestField1 }!
-        let databaseUpdatedRecord = try await sut.update(record: updatedRecord, fields: [.testField1])
+        try await sut.update(record: updatedRecord)
+        let databaseUpdatedRecords: [MockRecord] = try await sut.fetch()
+        let databaseUpdatedRecord = databaseUpdatedRecords.filter { $0.id == updatedRecord.id }.first!
         XCTAssertEqual(updatedRecord, databaseUpdatedRecord)
     }
     
@@ -101,7 +103,7 @@ final class CloudKitServiceTests: XCTestCase {
         
         let newRecord = MockRecord()
         do {
-            let _ = try await sut.update(record: newRecord, fields: [.testField1])
+            let _ = try await sut.update(record: newRecord)
         } catch CloudKitService.CloudKitError.invalidRequest {
             XCTAssert(true)
             return
@@ -112,111 +114,51 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("update failed to throw error")
     }
     
+    func test_saveRecordWithParent_updatesChildRecordsWithReferences() async throws {
+        let existingParentRecord = MockRecord()
+        let sut = try await makeSUT()
+        let newChildRecord = MockChildRecord(withParent: existingParentRecord)
+        try await sut.save(newChildRecord, withParent: existingParentRecord)
+        let updatedChildRecords: [MockChildRecord] = try await sut.children(of: existingParentRecord)
+        let childCkRecord = updatedChildRecords.first!.ckRecord
+        let reference = childCkRecord[MockChildRecord.RecordKeys.parent.rawValue] as! CKRecord.Reference?
+        XCTAssertNotEqual(reference, nil)
+    }
+    
+    func test_saveRecordWithParent_updatesChildRecordsWithReferencesIfRecordAlreadyInDatabase() async throws {
+        let existingParentRecord = MockRecord()
+        var newChildRecord = MockChildRecord(withParent: existingParentRecord)
+        newChildRecord.creationDate = Date()
+        let sut = try await makeSUT(with: [newChildRecord.ckRecord])
+        try await sut.save(newChildRecord, withParent: existingParentRecord)
+        let updatedChildRecords: [MockChildRecord] = try await sut.children(of: existingParentRecord)
+        let childCkRecord = updatedChildRecords.first!.ckRecord
+        let reference = childCkRecord[MockChildRecord.RecordKeys.parent.rawValue] as! CKRecord.Reference?
+        XCTAssertNotEqual(reference, nil)
+    }
+    
+    func test_fetchChildren_fetchIncludesReferencesForAllChildrenRecordsOfParent() async throws {
+        let parentRecord = MockRecord()
+        let childrenRecords = (0...2).map { _ in MockChildRecord(withParent: parentRecord) }
+        let sut = try await makeSUT()
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for record in childrenRecords {
+                group.addTask { try await sut.save(record, withParent: parentRecord) }
+            }
+            try await group.waitForAll()
+        }
+        let fetchedChildren: [MockChildRecord] = try await sut.children(of: parentRecord)
+        let references = fetchedChildren.compactMap { $0.ckRecord[MockChildRecord.RecordKeys.parent.rawValue] }
+        XCTAssertEqual(references.count, 3)
+    }
+    
     // MARK: - Helper Methods
     
     private func makeSUT(with ckRecords: [CKRecord] = [],
-                 accountStatus: CKAccountStatus = .available,
-                 userID: CKRecord.ID = .init(recordName: "test")) async throws -> CloudKitService {
+                 accountStatus: CKAccountStatus = .available) async throws -> CloudKitService {
         
         let database = MockDatabase(with: ckRecords)
-        let mockDataContainer = MockDataContainer(with: database, userRecordID: userID, accountStatus: accountStatus)
+        let mockDataContainer = MockDataContainer(with: database, accountStatus: accountStatus)
         return try await CloudKitService(with: mockDataContainer)
-    }
-}
-
-class MockDatabase: Database {
-    
-    private var records: [CKRecord] = []
-    
-    func save(_ record: CKRecord) async throws -> CKRecord {
-        if records.contains(where: {$0.recordID == record.recordID }) {
-            throw NSError()
-        }
-        records.append(record)
-        return records.first { $0.recordID == record.recordID }!
-    }
-    
-    func records(matching query: CKQuery, inZoneWith zoneID: CKRecordZone.ID? = nil, desiredKeys: [CKRecord.FieldKey]? = nil, resultsLimit: Int = CKQueryOperation.maximumResults) async throws -> (matchResults: [(CKRecord.ID, Result<CKRecord, Error>)], queryCursor: CKQueryOperation.Cursor?) {
-        let results = records.map { record in
-            let result: Result<CKRecord, any Error> = .success(record)
-            return (record.recordID, result)
-        }
-        return (matchResults: results, queryCursor: nil)
-    }
-    
-    func modifyRecords(saving recordsToSave: [CKRecord], deleting recordIDsToDelete: [CKRecord.ID]) async throws -> (saveResults: [CKRecord.ID : Result<CKRecord, Error>], deleteResults: [CKRecord.ID : Result<Void, Error>]) {
-        var savedRecords = [CKRecord]()
-        self.records = records.map { existingRecord in
-            if recordsToSave.contains(where: { $0.recordID == existingRecord.recordID }) {
-                let recordToSave = recordsToSave.first { $0.recordID == existingRecord.recordID } ?? existingRecord
-                savedRecords.append(recordToSave)
-                return recordToSave
-            } else {
-                return existingRecord
-            }
-        }
-        
-        let saveResults: [Result<CKRecord, Error>] = savedRecords.map {
-            .success($0)
-        }
-        let saveIDs = savedRecords.map { $0.recordID }
-        let zippedSavedRecords = zip(saveIDs, saveResults)
-        let saveResultsWithIDs = Dictionary(uniqueKeysWithValues: zippedSavedRecords)
-        return (saveResults: saveResultsWithIDs, deleteResults: [:])
-    }
-    
-    init(with records: [CKRecord] = []) {
-        self.records = records
-    }
-}
-
-struct MockRecord: Record {
-    static let recordType = "MockRecord"
-    
-    enum RecordKeys: String, CaseIterable {
-        case testField1, testField2
-    }
-    
-    var id: String
-    var testField1: String
-    var testField2: String
-    
-    init?(from record: CKRecord) {
-        guard let testField1 = record["testField1"] as? String,
-        let testField2 = record["testField2"] as? String else {
-            return nil
-        }
-        self.id = record.recordID.recordName
-        self.testField1 = testField1
-        self.testField2 = testField2
-    }
-    
-    init() {
-        self.id = UUID().uuidString
-        self.testField1 = UUID().uuidString
-        self.testField2 = UUID().uuidString
-    }
-}
-
-class MockDataContainer: DataContainer {
-    let `public`: Database
-    
-    private var userAccountStatus: CKAccountStatus
-    private var userRecordID: CKRecord.ID
-
-    func userRecordID() async throws -> CKRecord.ID {
-        return userRecordID
-    }
-
-    func accountStatus() async throws -> CKAccountStatus {
-        return self.userAccountStatus
-    }
-    
-    init(with database: Database,
-        userRecordID: CKRecord.ID,
-         accountStatus: CKAccountStatus = .available) {
-        self.userAccountStatus = accountStatus
-        self.userRecordID = userRecordID
-        self.public = database
     }
 }

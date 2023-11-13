@@ -7,7 +7,7 @@
 
 import CloudKit
 
-protocol Record: Identifiable, Hashable {
+protocol Record: Identifiable, Hashable where ID == String {
     /// The record type that CloudKit uses as an identifier for each table of records.
     ///
     /// Usage:
@@ -33,8 +33,12 @@ protocol Record: Identifiable, Hashable {
     /// ```
     var id: String { get }
     
+    var creationDate: Date? { get }
+    
     /// Initializes an instance of a Record type from a CKRecord.
     init?(from record: CKRecord)
+    
+    var ckRecord: CKRecord { get }
 }
 
 extension Record {
@@ -48,25 +52,6 @@ extension Record {
     /// All cases of a Record type's RecordKeys enum.
     static var recordKeys: [String] {
         RecordKeys.allCases.compactMap { $0.rawValue as? String }
-    }
-    
-    /// A CKRecord that reflects the local version of a Record type.
-    ///
-    /// This is computed each time it is used, by comparing RecordKeys cases with the properties of the record.
-    var ckRecord: CKRecord {
-        let record = CKRecord(recordType: Self.recordType, recordID: CKRecord.ID(recordName: id))
-        let propertiesMirrored = Mirror(reflecting: self)
-        for recordKey in Self.recordKeys {
-            if let propertyLabel = propertiesMirrored.children.first(where: { label, value in
-                guard let label = label else {
-                    return false
-                }
-                return label == recordKey
-            }) {
-                record.setValue(propertyLabel.value, forKey: recordKey)
-            }
-        }
-        return record
     }
     
     // MARK: Hashable conformance

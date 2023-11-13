@@ -7,7 +7,7 @@
 
 import CloudKit
 
-class CloudKitService<Container: DataContainer> {
+actor CloudKitService<Container: DataContainer> {
     private let container: Container
     private var coffeeculeID: String = ""
     private var userID: CKRecord.ID?
@@ -44,13 +44,17 @@ class CloudKitService<Container: DataContainer> {
     }
     
     enum CloudKitError: Error {
-        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist
+        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord
     }
     
-    func save<SomeRecord: Record>(record: SomeRecord) async throws {
+    func save<SomeRecord: Record>(record: SomeRecord) async throws -> SomeRecord{
         do {
             let ckRecord = record.ckRecord
-            let _ = try await database.save(ckRecord)
+            let returnedCkRecord = try await database.save(ckRecord)
+            guard let record = SomeRecord(from: returnedCkRecord) else {
+                throw CloudKitError.couldNotCreateModelFromCkRecord
+            }
+            return record
         } catch {
             throw CloudKitError.invalidRequest
         }
@@ -69,19 +73,36 @@ class CloudKitService<Container: DataContainer> {
         return someRecords
     }
     
-    func update<SomeRecord: Record>(record: SomeRecord, fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord {
+    func children<Child: ChildRecord, Parent: Record>(of parent: Parent) async throws -> [Child] where Child.Parent == Parent {
+        let reference = CKRecord.Reference(recordID: parent.recordID, action: .none)
+        let predicate = NSPredicate(format: "\(Parent.recordType) == %@", reference)
+        let query = CKQuery(recordType: Child.recordType, predicate: predicate)
+        
+        let records = try await database.records(matching: query, inZoneWith: nil, desiredKeys: nil, resultsLimit: CKQueryOperation.maximumResults)
+        let unwrappedRecords = records.matchResults.compactMap { record in
+            try? record.1.get()
+        }
+        
+        return unwrappedRecords.compactMap { record in
+            Child(from: record, with: parent)
+        }
+    }
+    
+    func update<SomeRecord: Record>(record: SomeRecord) async throws {
         do {
-            let (saveResults,_) = try await database.modifyRecords(saving: [record.ckRecord], deleting: [])
-            let ckRecords = saveResults.compactMap { result in
-                try? result.1.get()
-            }
-            let someRecords: [SomeRecord] = ckRecords.compactMap { SomeRecord(from: $0) }
-            guard let modifiedRecord = someRecords.first else {
-                throw CloudKitError.unexpectedResultFromServer
-            }
-            return modifiedRecord
+            let (_,_) = try await database.modifyRecords(saving: [record.ckRecord], deleting: [])
         } catch {
             throw CloudKitError.invalidRequest
+        }
+    }
+    
+    func save<Child: ChildRecord, Parent: Record>(_ record: Child, withParent parent: Parent) async throws where Child.RecordKeys.AllCases == [Child.RecordKeys], Child.Parent == Parent {
+        var record = record
+        record.parent = parent
+        if record.creationDate == nil {
+            let _ = try await database.save(record.ckRecord)
+        } else {
+            _ = try await database.modifyRecords(saving: [record.ckRecord], deleting: [])
         }
     }
     

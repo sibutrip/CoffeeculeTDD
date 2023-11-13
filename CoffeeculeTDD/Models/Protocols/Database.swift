@@ -8,6 +8,8 @@
 import CloudKit
 
 protocol Database {
+    
+    func record(for recordID: CKRecord.ID) async throws -> CKRecord
         
     func save(_ record: CKRecord) async throws -> CKRecord
     

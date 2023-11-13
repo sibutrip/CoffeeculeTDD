@@ -7,7 +7,9 @@
 
 import CloudKit
 
-struct Coffeecule: Record {
+struct Coffeecule: TopLevelRecord {
+    var creationDate: Date?
+    
     static let recordType = "Coffeecule"
     
     enum RecordKeys: String, CaseIterable {
@@ -21,6 +23,7 @@ struct Coffeecule: Record {
         guard let coffeeculeIdentifier = record["coffeeculeIdentifier"] as? String else {
             return nil
         }
+        self.creationDate = record.creationDate
         self.id = record.recordID.recordName
         self.coffeeculeIdentifier = coffeeculeIdentifier
     }
