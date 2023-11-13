@@ -140,7 +140,7 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		74D8DAE72B00169E005811AD /* CoffeeculeTDDTests */ = {
+		74C72B6F2B02E3E300718CAD /* CloudKitService */ = {
 			isa = PBXGroup;
 			children = (
 				74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */,
@@ -148,6 +148,14 @@
 				74495C0B2B02D42400C1C7F7 /* MockDatabase.swift */,
 				74495C092B02D40700C1C7F7 /* MockRecord.swift */,
 				74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */,
+			);
+			path = CloudKitService;
+			sourceTree = "<group>";
+		};
+		74D8DAE72B00169E005811AD /* CoffeeculeTDDTests */ = {
+			isa = PBXGroup;
+			children = (
+				74C72B6F2B02E3E300718CAD /* CloudKitService */,
 			);
 			path = CoffeeculeTDDTests;
 			sourceTree = "<group>";
