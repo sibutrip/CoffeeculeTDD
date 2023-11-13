@@ -66,6 +66,17 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual(existingUsers, fetchedUsers)
     }
     
+    func test_fetch_fetchesUsersFromAllZones() async throws {
+        let existingUsers = [
+            User(name: "Cory"),
+            User(name: "Tom"),
+            User(name: "Zoe")
+        ]
+        let sut = try await makeSUT(with: existingUsers.map { $0.ckRecord })
+        let fetchedUsers: [User] = try await sut.fetch()
+        XCTAssertEqual(existingUsers, fetchedUsers)
+    }
+    
     func test_update_modifiesExistingUser() async throws {
         let existingUsers = [
             User(name: "Cory"),
@@ -171,6 +182,8 @@ class MockDataStore: DataStore {
             throw NSError()
         }
         records.append(record)
+        MockDataContainer.private = MockDataStore(with: records, accountStatus: userAccountStatus, databaseScope: .private, userID: userRecordID)
+        MockDataContainer.shared = MockDataStore(with: records, accountStatus: userAccountStatus, databaseScope: .shared, userID: userRecordID)
         return records.first { $0.recordID == record.recordID }!
     }
     
@@ -184,7 +197,7 @@ class MockDataStore: DataStore {
     
     func modifyRecords(saving recordsToSave: [CKRecord], deleting recordIDsToDelete: [CKRecord.ID]) async throws -> (saveResults: [CKRecord.ID : Result<CKRecord, Error>], deleteResults: [CKRecord.ID : Result<Void, Error>]) {
         var savedRecords = [CKRecord]()
-        self.records = records.map { existingRecord in
+        let allRecords = records.map { existingRecord in
             if recordsToSave.contains(where: { $0.recordID == existingRecord.recordID }) {
                 let recordToSave = recordsToSave.first { $0.recordID == existingRecord.recordID } ?? existingRecord
                 savedRecords.append(recordToSave)
@@ -193,6 +206,9 @@ class MockDataStore: DataStore {
                 return existingRecord
             }
         }
+        MockDataContainer.private = MockDataStore(with: allRecords, accountStatus: userAccountStatus, databaseScope: .private, userID: userRecordID)
+        MockDataContainer.shared = MockDataStore(with: allRecords, accountStatus: userAccountStatus, databaseScope: .shared, userID: userRecordID)
+        
         let saveResults: [Result<CKRecord, Error>] = savedRecords.map {
             .success($0)
         }
