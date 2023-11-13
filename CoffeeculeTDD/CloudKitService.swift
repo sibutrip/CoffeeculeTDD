@@ -7,13 +7,26 @@
 
 import CloudKit
 
-class CloudKitService {
+class CloudKitService<Container: DataContainer> {
     
-    func authenticate() async throws -> CKRecord.ID {
+    private var coffeeculeID: String = ""
+    private var userID: CKRecord.ID?
+    
+    var dataStore: DataStore {
+        if coffeeculeID.isEmpty { return Container.private }
+        guard let userID else { return Container.private }
+        return userID.recordName == coffeeculeID ? Container.private : Container.shared
+    }
+    
+    func authenticate() async throws {
         switch try await dataStore.accountStatus() {
         case .available:
             do {
-                return try await dataStore.userRecordID()
+                self.userID = try await dataStore.userRecordID()
+                let coffeecules: [Coffeecule] = try await fetch()
+                if let coffecule = coffeecules.first {
+                    coffeeculeID = coffecule.coffeeculeIdentifier
+                }
             } catch {
                 throw AuthenticationError.iCloudDriveDisabled
             }
@@ -33,9 +46,7 @@ class CloudKitService {
     enum CloudKitError: Error {
         case invalidRequest, unexpectedResultFromServer
     }
-    
-    private let dataStore: DataStore
-    
+        
     func save<SomeRecord: Record>(record: SomeRecord) async throws {
         do {
             let ckRecord = record.ckRecord
@@ -74,10 +85,9 @@ class CloudKitService {
         }
     }
     
-    init(dataStore: DataStore) async throws {
-        self.dataStore = dataStore
+    init() async throws {
         do {
-            let _ = try await authenticate()
+            try await authenticate()
         } catch {
             throw error
         }

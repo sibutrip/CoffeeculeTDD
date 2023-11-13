@@ -10,6 +10,7 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 final class CloudKitServiceTests: XCTestCase {
+    typealias CloudKitService = CoffeeculeTDD.CloudKitService<MockDataContainer>
     
     func test_init_succeedsIfUserHasCloudAccess() async throws {
         do {
@@ -107,11 +108,40 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("update failed to throw error")
     }
     
+    func test_authenticate_assignsPrivateDatabaseIfUserIsCoffeeculeOwner() async throws {
+        let sut = try await makeSUT(userID: .init(recordName: "CorysUniqueID"))
+        let coffeecule = Coffeecule(coffeeculeIdentifier: "CorysUniqueID")
+        try await sut.save(record: coffeecule)
+        try await sut.authenticate()
+        XCTAssert(MockDataContainer.private.databaseScope == sut.dataStore.databaseScope)
+    }
+    
+    func test_authenticate_assignsSharedDatabaseIfUserIsNotCoffeeculeOwner() async throws {
+        let sut = try await makeSUT(userID: .init(recordName: "ZoesUniqueID"))
+        let coffeecule = Coffeecule(coffeeculeIdentifier: "CorysUniqueID")
+        try await sut.save(record: coffeecule)
+        try await sut.authenticate()
+        XCTAssert(MockDataContainer.shared.databaseScope == sut.dataStore.databaseScope)
+    }
+    
     // MARK: - Helper Methods
     
-    func makeSUT(with ckRecords: [CKRecord] = [], accountStatus: CKAccountStatus = .available) async throws -> CloudKitService {
-        let dataStore = MockDataStore(with: ckRecords, accountStatus: accountStatus)
-        return try await CloudKitService(dataStore: dataStore)
+    func makeSUT(with ckRecords: [CKRecord] = [],
+                 accountStatus: CKAccountStatus = .available,
+                 databaseScope: CKDatabase.Scope = .private,
+                 userID: CKRecord.ID = .init(recordName: "test")) async throws -> CloudKitService {
+        let dataStore = MockDataStore(with: ckRecords, accountStatus: accountStatus, databaseScope: databaseScope, userID: userID)
+        switch databaseScope {
+        case .public:
+            MockDataContainer.public = dataStore
+        case .private:
+            MockDataContainer.private = dataStore
+        case .shared:
+            MockDataContainer.shared = dataStore
+        @unknown default:
+            break
+        }
+        return try await CloudKitService()
     }
 }
 
@@ -119,9 +149,11 @@ class MockDataStore: DataStore {
     
     private var userAccountStatus: CKAccountStatus = .available
     private var records: [CKRecord] = []
+    private var userRecordID: CKRecord.ID
+    var databaseScope: CKDatabase.Scope = .private
     
     func userRecordID() async throws -> CKRecord.ID {
-        return .init(recordName: "TestRecord")
+        return userRecordID
     }
     
     func accountStatus() async throws -> CKAccountStatus {
@@ -164,8 +196,34 @@ class MockDataStore: DataStore {
         return (saveResults: saveResultsWithIDs, deleteResults: [:])
     }
     
-    init(with records: [CKRecord] = [], accountStatus: CKAccountStatus) {
+    init(with records: [CKRecord] = [],
+         accountStatus: CKAccountStatus = .available,
+         databaseScope: CKDatabase.Scope = .private,
+         userID: CKRecord.ID = .init(recordName: "test")) {
         self.records = records
         self.userAccountStatus = accountStatus
+        self.userRecordID = userID
+        self.databaseScope = databaseScope
     }
+}
+
+extension CKDatabase.Scope {
+    var recordID: CKRecord.ID {
+        switch self {
+        case .public:
+            CKRecord.ID(recordName: "public")
+        case .private:
+            CKRecord.ID(recordName: "private")
+        case .shared:
+            CKRecord.ID(recordName: "shared")
+        @unknown default:
+            CKRecord.ID(recordName: "private")
+        }
+    }
+}
+
+class MockDataContainer: DataContainer {
+    static var `private`: DataStore = MockDataStore()
+    static var shared: DataStore = MockDataStore()
+    static var `public`: DataStore = MockDataStore()
 }

@@ -12,7 +12,8 @@
 		741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0EA2B00144700E0AA09 /* Assets.xcassets */; };
 		741EA0EE2B00144700E0AA09 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0ED2B00144700E0AA09 /* Preview Assets.xcassets */; };
 		741EA1132B00148D00E0AA09 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA1122B00148D00E0AA09 /* CloudKitService.swift */; };
-		74D8DAE92B00169E005811AD /* CoffeeculeTDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAE82B00169E005811AD /* CoffeeculeTDDTests.swift */; };
+		74495BFC2B01968800C1C7F7 /* Coffeecule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495BFB2B01968800C1C7F7 /* Coffeecule.swift */; };
+		74495BFE2B019AB600C1C7F7 /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495BFD2B019AB600C1C7F7 /* DataContainer.swift */; };
 		74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */; };
 		74D8DAF22B002DD6005811AD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF12B002DD6005811AD /* Record.swift */; };
 		74D8DAF42B003212005811AD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF32B003212005811AD /* User.swift */; };
@@ -36,8 +37,9 @@
 		741EA0EA2B00144700E0AA09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		741EA0ED2B00144700E0AA09 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		741EA1122B00148D00E0AA09 /* CloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitService.swift; sourceTree = "<group>"; };
+		74495BFB2B01968800C1C7F7 /* Coffeecule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coffeecule.swift; sourceTree = "<group>"; };
+		74495BFD2B019AB600C1C7F7 /* DataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
 		74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		74D8DAE82B00169E005811AD /* CoffeeculeTDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDTests.swift; sourceTree = "<group>"; };
 		74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitServiceTests.swift; sourceTree = "<group>"; };
 		74D8DAF12B002DD6005811AD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		74D8DAF32B003212005811AD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -85,10 +87,12 @@
 			children = (
 				741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */,
 				741EA0E82B00144600E0AA09 /* ContentView.swift */,
-				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
 				74D8DAF72B004564005811AD /* DataStore.swift */,
 				74D8DAF12B002DD6005811AD /* Record.swift */,
+				74495BFD2B019AB600C1C7F7 /* DataContainer.swift */,
 				74D8DAF32B003212005811AD /* User.swift */,
+				74495BFB2B01968800C1C7F7 /* Coffeecule.swift */,
+				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
 				741EA0EA2B00144700E0AA09 /* Assets.xcassets */,
 				741EA0EC2B00144700E0AA09 /* Preview Content */,
 			);
@@ -106,7 +110,6 @@
 		74D8DAE72B00169E005811AD /* CoffeeculeTDDTests */ = {
 			isa = PBXGroup;
 			children = (
-				74D8DAE82B00169E005811AD /* CoffeeculeTDDTests.swift */,
 				74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */,
 			);
 			path = CoffeeculeTDDTests;
@@ -212,8 +215,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74495BFC2B01968800C1C7F7 /* Coffeecule.swift in Sources */,
 				741EA1132B00148D00E0AA09 /* CloudKitService.swift in Sources */,
 				74D8DAF82B004564005811AD /* DataStore.swift in Sources */,
+				74495BFE2B019AB600C1C7F7 /* DataContainer.swift in Sources */,
 				741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */,
 				74D8DAF42B003212005811AD /* User.swift in Sources */,
 				74D8DAF22B002DD6005811AD /* Record.swift in Sources */,
@@ -226,7 +231,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */,
-				74D8DAE92B00169E005811AD /* CoffeeculeTDDTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
