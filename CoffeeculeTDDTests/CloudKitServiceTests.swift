@@ -124,6 +124,12 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssert(MockDataContainer.shared.databaseScope == sut.dataStore.databaseScope)
     }
     
+    func test_authenticate_assignsPrivateDatabaseIfNoCoffeeculeIsCreated() async throws {
+        let sut = try await makeSUT(userID: .init(recordName: "ZoesUniqueID"))
+        try await sut.authenticate()
+        XCTAssert(MockDataContainer.private.databaseScope == sut.dataStore.databaseScope)
+    }
+    
     // MARK: - Helper Methods
     
     func makeSUT(with ckRecords: [CKRecord] = [],
