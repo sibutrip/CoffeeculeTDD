@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct Coffeecule: TopLevelRecord {
+struct Coffeecule: Record {
     var creationDate: Date?
     
     static let recordType = "Coffeecule"

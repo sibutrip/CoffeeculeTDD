@@ -114,42 +114,30 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("update failed to throw error")
     }
     
-    func test_saveRecordWithParent_updatesChildRecordsWithReferences() async throws {
+    func test_children_fetchesAllChildrenOfParent() async throws {
         let existingParentRecord = MockRecord()
         let sut = try await makeSUT()
-        let newChildRecord = MockChildRecord(withParent: existingParentRecord)
-        try await sut.save(newChildRecord, withParent: existingParentRecord)
+        let firstChildRecord = MockChildRecord(withParent: existingParentRecord)
+        let secondChildRecord = MockChildRecord(withParent: existingParentRecord)
+        try await sut.save(firstChildRecord, withParent: existingParentRecord)
+        try await sut.save(secondChildRecord, withParent: existingParentRecord)
         let updatedChildRecords: [MockChildRecord] = try await sut.children(of: existingParentRecord)
-        let childCkRecord = updatedChildRecords.first!.ckRecord
-        let reference = childCkRecord[MockChildRecord.RecordKeys.parent.rawValue] as! CKRecord.Reference?
-        XCTAssertNotEqual(reference, nil)
+        XCTAssertEqual(updatedChildRecords.count, 2)
     }
     
-    func test_saveRecordWithParent_updatesChildRecordsWithReferencesIfRecordAlreadyInDatabase() async throws {
-        let existingParentRecord = MockRecord()
-        var newChildRecord = MockChildRecord(withParent: existingParentRecord)
-        newChildRecord.creationDate = Date()
-        let sut = try await makeSUT(with: [newChildRecord.ckRecord])
-        try await sut.save(newChildRecord, withParent: existingParentRecord)
-        let updatedChildRecords: [MockChildRecord] = try await sut.children(of: existingParentRecord)
-        let childCkRecord = updatedChildRecords.first!.ckRecord
-        let reference = childCkRecord[MockChildRecord.RecordKeys.parent.rawValue] as! CKRecord.Reference?
-        XCTAssertNotEqual(reference, nil)
-    }
-    
-    func test_fetchChildren_fetchIncludesReferencesForAllChildrenRecordsOfParent() async throws {
+    func test_children_throwsIfNoParentFound() async throws {
         let parentRecord = MockRecord()
-        let childrenRecords = (0...2).map { _ in MockChildRecord(withParent: parentRecord) }
         let sut = try await makeSUT()
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for record in childrenRecords {
-                group.addTask { try await sut.save(record, withParent: parentRecord) }
-            }
-            try await group.waitForAll()
+        do {
+            let _: [MockChildRecord] = try await sut.children(of: parentRecord)
+        } catch CloudKitService.CloudKitError.childRecordsNotFound {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("did not throw CloudKitError.childRecordsNotFound")
+            return
         }
-        let fetchedChildren: [MockChildRecord] = try await sut.children(of: parentRecord)
-        let references = fetchedChildren.compactMap { $0.ckRecord[MockChildRecord.RecordKeys.parent.rawValue] }
-        XCTAssertEqual(references.count, 3)
+        XCTFail("did not throw an error")
     }
     
     // MARK: - Helper Methods

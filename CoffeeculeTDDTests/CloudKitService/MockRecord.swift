@@ -8,7 +8,7 @@
 import CloudKit
 @testable import CoffeeculeTDD
 
-struct MockRecord: TopLevelRecord {
+struct MockRecord: Record {
     
     static let recordType = "MockRecord"
     

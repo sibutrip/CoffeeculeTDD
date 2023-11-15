@@ -8,7 +8,7 @@
 import CloudKit
 @testable import CoffeeculeTDD
 
-class MockDatabase: Database {
+actor MockDatabase: Database {
     
     private var records: [CKRecord] = [] 
     

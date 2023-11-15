@@ -15,15 +15,7 @@ struct MockChildRecord: ChildRecord {
     var id: String
     
     enum RecordKeys: String, CaseIterable {
-        case testField, parent
-//        var rawValue: String {
-//            switch self {
-//            case .testField:
-//                return "testField"
-//            case .parent:
-//                return Parent.recordType
-//            }
-//        }
+        case testField
     }
     
     var testField: String

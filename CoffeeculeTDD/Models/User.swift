@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct User: TopLevelRecord {
+struct User: Record {
     static let recordType = "CoffeeculeUser"
     
     enum RecordKeys: String, CaseIterable {

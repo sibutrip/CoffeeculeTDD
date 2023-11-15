@@ -44,7 +44,7 @@ actor CloudKitService<Container: DataContainer> {
     }
     
     enum CloudKitError: Error {
-        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord
+        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord, childRecordsNotFound
     }
     
     func save<SomeRecord: Record>(record: SomeRecord) async throws -> SomeRecord{
@@ -82,6 +82,9 @@ actor CloudKitService<Container: DataContainer> {
         let unwrappedRecords = records.matchResults.compactMap { record in
             try? record.1.get()
         }
+        if unwrappedRecords.isEmpty {
+            throw CloudKitError.childRecordsNotFound
+        }
         
         return unwrappedRecords.compactMap { record in
             Child(from: record, with: parent)
@@ -97,12 +100,12 @@ actor CloudKitService<Container: DataContainer> {
     }
     
     func save<Child: ChildRecord, Parent: Record>(_ record: Child, withParent parent: Parent) async throws where Child.RecordKeys.AllCases == [Child.RecordKeys], Child.Parent == Parent {
-        var record = record
-        record.parent = parent
+        let childCkRecord = record.ckRecord
+        childCkRecord.setValue(parent.reference, forKey: Parent.recordType)
         if record.creationDate == nil {
-            let _ = try await database.save(record.ckRecord)
+            let _ = try await database.save(childCkRecord)
         } else {
-            _ = try await database.modifyRecords(saving: [record.ckRecord], deleting: [])
+            _ = try await database.modifyRecords(saving: [childCkRecord], deleting: [])
         }
     }
     
