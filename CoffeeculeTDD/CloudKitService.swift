@@ -12,6 +12,7 @@ actor CloudKitService<Container: DataContainer> {
     private var coffeeculeID: String = ""
     private var userID: CKRecord.ID?
     
+    
     lazy var database: Database = container.public
     
     private func assignCoffeeculeIdAndUserId() async throws {
@@ -19,6 +20,18 @@ actor CloudKitService<Container: DataContainer> {
         let coffeecules: [Coffeecule] = try await fetch()
         if let coffecule = coffeecules.first {
             coffeeculeID = coffecule.coffeeculeIdentifier
+        }
+    }
+    
+    func updatedRecord<SomeRecord: Record>(for record: SomeRecord) async throws -> SomeRecord {
+        do {
+            let ckRecord = try await database.record(for: record.recordID)
+            guard let record = SomeRecord(from: ckRecord) else {
+                throw CloudKitError.couldNotCreateModelFromCkRecord
+            }
+            return record
+        } catch {
+            throw CloudKitError.recordDoesNotExist
         }
     }
     
@@ -44,7 +57,7 @@ actor CloudKitService<Container: DataContainer> {
     }
     
     enum CloudKitError: Error {
-        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord, childRecordsNotFound
+        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord, childRecordsNotFound, userNotFound
     }
     
     func save<SomeRecord: Record>(record: SomeRecord) async throws -> SomeRecord{
