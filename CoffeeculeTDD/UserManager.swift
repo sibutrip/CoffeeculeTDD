@@ -31,6 +31,12 @@ struct User: Record {
         self.systemUserID = systemUserID
     }
     
+    init(systemUserID: String) {
+        self.name = "TEST"
+        self.id = UUID().uuidString
+        self.systemUserID = systemUserID
+    }
+    
     init(name: String) {
         self.name = name
         self.id = UUID().uuidString
@@ -42,11 +48,22 @@ class UserManager<Container: DataContainer> {
     private var cloudKitService: CloudKitService<Container>?
     var user: User?
     @Published var isLoading: Bool
+    @Published var displayedError: Error?
+    
+    enum UserManagerError: Error {
+        case failedToFindUser
+    }
     
     init(with container: Container) {
         isLoading = true
         Task {
-            self.cloudKitService = try await CloudKitService(with: container)
+            do {
+                self.cloudKitService = try await CloudKitService(with: container)
+                self.user = await cloudKitService?.user
+            } catch {
+                displayedError = error
+            }
+            isLoading = false
         }
     }
 }

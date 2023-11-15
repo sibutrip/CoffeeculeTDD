@@ -10,8 +10,14 @@ import CloudKit
 actor CloudKitService<Container: DataContainer> {
     private let container: Container
     private var coffeeculeID: String = ""
-    private var userID: CKRecord.ID?
-    
+    private var userID: CKRecord.ID? // userRecordID I think
+    public var user: User? {
+        guard let userID else { return nil }
+        let user = User(systemUserID: userID.recordName)
+        let userCkRecord = user.ckRecord
+        guard let user = User(from: userCkRecord) else { return nil }
+        return user
+    }
     
     lazy var database: Database = container.public
     
