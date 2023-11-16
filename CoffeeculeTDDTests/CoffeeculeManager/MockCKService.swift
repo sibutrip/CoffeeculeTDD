@@ -52,7 +52,7 @@ actor MockCKService: CKServiceProtocol {
     
     func children<Child, Parent>(of parent: Parent) async throws -> [Child] where Child : CoffeeculeTDD.ChildRecord, Parent : CoffeeculeTDD.Record, Parent == Child.Parent {
         if databaseActionSuccess {
-            return []
+            return [Coffeecule(), Coffeecule()]
         } else {
             throw CloudKitError.couldNotSaveToDatabase
         }

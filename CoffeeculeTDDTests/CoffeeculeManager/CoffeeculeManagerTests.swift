@@ -61,6 +61,12 @@ final class UserManagerTests: XCTestCase {
         XCTFail("createCoffeecule did not throw any errors")
     }
     
+    func test_fetchCoffeecules_populatesManagerFromDatabase() async throws {
+        let sut = await makeSUT()
+        try await sut.fetchCoffeecules()
+        XCTAssertEqual(sut.coffeecules.count, 2)
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true, databaseActionSuccess: Bool = true) async -> UserManager {
