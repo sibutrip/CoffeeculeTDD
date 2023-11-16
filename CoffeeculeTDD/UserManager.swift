@@ -19,7 +19,7 @@ class UserManager<CKService: CKServiceProtocol> {
     @Published var displayedError: Error?
     
     enum UserManagerError: Error {
-        case noCKServiceAvailable
+        case noCKServiceAvailable, failedToConnectToDatabase
     }
     
     func createCoffeecule() async throws {
@@ -29,7 +29,11 @@ class UserManager<CKService: CKServiceProtocol> {
         }
         let coffeecule = Coffeecule()
         let relationship = Relationship(with: user, in: coffeecule)
-        try await ckService.save(relationship, withParent: user)
+        do {
+            try await ckService.save(relationship, withParent: user)
+        } catch {
+            throw UserManagerError.failedToConnectToDatabase
+        }
         self.coffeecules.append(coffeecule)
     }
     
