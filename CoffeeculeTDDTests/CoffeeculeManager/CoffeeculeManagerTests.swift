@@ -6,21 +6,37 @@
 //
 
 import XCTest
+import CloudKit
 @testable import CoffeeculeTDD
 
+@MainActor
 final class UserManagerTests: XCTestCase {
-    func test_init_assignsUserToUserManager() {
-        let sut = UserManager(with: MockDataContainer(with: MockDatabase(), accountStatus: .available))
-        wait {
-            XCTAssertNotNil(sut.user)
-        }
+    typealias UserManager = CoffeeculeTDD.UserManager<MockCKService>
+    func test_init_assignsUserToUserManager() async {
+        let sut = await makeSUT(didAuthenticate: true)
+        let user = await sut.user
+        XCTAssertNotNil(user)
     }
     
-    func test_init_failsIfUserDoesNotHaveAccount() {
-        let sut = UserManager(with: MockDataContainer(with: MockDatabase(), accountStatus: .noAccount))
-        wait {
-            XCTAssertNotNil(sut.displayedError)
-        }
+    func test_init_failsIfUserDoesNotHaveAccount() async {
+        let sut = await makeSUT(didAuthenticate: false)
+        let user = await sut.user
+        XCTAssertNil(user)
+    }
+    
+    func test_createCoffeecule_addsCoffeeculeToManagerIfSuccessful() async {
+        let sut = await makeSUT(databaseActionSuccess: true)
+        let coffeecules = sut.coffeecules
+        XCTAssertEqual(1, coffeecules.count)
+    }
+    
+    // MARK: - Helper methods
+    
+    private func makeSUT(didAuthenticate: Bool = true, databaseActionSuccess: Bool = true) async -> UserManager {
+        let mockCkService = await MockCKService(didAuthenticate: didAuthenticate, databaseActionSuccess: databaseActionSuccess)
+        let userManager = UserManager()
+        userManager.ckService = mockCkService
+        return userManager
     }
 }
 

@@ -7,26 +7,14 @@
 
 import CloudKit
 
-actor CloudKitService<Container: DataContainer> {
+actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
     private let container: Container
-    private var coffeeculeID: String = ""
-    private var userID: CKRecord.ID? // userRecordID I think
-    public var user: User? {
-        guard let userID else { return nil }
-        let user = User(systemUserID: userID.recordName)
-        let userCkRecord = user.ckRecord
-        guard let user = User(from: userCkRecord) else { return nil }
-        return user
-    }
+    var userID: CKRecord.ID? // userRecordID I think
     
     lazy var database: Database = container.public
     
-    private func assignCoffeeculeIdAndUserId() async throws {
-        self.userID = try await container.userRecordID()
-        let coffeecules: [Coffeecule] = try await fetch()
-        if let coffecule = coffeecules.first {
-            coffeeculeID = coffecule.coffeeculeIdentifier
-        }
+    enum CloudKitError: Error {
+        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord, childRecordsNotFound, userNotFound
     }
     
     func updatedRecord<SomeRecord: Record>(for record: SomeRecord) async throws -> SomeRecord {
@@ -45,7 +33,7 @@ actor CloudKitService<Container: DataContainer> {
         switch try await container.accountStatus() {
         case .available:
             do {
-                try await assignCoffeeculeIdAndUserId()
+                self.userID = try await container.userRecordID()
             } catch {
                 throw AuthenticationError.iCloudDriveDisabled
             }
@@ -60,10 +48,6 @@ actor CloudKitService<Container: DataContainer> {
         @unknown default:
             throw AuthenticationError.couldNotDetermineAccountStatus
         }
-    }
-    
-    enum CloudKitError: Error {
-        case invalidRequest, unexpectedResultFromServer, recordAlreadyExists, recordDoesNotExist, couldNotCreateModelFromCkRecord, childRecordsNotFound, userNotFound
     }
     
     func save<SomeRecord: Record>(record: SomeRecord) async throws -> SomeRecord{

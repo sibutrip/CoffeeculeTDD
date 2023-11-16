@@ -28,4 +28,10 @@ class MockDataContainer: DataContainer {
         self.public = database
         self.userRecordID = .init(recordName: UUID().uuidString)
     }
+    
+    required init() {
+        self.public = MockDatabase()
+        self.userAccountStatus = .available
+        self.userRecordID = .init(recordName: UUID().uuidString)
+    }
 }

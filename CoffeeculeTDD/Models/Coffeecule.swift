@@ -7,29 +7,27 @@
 
 import CloudKit
 
-struct Coffeecule: Record {
+struct Coffeecule: ChildRecord {
+    
     var creationDate: Date?
     
     static let recordType = "Coffeecule"
     
     enum RecordKeys: String, CaseIterable {
-        case coffeeculeIdentifier
+        case none
     }
     
     var id: String
-    var coffeeculeIdentifier: String
     
-    init?(from record: CKRecord) {
-        guard let coffeeculeIdentifier = record["coffeeculeIdentifier"] as? String else {
-            return nil
-        }
+    var parent: User?
+    
+    init?(from record: CKRecord, with parent: User? = nil) {
         self.creationDate = record.creationDate
         self.id = record.recordID.recordName
-        self.coffeeculeIdentifier = coffeeculeIdentifier
+        self.parent = parent
     }
     
-    init(coffeeculeIdentifier: String) {
-        self.coffeeculeIdentifier = coffeeculeIdentifier
+    init() {
         self.id = UUID().uuidString
     }
 }

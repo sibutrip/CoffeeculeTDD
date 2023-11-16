@@ -6,64 +6,40 @@
 //
 
 import SwiftUI
-import CloudKit
 
-struct User: Record {
-    static let recordType = "CoffeeculeUser"
+@MainActor
+class UserManager<CKService: CKServiceProtocol> {
     
-    enum RecordKeys: String, CaseIterable {
-        case systemUserID, name
+    var ckService: CKService?
+    var user: User? {
+        get async { await ckService!.user }
     }
-    
-    var id: String
-    var name: String
-    var systemUserID: String
-    var creationDate: Date?
-    
-    init?(from record: CKRecord) {
-        guard let name = record["name"] as? String,
-        let systemUserID = record["systemUserID"] as? String else {
-            return nil
-        }
-        self.creationDate = record.creationDate
-        self.id = record.recordID.recordName
-        self.name = name
-        self.systemUserID = systemUserID
-    }
-    
-    init(systemUserID: String) {
-        self.name = "TEST"
-        self.id = UUID().uuidString
-        self.systemUserID = systemUserID
-    }
-    
-    init(name: String) {
-        self.name = name
-        self.id = UUID().uuidString
-        systemUserID = ""
-    }
-}
-
-class UserManager<Container: DataContainer> {
-    private var cloudKitService: CloudKitService<Container>?
-    var user: User?
-    @Published var isLoading: Bool
+    var coffeecules: [Coffeecule] = []
+    @Published var isLoading: Bool = true
     @Published var displayedError: Error?
+    
     
     enum UserManagerError: Error {
         case failedToFindUser
     }
     
-    init(with container: Container) {
-        isLoading = true
-        Task {
-            do {
-                self.cloudKitService = try await CloudKitService(with: container)
-                self.user = await cloudKitService?.user
-            } catch {
-                displayedError = error
-            }
-            isLoading = false
+    func createCoffeecule() async throws {
+        if let user = await user,
+           let ckService {
+            let coffeecule = Coffeecule()
+            let relationship = Relationship(with: user, in: coffeecule)
+            try await ckService.save(relationship, withParent: user)
+            self.coffeecules.append(coffeecule)
         }
     }
+    
+    func fetchCoffeecules() async throws {
+        if let user = await user,
+           let ckService {
+            let relationships: [Relationship] = try await ckService.children(of: user)
+            self.coffeecules = relationships.compactMap { $0.secondParent }
+        }
+    }
+    
+    init() { }
 }

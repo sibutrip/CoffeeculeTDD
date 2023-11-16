@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct Relationship<Parent: Record>: ChildRecord {
+struct Relationship: TwoChildRecord {
     var creationDate: Date?
     
     static var recordType: String { "Coffeecule" }
@@ -16,13 +16,26 @@ struct Relationship<Parent: Record>: ChildRecord {
         case id
     }
     
-    var parent: Parent?
+    var parent: User?
+    var secondParent: Coffeecule?
     
     var id: String
     
-    init?(from record: CKRecord, with parent: Parent? = nil) {
+    init(with user: User, in coffeecule: Coffeecule) {
+        self.id = UUID().uuidString
+        self.parent = user
+        self.secondParent = coffeecule
+    }
+    
+    init?(from record: CKRecord, with coffeecule: Coffeecule? = nil) {
         self.creationDate = record.creationDate
         self.id = record.recordID.recordName
-        self.parent = parent
+        self.secondParent = coffeecule
+    }
+    
+    init?(from record: CKRecord, with user: User? = nil) {
+        self.creationDate = record.creationDate
+        self.id = record.recordID.recordName
+        self.parent = user
     }
 }

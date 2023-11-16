@@ -12,3 +12,4 @@ protocol DataContainer {
     func accountStatus() async throws -> CKAccountStatus
     var `public`: Database { get }
 }
+
