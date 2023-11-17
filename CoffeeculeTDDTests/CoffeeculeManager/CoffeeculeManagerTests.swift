@@ -67,6 +67,20 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.coffeecules.count, 2)
     }
     
+    func test_fetchCoffeecules_failsIfCantConnectToDatabase() async throws {
+        let sut = await makeSUT(didAuthenticate: true, databaseActionSuccess: false)
+        do {
+            try await sut.fetchCoffeecules()
+        } catch UserManager.UserManagerError.failedToConnectToDatabase {
+            XCTAssertEqual(sut.coffeecules, [])
+            return
+        } catch {
+            XCTFail("createCoffeecule did not throw UserManagerError.failedToConnectToDatabase")
+            return
+        }
+        XCTFail("createCoffeecule did not throw any errors")
+    }
+    
 //    func test_fetchCoffeecules_throwsIfCKServiceNotAvailable() async throws {
 //        let sut = await makeSUT()
 //        do {

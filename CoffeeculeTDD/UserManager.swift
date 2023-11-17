@@ -43,7 +43,6 @@ class UserManager<CKService: CKServiceProtocol> {
             throw UserManagerError.noCKServiceAvailable
         }
         do {
-
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: user, secondParent: nil)
         self.coffeecules = relationships.compactMap { $0.secondParent }
         } catch {
