@@ -28,13 +28,13 @@ class UserManager<CKService: CKServiceProtocol> {
             throw UserManagerError.noCKServiceAvailable
         }
         let coffeecule = Coffeecule()
-        let relationship = Relationship(with: user, in: coffeecule)
+        let relationship = Relationship(user: user, coffecule: coffeecule)
         do {
-            try await ckService.save(relationship, withParent: user)
+            _ = try await ckService.saveWithTwoParents(relationship)
+            self.coffeecules.append(coffeecule)
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
-        self.coffeecules.append(coffeecule)
     }
     
     func fetchCoffeecules() async throws {
@@ -42,8 +42,13 @@ class UserManager<CKService: CKServiceProtocol> {
               let ckService else {
             throw UserManagerError.noCKServiceAvailable
         }
-        let relationships: [Relationship] = try await ckService.children(of: user)
+        do {
+
+            let relationships: [Relationship] = try await ckService.twoParentChildren(of: user, secondParent: nil)
         self.coffeecules = relationships.compactMap { $0.secondParent }
+        } catch {
+            throw UserManagerError.failedToConnectToDatabase
+        }
     }
     
     init() { }

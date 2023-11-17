@@ -30,7 +30,7 @@ struct MockChildRecord: ChildRecord {
         self.parent = parent
     }
     
-    init?(from record: CKRecord, with parent: MockRecord? = nil) {
+    init?(from record: CKRecord, with parent: MockRecord) {
         guard let testField = record[RecordKeys.testField.rawValue] as? String else {
             return nil
         }

@@ -7,7 +7,11 @@
 
 import CloudKit
 
-struct Coffeecule: ChildRecord {
+struct Coffeecule: Record {
+    init?(from record: CKRecord) {
+        self.creationDate = record.creationDate
+        self.id = record.recordID.recordName
+    }
     
     var creationDate: Date?
     
@@ -19,15 +23,8 @@ struct Coffeecule: ChildRecord {
     
     var id: String
     
-    var parent: User?
-    
-    init?(from record: CKRecord, with parent: User? = nil) {
-        self.creationDate = record.creationDate
-        self.id = record.recordID.recordName
-        self.parent = parent
-    }
-    
     init() {
         self.id = UUID().uuidString
     }
+
 }

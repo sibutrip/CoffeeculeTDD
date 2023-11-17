@@ -10,6 +10,7 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 actor MockCKService: CKServiceProtocol {
+    
     typealias Container = MockDataContainer
     var userID: CKRecord.ID?
     var databaseActionSuccess: Bool
@@ -52,7 +53,17 @@ actor MockCKService: CKServiceProtocol {
     
     func children<Child, Parent>(of parent: Parent) async throws -> [Child] where Child : CoffeeculeTDD.ChildRecord, Parent : CoffeeculeTDD.Record, Parent == Child.Parent {
         if databaseActionSuccess {
-            return [Coffeecule(), Coffeecule()]
+            let child1 = Child(from: parent.ckRecord, with: parent)!
+            let child2 = Child(from: parent.ckRecord, with: parent)!
+            return [child1, child2]
+        } else {
+            throw CloudKitError.couldNotSaveToDatabase
+        }
+    }
+    
+    func saveWithTwoParents<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(_ record: Child) async throws where Child.Parent == FirstParent, Child.SecondParent == SecondParent {
+        if databaseActionSuccess {
+            return
         } else {
             throw CloudKitError.couldNotSaveToDatabase
         }
@@ -65,10 +76,21 @@ actor MockCKService: CKServiceProtocol {
             throw CloudKitError.couldNotSaveToDatabase
         }
     }
-    
-    func save<Child, Parent>(_ record: Child, withParent parent: Parent) async throws where Child : CoffeeculeTDD.ChildRecord, Parent : CoffeeculeTDD.Record, Parent == Child.Parent, Child.RecordKeys.AllCases == [Child.RecordKeys] {
+    func saveWithOneParent<Child, Parent>(_ record: Child) async throws where Child : CoffeeculeTDD.ChildRecord, Parent : CoffeeculeTDD.Record, Parent == Child.Parent, Child.RecordKeys.AllCases == [Child.RecordKeys] {
         if databaseActionSuccess {
             return
+        } else {
+            throw CloudKitError.couldNotSaveToDatabase
+        }
+    }
+    
+    func twoParentChildren<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent {
+        if databaseActionSuccess {
+            let relationships = [
+                Relationship(user: .init(systemUserID: "ID"), coffecule: .init()),
+                Relationship(user: .init(systemUserID: "ID"), coffecule: .init())
+                ]
+            return relationships as! [Child]
         } else {
             throw CloudKitError.couldNotSaveToDatabase
         }

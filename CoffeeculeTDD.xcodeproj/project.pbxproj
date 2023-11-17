@@ -20,6 +20,9 @@
 		74495C0E2B02D45800C1C7F7 /* MockDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */; };
 		74495C102B02D47A00C1C7F7 /* MockChildRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */; };
 		747BFA002B041DFB00296BCC /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747BF9FF2B041DFB00296BCC /* Relationship.swift */; };
+		74A6DFFE2B07C6560076042D /* SecondMockRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */; };
+		74A6E0002B07C66A0076042D /* MockRecordWithTwoParents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */; };
+		74A6E0022B07E33C0076042D /* MockRecordWithThreeParents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */; };
 		74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */; };
 		74D8DAF22B002DD6005811AD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF12B002DD6005811AD /* Record.swift */; };
 		74D8DAF42B003212005811AD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF32B003212005811AD /* User.swift */; };
@@ -55,6 +58,9 @@
 		74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataContainer.swift; sourceTree = "<group>"; };
 		74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChildRecord.swift; sourceTree = "<group>"; };
 		747BF9FF2B041DFB00296BCC /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
+		74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondMockRecord.swift; sourceTree = "<group>"; };
+		74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithTwoParents.swift; sourceTree = "<group>"; };
+		74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithThreeParents.swift; sourceTree = "<group>"; };
 		74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitServiceTests.swift; sourceTree = "<group>"; };
 		74D8DAF12B002DD6005811AD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
@@ -154,7 +160,10 @@
 				74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */,
 				74495C0B2B02D42400C1C7F7 /* MockDatabase.swift */,
 				74495C092B02D40700C1C7F7 /* MockRecord.swift */,
+				74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */,
 				74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */,
+				74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */,
+				74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */,
 			);
 			path = CloudKitService;
 			sourceTree = "<group>";
@@ -296,12 +305,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74A6E0002B07C66A0076042D /* MockRecordWithTwoParents.swift in Sources */,
 				74DF62E42B051C38001D82D7 /* CoffeeculeManagerTests.swift in Sources */,
+				74A6E0022B07E33C0076042D /* MockRecordWithThreeParents.swift in Sources */,
 				74495C0A2B02D40700C1C7F7 /* MockRecord.swift in Sources */,
 				74DF62EA2B065925001D82D7 /* MockCKService.swift in Sources */,
 				74495C0E2B02D45800C1C7F7 /* MockDataContainer.swift in Sources */,
 				74495C0C2B02D42400C1C7F7 /* MockDatabase.swift in Sources */,
 				74495C102B02D47A00C1C7F7 /* MockChildRecord.swift in Sources */,
+				74A6DFFE2B07C6560076042D /* SecondMockRecord.swift in Sources */,
 				74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

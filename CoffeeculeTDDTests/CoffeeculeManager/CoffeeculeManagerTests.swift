@@ -14,24 +14,24 @@ final class UserManagerTests: XCTestCase {
     
     typealias UserManager = CoffeeculeTDD.UserManager<MockCKService>
     
-        func test_init_assignsUserToUserManager() async {
-            let sut = await makeSUT(didAuthenticate: true)
-            let user = await sut.user
-            XCTAssertNotNil(user)
-        }
+    func test_init_assignsUserToUserManager() async {
+        let sut = await makeSUT(didAuthenticate: true)
+        let user = await sut.user
+        XCTAssertNotNil(user)
+    }
     
-        func test_init_failsIfUserDoesNotHaveAccount() async {
-            let sut = await makeSUT(didAuthenticate: false)
-            let user = await sut.user
-            XCTAssertNil(user)
-        }
+    func test_init_failsIfUserDoesNotHaveAccount() async {
+        let sut = await makeSUT(didAuthenticate: false)
+        let user = await sut.user
+        XCTAssertNil(user)
+    }
     
-        func test_createCoffeecule_addsCoffeeculeToManagerIfSuccessful() async throws {
-            let sut = await makeSUT(databaseActionSuccess: true)
-            try await sut.createCoffeecule()
-            let coffeecules = sut.coffeecules
-            XCTAssertEqual(1, coffeecules.count)
-        }
+    func test_createCoffeecule_addsCoffeeculeToManagerIfSuccessful() async throws {
+        let sut = await makeSUT(databaseActionSuccess: true)
+        try await sut.createCoffeecule()
+        let coffeecules = sut.coffeecules
+        XCTAssertEqual(1, coffeecules.count)
+    }
     
     func test_createCoffeecule_failsIfDidNotConnectToDatabase() async throws {
         let sut = await makeSUT(databaseActionSuccess: false)
@@ -47,12 +47,12 @@ final class UserManagerTests: XCTestCase {
         XCTFail("createCoffeecule did not throw any errors")
     }
     
-    func test_createCoffeecule_failsIfNoCkServiceAvailable() async throws {
+    func test_createCoffeecule_throwsIfNoCkServiceAvailable() async throws {
         let sut = await makeSUT(didAuthenticate: false, databaseActionSuccess: false)
         do {
             try await sut.createCoffeecule()
         } catch UserManager.UserManagerError.noCKServiceAvailable {
-            XCTAssert(true)
+            XCTAssertEqual(sut.coffeecules, [])
             return
         } catch {
             XCTFail("createCoffeecule did not throw UserManagerError.noCKServiceAvailable")
@@ -66,6 +66,20 @@ final class UserManagerTests: XCTestCase {
         try await sut.fetchCoffeecules()
         XCTAssertEqual(sut.coffeecules.count, 2)
     }
+    
+//    func test_fetchCoffeecules_throwsIfCKServiceNotAvailable() async throws {
+//        let sut = await makeSUT()
+//        do {
+//            try await sut.fetchCoffeecules()
+//        } catch UserManager.UserManagerError.noCKServiceAvailable {
+//            XCTAssertEqual(sut.coffeecules, [])
+//            return
+//        } catch {
+//            XCTFail("createCoffeecule did not throw UserManagerError.noCKServiceAvailable")
+//            return
+//        }
+//        XCTAssertEqual(sut.coffeecules.count, 2)
+//    }
     
     // MARK: - Helper methods
     
