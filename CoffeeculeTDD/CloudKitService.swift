@@ -119,8 +119,12 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let childCkRecord = record.ckRecord
         childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
         childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
-        let _ = try await database.save(firstParent.ckRecord)
-        let _ = try await database.save(secondParent.ckRecord)
+        if (try? await database.save(firstParent.ckRecord)) == nil {
+            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
+        }
+        if (try? await database.save(secondParent.ckRecord)) == nil {
+            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
+        }
         let _ = try await database.save(childCkRecord)
     }
     

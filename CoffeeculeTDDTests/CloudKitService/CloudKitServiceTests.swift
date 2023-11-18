@@ -222,6 +222,20 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual(fetchedRecord.recordID, recordWithTwoParents.recordID)
     }
     
+    func test_twoParentChildren_throwsIfBothArgumentsAreEmpty() async throws {
+        let sut = try await makeSUT()
+        do {
+            let _ : MockRecordWithTwoParents = try await sut.twoParentChildren(of: nil, secondParent: nil).first!
+        } catch CloudKitService.CloudKitError.missingParentRecord {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("did not throw CloudKitError.missingParentRecord")
+            return
+        }
+        XCTFail("did not throw an error")
+    }
+    
     // MARK: - Helper Methods
     
     private func makeSUT(with ckRecords: [CKRecord] = [],
