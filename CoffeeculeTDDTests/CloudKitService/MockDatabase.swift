@@ -10,7 +10,7 @@ import CloudKit
 
 actor MockDatabase: Database {
     
-    private var records: [CKRecord] = [] 
+    private var records: [CKRecord] = []
     
     func save(_ record: CKRecord) async throws -> CKRecord {
         if records.contains(where: {$0.recordID == record.recordID }) {
@@ -21,7 +21,16 @@ actor MockDatabase: Database {
     }
     
     func records(matching query: CKQuery, inZoneWith zoneID: CKRecordZone.ID? = nil, desiredKeys: [CKRecord.FieldKey]? = nil, resultsLimit: Int = CKQueryOperation.maximumResults) async throws -> (matchResults: [(CKRecord.ID, Result<CKRecord, Error>)], queryCursor: CKQueryOperation.Cursor?) {
-        let results = records.map { record in
+        let predicate = query.predicate
+        let fieldToMatch = predicate.predicateFormat.components(separatedBy: " == ").first ?? ""
+        let results: [(CKRecord.ID, Result<CKRecord, any Error>)] = records.compactMap { record in
+            if !fieldToMatch.isEmpty && fieldToMatch != "TRUEPREDICATE" {
+                guard let _ = record[fieldToMatch] as? CKRecord.Reference else {
+                    return nil
+                }
+                let result: Result<CKRecord, any Error> = .success(record)
+                return (record.recordID, result)
+            }
             let result: Result<CKRecord, any Error> = .success(record)
             return (record.recordID, result)
         }

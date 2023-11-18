@@ -119,6 +119,8 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let childCkRecord = record.ckRecord
         childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
         childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
+        let _ = try await database.save(firstParent.ckRecord)
+        let _ = try await database.save(secondParent.ckRecord)
         let _ = try await database.save(childCkRecord)
     }
     
@@ -136,6 +138,9 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
 //    }
     
     func twoParentChildren<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent {
+        if parent?.ckRecord == secondParent?.ckRecord && parent?.ckRecord == nil {
+            throw CloudKitError.missingParentRecord
+        }
         
         var predicate: NSPredicate?
         if let parent {
@@ -158,13 +163,50 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
             throw CloudKitError.childRecordsNotFound
         }
         
-        return unwrappedRecords.compactMap { record in
-            guard let firstParent = record[FirstParent.recordType] as? FirstParent,
-                  let secondParent = record[SecondParent.recordType] as? SecondParent else {
-                return nil
+        let childRecords = try await withThrowingTaskGroup(of: Child?.self, returning: [Child].self) { group in
+            for record in unwrappedRecords {
+                group.addTask {
+                    var fetchedParentCkRecord: CKRecord?
+                    var fetchedSecondParentCkRecord: CKRecord?
+                    if parent == nil {
+                        if let parentReference = record[FirstParent.recordType] as? CKRecord.Reference {
+                            fetchedParentCkRecord = try await self.database.record(for: parentReference.recordID)
+                        }
+                    } else {
+                        if let secondParentReference = record[SecondParent.recordType] as? CKRecord.Reference {
+                            fetchedSecondParentCkRecord = try await self.database.record(for: secondParentReference.recordID)
+                        }
+                    }
+                    guard let parentCkRecord = fetchedParentCkRecord ?? (parent?.ckRecord ?? secondParent?.ckRecord),
+                          let secondParentCkRecord = fetchedSecondParentCkRecord ?? (secondParent?.ckRecord ?? parent?.ckRecord) else {
+                        throw CloudKitError.missingParentRecord
+                    }
+                    guard let parentRecord = FirstParent(from: parentCkRecord),
+                          let secondParentRecord = SecondParent(from: secondParentCkRecord) else {
+                        throw CloudKitError.couldNotCreateModelFromCkRecord
+                    }
+                    return Child(from: record, firstParent: parentRecord, secondParent: secondParentRecord)
+                }
+                
+                var childRecords = [Child]()
+                while let child = try await group.next() {
+                    if let child {
+                        childRecords.append(child)
+                    }
+                }
+                return childRecords
+                
             }
-            return Child(from: record, firstParent: firstParent, secondParent: secondParent)
+            
+            return unwrappedRecords.compactMap { record in
+                guard let firstParent = record[FirstParent.recordType] as? FirstParent,
+                      let secondParent = record[SecondParent.recordType] as? SecondParent else {
+                    return nil
+                }
+                return Child(from: record, firstParent: firstParent, secondParent: secondParent)
+            }
         }
+        return childRecords
     }
     
     init(with container: Container) async throws {

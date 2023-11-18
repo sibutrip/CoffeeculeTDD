@@ -10,7 +10,7 @@ import CloudKit
 
 struct MockRecordWithTwoParents: ChildWithTwoParents {
     init?(from record: CKRecord, firstParent: MockRecord, secondParent: SecondMockRecord) {
-        self.id = UUID().uuidString
+        self.id = record.recordID.recordName
         self.parent = firstParent
         self.secondParent = secondParent
         self.parent = firstParent

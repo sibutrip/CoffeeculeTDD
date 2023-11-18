@@ -212,6 +212,16 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("failed to throw error")
     }
     
+    func test_twoParentChildren_returnsChildrenIfSuccessful() async throws {
+        let firstParent = MockRecord()
+        let secondParent = SecondMockRecord()
+        let recordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
+        let sut = try await makeSUT()
+        try await sut.saveWithTwoParents(recordWithTwoParents)
+        let fetchedRecord: MockRecordWithTwoParents = try await sut.twoParentChildren(of: firstParent, secondParent: nil).first!
+        XCTAssertEqual(fetchedRecord.recordID, recordWithTwoParents.recordID)
+    }
+    
     // MARK: - Helper Methods
     
     private func makeSUT(with ckRecords: [CKRecord] = [],
