@@ -51,7 +51,7 @@ final class UserManagerTests: XCTestCase {
         let sut = await makeSUT(didAuthenticate: false, databaseActionSuccess: false)
         do {
             try await sut.createCoffeecule()
-        } catch UserManager.UserManagerError.noCKServiceAvailable {
+        } catch UserManager.UserManagerError.noCkServiceAvailable {
             XCTAssertEqual(sut.coffeecules, [])
             return
         } catch {
@@ -82,17 +82,17 @@ final class UserManagerTests: XCTestCase {
     }
     
     func test_fetchCoffeecules_throwsIfCKServiceNotAvailable() async throws {
-        let sut = await makeSUT()
+        let sut = await makeSUT(didAuthenticate: false)
         do {
             try await sut.fetchCoffeecules()
-        } catch UserManager.UserManagerError.noCKServiceAvailable {
+        } catch UserManager.UserManagerError.noCkServiceAvailable {
             XCTAssertEqual(sut.coffeecules, [])
             return
         } catch {
             XCTFail("createCoffeecule did not throw UserManagerError.noCKServiceAvailable")
             return
         }
-        XCTAssertEqual(sut.coffeecules.count, 2)
+        XCTFail("fetchCoffeecules did not throw any errors")
     }
     
     func test_fetchUsersInCoffeecule_addsUsersToManagerIfSuccessful() async throws {
@@ -114,6 +114,21 @@ final class UserManagerTests: XCTestCase {
             return
         }
         XCTAssertEqual(sut.usersInSelectedCoffeecule, [])
+    }
+    
+    func test_fetchUsersInCoffeecule_throwsIfFailedToConnectToDatabase() async {
+        let sut = await makeSUT(databaseActionSuccess: false)
+        sut.selectedCoffeecule = Coffeecule()
+        do {
+            try await sut.fetchUsersInCoffeecule()
+        } catch UserManager.UserManagerError.failedToConnectToDatabase {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("fetchUsersInCoffeecule did not throw UserManagerError.failedToConnectToDatabase")
+            return
+        }
+        XCTFail("fetchUsersInCoffeecule did not throw any errors")
     }
     
     // MARK: - Helper methods

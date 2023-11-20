@@ -12,7 +12,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
     
     var ckService: CKService?
     var user: User? {
-        get async { await ckService!.user }
+        get async { await ckService?.user }
     }
     var coffeecules: [Coffeecule] = []
     @Published var selectedCoffeecule: Coffeecule?
@@ -24,13 +24,13 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
     
     
     enum UserManagerError: Error {
-        case noCKServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected
+        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected
     }
     
     func createCoffeecule() async throws {
         guard let user = await user,
               let ckService else {
-            throw UserManagerError.noCKServiceAvailable
+            throw UserManagerError.noCkServiceAvailable
         }
         let coffeecule = Coffeecule()
         let relationship = Relationship(user: user, coffecule: coffeecule)
@@ -45,7 +45,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
     func fetchCoffeecules() async throws {
         guard let user = await user,
               let ckService else {
-            throw UserManagerError.noCKServiceAvailable
+            throw UserManagerError.noCkServiceAvailable
         }
         do {
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: user, secondParent: nil)
@@ -60,7 +60,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
             throw UserManagerError.noCoffeeculeSelected
         }
         guard let ckService else {
-            throw UserManagerError.noCKServiceAvailable
+            throw UserManagerError.noCkServiceAvailable
         }
         do {
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: nil, secondParent: selectedCoffeecule)
