@@ -102,6 +102,20 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 2)
     }
     
+    func test_fetchUsersInCoffeecule_throwsNoCoffeeculeSelectedIfNoneSelected() async {
+        let sut = await makeSUT()
+        do {
+            try await sut.fetchUsersInCoffeecule()
+        } catch UserManager.UserManagerError.noCoffeeculeSelected {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("fetchUsersInCoffeecule did not throw UserManagerError.noCoffeeculeSelected")
+            return
+        }
+        XCTAssertEqual(sut.usersInSelectedCoffeecule, [])
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true, databaseActionSuccess: Bool = true) async -> UserManager {
