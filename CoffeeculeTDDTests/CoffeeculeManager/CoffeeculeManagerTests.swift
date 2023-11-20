@@ -95,6 +95,13 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.coffeecules.count, 2)
     }
     
+    func test_fetchUsersInCoffeecule_addsUsersToManagerIfSuccessful() async throws {
+        let sut = await makeSUT()
+        sut.selectedCoffeecule = Coffeecule()
+        try await sut.fetchUsersInCoffeecule()
+        XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 2)
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true, databaseActionSuccess: Bool = true) async -> UserManager {

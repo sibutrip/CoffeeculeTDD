@@ -15,11 +15,16 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         get async { await ckService!.user }
     }
     var coffeecules: [Coffeecule] = []
+    @Published var selectedCoffeecule: Coffeecule?
+    
+    @Published var usersInSelectedCoffeecule: [User] = []
+    
     @Published var isLoading: Bool = true
     @Published var displayedError: Error?
     
+    
     enum UserManagerError: Error {
-        case noCKServiceAvailable, failedToConnectToDatabase
+        case noCKServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected
     }
     
     func createCoffeecule() async throws {
@@ -44,11 +49,25 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         }
         do {
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: user, secondParent: nil)
-        self.coffeecules = relationships.compactMap { $0.secondParent }
+            self.coffeecules = relationships.compactMap { $0.secondParent }
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
     }
+    
+    func fetchUsersInCoffeecule() async throws {
+        guard let selectedCoffeecule else {
+            throw UserManagerError.noCoffeeculeSelected
+        }
+        guard let ckService else {
+            throw UserManagerError.noCKServiceAvailable
+        }
+        do {
+            let relationships: [Relationship] = try await ckService.twoParentChildren(of: nil, secondParent: selectedCoffeecule)
+            self.usersInSelectedCoffeecule = relationships.compactMap { $0.parent }
+        } catch {
+            throw UserManagerError.failedToConnectToDatabase
+        }    }
     
     init() { }
 }
