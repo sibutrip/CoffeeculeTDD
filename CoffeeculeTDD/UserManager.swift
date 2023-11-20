@@ -67,7 +67,8 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
             self.usersInSelectedCoffeecule = relationships.compactMap { $0.parent }
         } catch {
             throw UserManagerError.failedToConnectToDatabase
-        }    }
+        }
+    }
     
     init() { }
 }
