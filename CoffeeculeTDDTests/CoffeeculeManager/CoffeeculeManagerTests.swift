@@ -12,7 +12,7 @@ import CloudKit
 @MainActor
 final class UserManagerTests: XCTestCase {
     
-    typealias UserManager = CoffeeculeTDD.UserManager<MockCKService>
+    typealias UserManager = CoffeeculeTDD.CoffeeculeManager<MockCKService>
     
     func test_init_assignsUserToUserManager() async {
         let sut = await makeSUT(didAuthenticate: true)
@@ -81,19 +81,19 @@ final class UserManagerTests: XCTestCase {
         XCTFail("createCoffeecule did not throw any errors")
     }
     
-//    func test_fetchCoffeecules_throwsIfCKServiceNotAvailable() async throws {
-//        let sut = await makeSUT()
-//        do {
-//            try await sut.fetchCoffeecules()
-//        } catch UserManager.UserManagerError.noCKServiceAvailable {
-//            XCTAssertEqual(sut.coffeecules, [])
-//            return
-//        } catch {
-//            XCTFail("createCoffeecule did not throw UserManagerError.noCKServiceAvailable")
-//            return
-//        }
-//        XCTAssertEqual(sut.coffeecules.count, 2)
-//    }
+    func test_fetchCoffeecules_throwsIfCKServiceNotAvailable() async throws {
+        let sut = await makeSUT()
+        do {
+            try await sut.fetchCoffeecules()
+        } catch UserManager.UserManagerError.noCKServiceAvailable {
+            XCTAssertEqual(sut.coffeecules, [])
+            return
+        } catch {
+            XCTFail("createCoffeecule did not throw UserManagerError.noCKServiceAvailable")
+            return
+        }
+        XCTAssertEqual(sut.coffeecules.count, 2)
+    }
     
     // MARK: - Helper methods
     

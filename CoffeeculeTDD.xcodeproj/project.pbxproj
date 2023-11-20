@@ -90,6 +90,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7402D2AA2B0BB19F00183682 /* MockRecords */ = {
+			isa = PBXGroup;
+			children = (
+				74495C092B02D40700C1C7F7 /* MockRecord.swift */,
+				74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */,
+				74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */,
+				74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */,
+				74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */,
+			);
+			path = MockRecords;
+			sourceTree = "<group>";
+		};
 		741EA0DA2B00144600E0AA09 = {
 			isa = PBXGroup;
 			children = (
@@ -159,11 +171,7 @@
 				74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */,
 				74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */,
 				74495C0B2B02D42400C1C7F7 /* MockDatabase.swift */,
-				74495C092B02D40700C1C7F7 /* MockRecord.swift */,
-				74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */,
-				74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */,
-				74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */,
-				74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */,
+				7402D2AA2B0BB19F00183682 /* MockRecords */,
 			);
 			path = CloudKitService;
 			sourceTree = "<group>";

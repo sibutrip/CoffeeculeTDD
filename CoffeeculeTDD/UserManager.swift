@@ -1,5 +1,5 @@
 //
-//  UserManager.swift
+//  CoffeeculeManager.swift
 //  CoffeeculeTDD
 //
 //  Created by Cory Tripathy on 11/15/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @MainActor
-class UserManager<CKService: CKServiceProtocol> {
+class CoffeeculeManager<CKService: CKServiceProtocol> {
     
     var ckService: CKService?
     var user: User? {
