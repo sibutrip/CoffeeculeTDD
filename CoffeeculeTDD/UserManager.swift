@@ -17,7 +17,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
     var coffeecules: [Coffeecule] = []
     @Published var selectedCoffeecule: Coffeecule?
     
-    @Published var usersInSelectedCoffeecule: [User] = []
+    @Published var usersInSelectedCoffeecule: [User] = [] 
     
     @Published var transactionsInSelectedCoffeecule: [Transaction] = []
     
@@ -26,44 +26,72 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
     /// [buyer: [receiver: debtAmount]]
     var userRelationships: [User: [User: Int]] = [:]
     
-    var buyerFromSelectedUsers: User?
-    var receiversFromSelectedUsers: [User] = []
+    private var selectedUserDebts: [User: Int] {
+        let userDebts: [User: Int] = Dictionary(
+            uniqueKeysWithValues: userRelationships.compactMap { (buyer, receiverRelationship) in
+                if selectedUsers.contains(where: {$0 == buyer }) {
+                    let debt = receiverRelationship.reduce(0) { partialResult, receiverDebt in
+                        if selectedUsers.contains(where: {$0 == receiverDebt.key }) {
+                            return partialResult + receiverDebt.value
+                        }
+                        return partialResult
+                    }
+                    return (buyer, debt)
+                }
+                return nil
+            }
+        )
+        return userDebts
+    }
     
+    var mostIndebttedFromSelectedUsers: User? {
+        let mostInDebtUser: (user: User?, debt: Int) = selectedUserDebts.reduce((User?.none, Int.min)) { partialResult, buyerDebts in
+            if partialResult.1 <= buyerDebts.1 {
+                return buyerDebts
+            }
+            return partialResult
+        }
+        return mostInDebtUser.user
+    }
+        
     @Published var isLoading: Bool = true
     @Published var displayedError: Error?
     
     
     enum UserManagerError: Error {
-        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noBuyerSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat
+        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected
     }
     
     func createUserRelationships() throws {
         guard !usersInSelectedCoffeecule.isEmpty else {
             throw UserManagerError.noUsersFound
         }
-        let userRelationships: [User: [User: Int]] = try transactionsInSelectedCoffeecule.reduce(into: [:]) { partialResult, transaction in
+        let emptyRelationships: [User: [User: Int]] = Dictionary(
+            uniqueKeysWithValues: usersInSelectedCoffeecule.map { buyer in
+                let receiverRelationships = Dictionary(
+                    uniqueKeysWithValues: usersInSelectedCoffeecule.compactMap { receiver in
+                        if receiver != buyer {
+                            return (receiver, 0)
+                        }
+                        return nil
+                    }
+                )
+                return (buyer, receiverRelationships)
+            }
+        )
+        let userRelationships: [User: [User: Int]] = try transactionsInSelectedCoffeecule.reduce(into: emptyRelationships) { partialResult, transaction in
             guard let buyer = transaction.secondParent,
                   let receiver = transaction.thirdParent else {
                 throw UserManagerError.invalidTransactionFormat
             }
             
-            // if buyer/receiver have no relationships, make a dict with the starting key: value pairs
-            guard let buyerRelationships = partialResult[buyer],
-            let receiverRelationships = partialResult[receiver] else {
-                partialResult[buyer] = [receiver: 1]
-                partialResult[receiver] = [buyer: -1]
-                return
-            }
-            
-            // if buyer/receiver have existing relationships, but not for this buyer-receiver combination, add this key: value pair to the nested dictionary
-            guard let buyerDebt = buyerRelationships[receiver],
-                  let receiverDebt = receiverRelationships[buyer] else {
+            guard let buyerDebt = partialResult[buyer]?[receiver],
+                  let receiverDebt = partialResult[receiver]?[buyer] else {
                 partialResult[buyer]?[receiver] = 1
                 partialResult[receiver]?[buyer] = -1
                 return
             }
             
-            // otherwise, increment the debt +/- 1
             partialResult[buyer]?[receiver] = buyerDebt + 1
             partialResult[receiver]?[buyer] = receiverDebt - 1
         }
@@ -113,8 +141,12 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         }
     }
     
-    func addTransaction() async throws {
-        guard let buyerFromSelectedUsers else {
+    func addTransaction(withBuyer buyer: User?) async throws {
+        guard !selectedUsers.isEmpty else {
+            throw UserManagerError.noReceiversSelected
+        }
+        
+        guard let buyer else {
             throw UserManagerError.noBuyerSelected
         }
 
@@ -126,12 +158,11 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
             throw UserManagerError.noCkServiceAvailable
         }
         
-        guard !receiversFromSelectedUsers.isEmpty else {
-            throw UserManagerError.noReceiversSelected
-        }
-        
-        let transactions = receiversFromSelectedUsers.map {
-            Transaction(buyer: buyerFromSelectedUsers, receiver: $0, in: selectedCoffeecule)
+        let transactions = selectedUsers.compactMap { receiver in
+            if buyer != receiver {
+                return Transaction(buyer: buyer, receiver: receiver, in: selectedCoffeecule)
+            }
+            return nil
         }
         let uploadedTransactions = await withThrowingTaskGroup(of: Transaction.self, returning: [Transaction].self) { group in
             for transaction in transactions {
