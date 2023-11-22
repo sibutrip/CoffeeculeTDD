@@ -134,8 +134,8 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_addsTransactionToManagerIfSuccessful() async throws {
         let sut = await makeSUT()
-        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
-        sut.selectedReceivers = [
+        sut.buyerFromSelectedUsers = User(systemUserID: UUID().uuidString)
+        sut.receiversFromSelectedUsers = [
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString)
@@ -147,7 +147,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_throwsIfNoBuyerSelected() async throws {
         let sut = await makeSUT()
-        sut.selectedReceivers = [
+        sut.receiversFromSelectedUsers = [
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString)
@@ -167,8 +167,8 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_throwsIfNoCoffeeculeSelected() async throws {
         let sut = await makeSUT()
-        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
-        sut.selectedReceivers = [
+        sut.buyerFromSelectedUsers = User(systemUserID: UUID().uuidString)
+        sut.receiversFromSelectedUsers = [
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString)
@@ -187,8 +187,8 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_throwsIfNoCkServiceAvailable() async throws {
         let sut = await makeSUT(didProvideCkService: false)
-        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
-        sut.selectedReceivers = [
+        sut.buyerFromSelectedUsers = User(systemUserID: UUID().uuidString)
+        sut.receiversFromSelectedUsers = [
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString)
@@ -207,7 +207,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_throwsIfNoReceiverSelected() async throws {
         let sut = await makeSUT()
-        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
+        sut.buyerFromSelectedUsers = User(systemUserID: UUID().uuidString)
         sut.selectedCoffeecule = Coffeecule()
         do {
             try await sut.addTransaction()
@@ -223,8 +223,8 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_throwsIfNoDatabaseAvailable() async throws {
         let sut = await makeSUT(databaseActionSuccess: false)
-        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
-        sut.selectedReceivers = [
+        sut.buyerFromSelectedUsers = User(systemUserID: UUID().uuidString)
+        sut.receiversFromSelectedUsers = [
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString),
             User(systemUserID: UUID().uuidString)
@@ -276,6 +276,35 @@ final class UserManagerTests: XCTestCase {
             return
         }
         XCTFail("addTransaction did not throw any errors")
+    }
+    
+    func test_createUserRelationships_populatesManagerIfSuccessful() async throws {
+        let sut = await makeSUT()
+        let firstUser = User(systemUserID: "firstUser")
+        let secondUser = User(systemUserID: "secondUser")
+        let thirdUser = User(systemUserID: "thirdUser")
+        let coffeecule = Coffeecule()
+        let transactions: [Transaction] = [
+            Transaction(buyer: firstUser, receiver: secondUser, in: coffeecule),
+            Transaction(buyer: firstUser, receiver: secondUser, in: coffeecule),
+            Transaction(buyer: secondUser, receiver: thirdUser, in: coffeecule),
+            Transaction(buyer: secondUser, receiver: firstUser, in: coffeecule),
+            Transaction(buyer: thirdUser, receiver: firstUser, in: coffeecule)
+        ]
+        sut.usersInSelectedCoffeecule = [firstUser, secondUser, thirdUser]
+        sut.transactionsInSelectedCoffeecule = transactions
+        try sut.createUserRelationships()
+        sut.userRelationships.forEach { buyer, value in
+            value.forEach { receiver, transaction in
+                print(buyer.systemUserID, receiver.systemUserID, transaction)
+            }
+        }
+        XCTAssertEqual(sut.userRelationships[thirdUser]?[firstUser], 1)
+        XCTAssertEqual(sut.userRelationships[thirdUser]?[secondUser], -1)
+        XCTAssertEqual(sut.userRelationships[secondUser]?[firstUser], 1)
+        XCTAssertEqual(sut.userRelationships[secondUser]?[thirdUser], 1)
+        XCTAssertEqual(sut.userRelationships[firstUser]?[thirdUser], -1)
+        XCTAssertEqual(sut.userRelationships[firstUser]?[secondUser], -1)
     }
     
     // MARK: - Helper methods

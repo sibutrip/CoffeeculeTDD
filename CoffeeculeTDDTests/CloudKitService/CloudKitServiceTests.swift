@@ -146,7 +146,6 @@ final class CloudKitServiceTests: XCTestCase {
         _ = try await sut.save(record: mockRecord)
         var updatedMockRecord = mockRecord
         updatedMockRecord.testField1 = UUID().uuidString
-        print(mockRecord.recordID == updatedMockRecord.recordID)
         let fetchedMockRecord = try await sut.updatedRecord(for: mockRecord)
         XCTAssertEqual(fetchedMockRecord, updatedMockRecord)
     }
