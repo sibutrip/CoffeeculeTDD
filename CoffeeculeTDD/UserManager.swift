@@ -95,10 +95,24 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         let transactions = selectedReceivers.map {
             Transaction(buyer: selectedBuyer, receiver: $0, in: selectedCoffeecule)
         }
-        for transaction in transactions {
-            async let _ = try await ckService.saveWithThreeParents(transaction)
+        let uploadedTransactions = await withThrowingTaskGroup(of: Transaction.self, returning: [Transaction].self) { group in
+            for transaction in transactions {
+                group.addTask {
+                    try await ckService.saveWithThreeParents(transaction)
+                    return transaction
+                }
+            }
+            var uploadedTransactions = [Transaction]()
+            while let nextTransaction = try? await group.next() {
+                uploadedTransactions.append(nextTransaction)
+            }
+            return uploadedTransactions
         }
-        self.transactionsInSelectedCoffeecule += transactions
+        self.transactionsInSelectedCoffeecule += uploadedTransactions
+
+        if uploadedTransactions.count != transactions.count {
+            throw UserManagerError.failedToConnectToDatabase
+        }
     }
     
     init() { }
