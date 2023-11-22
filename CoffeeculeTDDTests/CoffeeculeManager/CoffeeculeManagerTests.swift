@@ -205,6 +205,22 @@ final class UserManagerTests: XCTestCase {
         XCTFail("addTransaction did not throw any errors")
     }
     
+    func test_addTransaction_throwsIfNoReceiverSelected() async throws {
+        let sut = await makeSUT()
+        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
+        sut.selectedCoffeecule = Coffeecule()
+        do {
+            try await sut.addTransaction()
+        } catch UserManagerError.noReceiversSelected {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("addTransaction did not throw UserManagerError.noReceiversSelected")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true,
