@@ -115,5 +115,18 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         }
     }
     
+    func fetchTransactionsInCoffeecule() async throws {
+        guard let selectedCoffeecule else {
+            throw UserManagerError.noCoffeeculeSelected
+        }
+        
+        guard let ckService else {
+            throw UserManagerError.noCkServiceAvailable
+        }
+        
+        let transactions: [Transaction] = try await ckService.threeParentChildren(of: selectedCoffeecule, secondParent: nil, thirdParent: nil)
+        self.transactionsInSelectedCoffeecule = transactions
+    }
+    
     init() { }
 }

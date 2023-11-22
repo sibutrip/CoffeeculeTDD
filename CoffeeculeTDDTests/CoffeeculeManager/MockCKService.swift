@@ -109,13 +109,13 @@ actor MockCKService: CKServiceProtocol {
     
     func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil, thirdParent: ThirdParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent {
         if databaseActionSuccess {
-            let relationships = [
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init()),
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init()),
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init()),
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init())
+            let transactions = [
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule()),
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule()),
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule()),
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule())
                 ]
-            return relationships as! [Child]
+            return transactions as! [Child]
         } else {
             throw CloudKitError.couldNotSaveToDatabase
         }
