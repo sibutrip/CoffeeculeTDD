@@ -188,7 +188,7 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("failed to throw error")
     }
     
-    func test_saveTwoParentRecord_savesToTheDatabaseSuccessfully() async throws {
+    func test_saveWithTwoParents_savesToTheDatabaseSuccessfully() async throws {
         let sut = try await makeSUT()
         let firstParent = MockRecord()
         let secondParent = SecondMockRecord()
@@ -198,7 +198,7 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual(fetchedRecord.id, recordWithTwoParents.id)
     }
     
-    func test_saveTwoParentRecord_throwsIfRecordAlreadyExistsInDatabase() async throws {
+    func test_saveWithTwoParents_throwsIfRecordAlreadyExistsInDatabase() async throws {
         let firstParent = MockRecord()
         let secondParent = SecondMockRecord()
         let recordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
