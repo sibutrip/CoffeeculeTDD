@@ -165,6 +165,26 @@ final class UserManagerTests: XCTestCase {
         XCTFail("addTransaction did not throw any errors")
     }
     
+    func test_addTransaction_throwsIfNoCoffeeculeSelected() async throws {
+        let sut = await makeSUT()
+        sut.selectedBuyer = User(systemUserID: UUID().uuidString)
+        sut.selectedReceivers = [
+            User(systemUserID: UUID().uuidString),
+            User(systemUserID: UUID().uuidString),
+            User(systemUserID: UUID().uuidString)
+        ]
+        do {
+            try await sut.addTransaction()
+        } catch UserManagerError.noCoffeeculeSelected {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("addTransaction did not throw UserManagerError.noCoffeeculeSelected")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true, databaseActionSuccess: Bool = true) async -> UserManager {
