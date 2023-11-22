@@ -263,6 +263,21 @@ final class UserManagerTests: XCTestCase {
         XCTFail("addTransaction did not throw any errors")
     }
     
+    func test_fetchTransactionsInSelectedCoffeecule_throwsIfNoCkServiceAvailable() async throws {
+        let sut = await makeSUT(didProvideCkService: false)
+        sut.selectedCoffeecule = Coffeecule()
+        do {
+            try await sut.fetchTransactionsInCoffeecule()
+        } catch UserManagerError.noCkServiceAvailable {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("addTransaction did not throw UserManagerError.noCkServiceAvailable")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true,
