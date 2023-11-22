@@ -64,7 +64,7 @@ final class UserManagerTests: XCTestCase {
     func test_fetchCoffeecules_populatesManagerFromDatabase() async throws {
         let sut = await makeSUT()
         try await sut.fetchCoffeecules()
-        XCTAssertEqual(sut.coffeecules.count, 2)
+        XCTAssertEqual(sut.coffeecules.count, 4)
     }
     
     func test_fetchCoffeecules_failsIfCantConnectToDatabase() async throws {
@@ -99,7 +99,7 @@ final class UserManagerTests: XCTestCase {
         let sut = await makeSUT()
         sut.selectedCoffeecule = Coffeecule()
         try await sut.fetchUsersInCoffeecule()
-        XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 2)
+        XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 4)
     }
     
     func test_fetchUsersInCoffeecule_throwsNoCoffeeculeSelectedIfNoneSelected() async {
@@ -130,6 +130,12 @@ final class UserManagerTests: XCTestCase {
         }
         XCTFail("fetchUsersInCoffeecule did not throw any errors")
     }
+    
+//    func test_addTransaction_addsTransactionToManagerIfSuccessful() async throws {
+//        let sut = await makeSUT()
+//        try await sut.addTransaction()
+//        XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 3)
+//    }
     
     // MARK: - Helper methods
     

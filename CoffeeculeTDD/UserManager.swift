@@ -19,12 +19,17 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
     
     @Published var usersInSelectedCoffeecule: [User] = []
     
+    @Published var transactionsInSelectedCoffeecule: [Transaction] = []
+    
+    @Published var selectedBuyer: User?
+    @Published var selectedReceivers: [User] = []
+    
     @Published var isLoading: Bool = true
     @Published var displayedError: Error?
     
     
     enum UserManagerError: Error {
-        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected
+        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noBuyerSelected, noReceiversSelected
     }
     
     func createCoffeecule() async throws {
@@ -68,6 +73,25 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
+    }
+    
+    func addTransaction() async throws {
+        guard let selectedBuyer else {
+            throw UserManagerError.noBuyerSelected
+        }
+        
+        guard let selectedCoffeecule else {
+            throw UserManagerError.noCoffeeculeSelected
+        }
+        
+        guard !selectedReceivers.isEmpty else {
+            throw UserManagerError.noReceiversSelected
+        }
+        
+        let transactions = selectedReceivers.map {
+            Transaction(buyer: selectedBuyer, receiver: $0, in: selectedCoffeecule)
+        }
+//        try await ckService.save
     }
     
     init() { }

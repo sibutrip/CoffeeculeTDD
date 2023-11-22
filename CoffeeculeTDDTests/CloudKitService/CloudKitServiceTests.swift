@@ -194,7 +194,7 @@ final class CloudKitServiceTests: XCTestCase {
         let secondParent = SecondMockRecord()
         let recordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
         try await sut.saveWithTwoParents(recordWithTwoParents)
-        let fetchedRecord: MockRecordWithTwoParents = try await sut.children(of: firstParent).first!
+        let fetchedRecord: MockRecordWithTwoParents = try await sut.twoParentChildren(of: firstParent).first!
         XCTAssertEqual(fetchedRecord.id, recordWithTwoParents.id)
     }
     
@@ -234,6 +234,17 @@ final class CloudKitServiceTests: XCTestCase {
             return
         }
         XCTFail("did not throw an error")
+    }
+    
+    func test_saveWithThreeParents_savesToTheDatabaseSuccessfully() async throws {
+        let sut = try await makeSUT()
+        let firstParent = MockRecord()
+        let secondParent = SecondMockRecord()
+        let thirdParent = SecondMockRecord()
+        let recordWithThreeParents = MockRecordWithThreeParents(parent: firstParent, secondParent: secondParent, thirdParent: thirdParent)
+        try await sut.saveWithThreeParents(recordWithThreeParents)
+        let fetchedRecord: MockRecordWithThreeParents = try await sut.threeParentChildren(of: firstParent).first!
+        XCTAssertEqual(fetchedRecord.id, recordWithThreeParents.id)
     }
     
     // MARK: - Helper Methods

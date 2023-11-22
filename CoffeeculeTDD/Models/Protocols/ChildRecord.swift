@@ -56,8 +56,7 @@ protocol ChildWithThreeParents: ChildWithTwoParents {
     /// The parent of a Record, which must also be a Record.
     var thirdParent: ThirdParent? { get set }
     
-    /// Initializes an instance of a Record type from a CKRecord, when the parent Record is available.
-    init?(from record: CKRecord, with thirdParent: ThirdParent)
+    init?(from record: CKRecord, firstParent: Parent, secondParent: SecondParent, thirdParent: ThirdParent)
 }
 
 //extension ChildWithThreeParents {

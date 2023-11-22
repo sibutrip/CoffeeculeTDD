@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7402D2AC2B0C1CF200183682 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7402D2AB2B0C1CF200183682 /* Transaction.swift */; };
 		741EA0E72B00144600E0AA09 /* CoffeeculeTDDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */; };
 		741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E82B00144600E0AA09 /* ContentView.swift */; };
 		741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0EA2B00144700E0AA09 /* Assets.xcassets */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7402D2AB2B0C1CF200183682 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		741EA0E32B00144600E0AA09 /* CoffeeculeTDD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoffeeculeTDD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDApp.swift; sourceTree = "<group>"; };
 		741EA0E82B00144600E0AA09 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				74495BFB2B01968800C1C7F7 /* Coffeecule.swift */,
 				74D8DAF32B003212005811AD /* User.swift */,
 				747BF9FF2B041DFB00296BCC /* Relationship.swift */,
+				7402D2AB2B0C1CF200183682 /* Transaction.swift */,
 				74495BFF2B026DC800C1C7F7 /* Protocols */,
 			);
 			path = Models;
@@ -299,6 +302,7 @@
 				74D8DAF82B004564005811AD /* Database.swift in Sources */,
 				74DF62E82B064E07001D82D7 /* CKServiceProtocol.swift in Sources */,
 				74495BFE2B019AB600C1C7F7 /* DataContainer.swift in Sources */,
+				7402D2AC2B0C1CF200183682 /* Transaction.swift in Sources */,
 				74495C042B02774C00C1C7F7 /* ChildRecord.swift in Sources */,
 				747BFA002B041DFB00296BCC /* Relationship.swift in Sources */,
 				74DF62E62B051CC1001D82D7 /* UserManager.swift in Sources */,

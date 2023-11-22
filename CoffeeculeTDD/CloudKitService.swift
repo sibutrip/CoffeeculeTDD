@@ -128,18 +128,27 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let _ = try await database.save(childCkRecord)
     }
     
-//    func saveWithThreeParents<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(_ record: Child) async throws where Child.Parent == FirstParent, Child.SecondParent == SecondParent, Child.ThirdParent == ThirdParent {
-//        guard let firstParent = record.parent,
-//              let secondParent = record.secondParent,
-//              let thirdParent = record.thirdParent else {
-//            throw CloudKitError.missingParentRecord
-//        }
-//        let childCkRecord = record.ckRecord
-//        childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
-//        childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
-//        childCkRecord.setValue(thirdParent.reference, forKey: ThirdParent.recordType)
-//        let _ = try await database.save(childCkRecord)
-//    }
+    func saveWithThreeParents<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(_ record: Child) async throws where Child.Parent == FirstParent, Child.SecondParent == SecondParent, Child.ThirdParent == ThirdParent {
+        guard let firstParent = record.parent,
+              let secondParent = record.secondParent,
+              let thirdParent = record.thirdParent else {
+            throw CloudKitError.missingParentRecord
+        }
+        let childCkRecord = record.ckRecord
+        childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
+        childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
+        childCkRecord.setValue(thirdParent.reference, forKey: ThirdParent.recordType)
+        if (try? await database.save(firstParent.ckRecord)) == nil {
+            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
+        }
+        if (try? await database.save(secondParent.ckRecord)) == nil {
+            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
+        }
+        if (try? await database.save(thirdParent.ckRecord)) == nil {
+            _ = try? await database.modifyRecords(saving: [thirdParent.ckRecord], deleting: [])
+        }
+        let _ = try await database.save(childCkRecord)
+    }
     
     func twoParentChildren<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent {
         if parent?.ckRecord == secondParent?.ckRecord && parent?.ckRecord == nil {
@@ -208,6 +217,95 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
                     return nil
                 }
                 return Child(from: record, firstParent: firstParent, secondParent: secondParent)
+            }
+        }
+        return childRecords
+    }
+    
+    func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil, thirdParent: ThirdParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent {
+        
+        if parent?.ckRecord == secondParent?.ckRecord && parent?.ckRecord == thirdParent?.ckRecord && parent?.ckRecord == nil {
+            throw CloudKitError.missingParentRecord
+        }
+        
+        var predicate: NSPredicate?
+        if let parent {
+            let reference = CKRecord.Reference(recordID: parent.recordID, action: .none)
+            predicate = NSPredicate(format: "\(FirstParent.recordType) == %@", reference)
+        }
+        if let secondParent {
+            let reference = CKRecord.Reference(recordID: secondParent.recordID, action: .none)
+            predicate = NSPredicate(format: "\(SecondParent.recordType) == %@", reference)
+        }
+        if let thirdParent {
+            let reference = CKRecord.Reference(recordID: thirdParent.recordID, action: .none)
+            predicate = NSPredicate(format: "\(ThirdParent.recordType) == %@", reference)
+        }
+        guard let predicate else { throw CloudKitError.missingParentRecord }
+        
+        let query = CKQuery(recordType: Child.recordType, predicate: predicate)
+        
+        let records = try await database.records(matching: query, inZoneWith: nil, desiredKeys: nil, resultsLimit: CKQueryOperation.maximumResults)
+        let unwrappedRecords = records.matchResults.compactMap { record in
+            try? record.1.get()
+        }
+        if unwrappedRecords.isEmpty {
+            throw CloudKitError.childRecordsNotFound
+        }
+        
+        let childRecords = try await withThrowingTaskGroup(of: Child?.self, returning: [Child].self) { group in
+            for record in unwrappedRecords {
+                group.addTask {
+                    var fetchedParentCkRecord: CKRecord?
+                    var fetchedSecondParentCkRecord: CKRecord?
+                    var fetchedThirdParentCkRecord: CKRecord?
+                    if parent == nil {
+                        if let parentReference = record[FirstParent.recordType] as? CKRecord.Reference {
+                            fetchedParentCkRecord = try await self.database.record(for: parentReference.recordID)
+                        }
+                    }
+                    if secondParent == nil {
+                        if let secondParentReference = record[SecondParent.recordType] as? CKRecord.Reference {
+                            fetchedSecondParentCkRecord = try await self.database.record(for: secondParentReference.recordID)
+                        }
+                    }
+                    if thirdParent == nil {
+                        if let thirdParentReference = record[ThirdParent.recordType] as? CKRecord.Reference {
+                            fetchedThirdParentCkRecord = try await self.database.record(for: thirdParentReference.recordID)
+                        }
+                    }
+                    
+                    guard let parentCkRecord = fetchedParentCkRecord ?? (parent?.ckRecord ?? secondParent?.ckRecord),
+                          let secondParentCkRecord = fetchedSecondParentCkRecord ?? (secondParent?.ckRecord ?? parent?.ckRecord),
+                          let thirdParentCkRecord = fetchedThirdParentCkRecord ?? (thirdParent?.ckRecord ?? secondParent?.ckRecord)
+                    else {
+                        throw CloudKitError.missingParentRecord
+                    }
+                    guard let parentRecord = FirstParent(from: parentCkRecord),
+                          let secondParentRecord = SecondParent(from: secondParentCkRecord),
+                          let thirdParentRecord = ThirdParent(from: thirdParentCkRecord) else {
+                        throw CloudKitError.couldNotCreateModelFromCkRecord
+                    }
+                    return Child(from: record, firstParent: parentRecord, secondParent: secondParentRecord, thirdParent: thirdParentRecord)
+                }
+                
+                var childRecords = [Child]()
+                while let child = try await group.next() {
+                    if let child {
+                        childRecords.append(child)
+                    }
+                }
+                return childRecords
+                
+            }
+            
+            return unwrappedRecords.compactMap { record in
+                guard let firstParent = record[FirstParent.recordType] as? FirstParent,
+                      let secondParent = record[SecondParent.recordType] as? SecondParent,
+                      let thirdParent = record[ThirdParent.recordType] as? ThirdParent else {
+                    return nil
+                }
+                return Child(from: record, firstParent: firstParent, secondParent: secondParent, thirdParent: thirdParent)
             }
         }
         return childRecords

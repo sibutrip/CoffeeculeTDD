@@ -9,6 +9,7 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 struct MockRecordWithThreeParents: ChildWithThreeParents {
+    
     init?(from record: CKRecord, firstParent: MockRecord, secondParent: SecondMockRecord) {
         return nil
     }
@@ -44,6 +45,21 @@ struct MockRecordWithThreeParents: ChildWithThreeParents {
     init(firstParent: MockRecord, with thirdParent: SecondMockRecord) {
         self.id = UUID().uuidString
         self.parent = firstParent
+        self.thirdParent = thirdParent
+    }
+    
+    init?(from record: CKRecord, firstParent: MockRecord, secondParent: SecondMockRecord, thirdParent: SecondMockRecord) {
+        self.id = record.recordID.recordName
+        self.creationDate = record.creationDate
+        self.parent = firstParent
+        self.secondParent = secondParent
+        self.thirdParent = thirdParent
+    }
+    
+    init(parent: MockRecord, secondParent: SecondMockRecord, thirdParent: SecondMockRecord) {
+        self.id = UUID().uuidString
+        self.parent = parent
+        self.secondParent = secondParent
         self.thirdParent = thirdParent
     }
 }
