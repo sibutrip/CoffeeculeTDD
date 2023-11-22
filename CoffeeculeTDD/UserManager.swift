@@ -79,9 +79,13 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         guard let selectedBuyer else {
             throw UserManagerError.noBuyerSelected
         }
-        
+
         guard let selectedCoffeecule else {
             throw UserManagerError.noCoffeeculeSelected
+        }
+        
+        guard let ckService else {
+            throw UserManagerError.noCkServiceAvailable
         }
         
         guard !selectedReceivers.isEmpty else {
@@ -91,7 +95,10 @@ class CoffeeculeManager<CKService: CKServiceProtocol> {
         let transactions = selectedReceivers.map {
             Transaction(buyer: selectedBuyer, receiver: $0, in: selectedCoffeecule)
         }
-//        try await ckService.save
+        for transaction in transactions {
+            async let _ = try await ckService.saveWithThreeParents(transaction)
+        }
+        self.transactionsInSelectedCoffeecule += transactions
     }
     
     init() { }
