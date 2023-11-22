@@ -293,7 +293,7 @@ final class CloudKitServiceTests: XCTestCase {
     func test_threeParentChildren_throwsIfAllArgumentsAreEmpty() async throws {
         let sut = try await makeSUT()
         do {
-            let _ : MockRecordWithTwoParents = try await sut.twoParentChildren(of: nil, secondParent: nil).first!
+            let _ : MockRecordWithThreeParents = try await sut.threeParentChildren(of: nil, secondParent: nil, thirdParent: nil).first!
         } catch CloudKitService.CloudKitError.missingParentRecord {
             XCTAssert(true)
             return
