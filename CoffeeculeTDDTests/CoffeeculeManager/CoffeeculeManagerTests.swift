@@ -249,6 +249,20 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 4)
     }
     
+    func test_fetchTransactionsInSelectedCoffeecule_throwsIfNoCoffeeculeSelected() async throws {
+        let sut = await makeSUT()
+        do {
+            try await sut.fetchTransactionsInCoffeecule()
+        } catch UserManagerError.noCoffeeculeSelected {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("addTransaction did not throw UserManagerError.noCoffeeculeSelected")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true,
