@@ -108,7 +108,11 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         }
         let childCkRecord = record.ckRecord
         childCkRecord.setValue(parent.reference, forKey: Parent.recordType)
-        let _ = try await database.save(childCkRecord)
+        do {
+            let _ = try await database.save(childCkRecord)
+        } catch {
+            throw CloudKitError.recordAlreadyExists
+        }
     }
     
     func saveWithTwoParents<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(_ record: Child) async throws where Child.Parent == FirstParent, Child.SecondParent == SecondParent {
@@ -125,7 +129,11 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         if (try? await database.save(secondParent.ckRecord)) == nil {
             _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
         }
-        let _ = try await database.save(childCkRecord)
+        do {
+            let _ = try await database.save(childCkRecord)
+        } catch {
+            throw CloudKitError.recordAlreadyExists
+        }
     }
     
     func saveWithThreeParents<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(_ record: Child) async throws where Child.Parent == FirstParent, Child.SecondParent == SecondParent, Child.ThirdParent == ThirdParent {
@@ -147,7 +155,11 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         if (try? await database.save(thirdParent.ckRecord)) == nil {
             _ = try? await database.modifyRecords(saving: [thirdParent.ckRecord], deleting: [])
         }
-        let _ = try await database.save(childCkRecord)
+        do {
+            let _ = try await database.save(childCkRecord)
+        } catch {
+            throw CloudKitError.recordAlreadyExists
+        }
     }
     
     func twoParentChildren<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent {

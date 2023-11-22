@@ -181,8 +181,11 @@ final class CloudKitServiceTests: XCTestCase {
         let sut = try await makeSUT(with: [recordWithParent.ckRecord])
         do {
             try await sut.saveWithOneParent(recordWithParent)
-        } catch {
+        } catch CloudKitService.CloudKitError.recordAlreadyExists {
             XCTAssert(true)
+            return
+        } catch {
+            XCTFail("did not throw CloudKitError.recordAlreadyExists")
             return
         }
         XCTFail("failed to throw error")
@@ -205,8 +208,11 @@ final class CloudKitServiceTests: XCTestCase {
         let sut = try await makeSUT(with: [recordWithTwoParents.ckRecord])
         do {
             try await sut.saveWithTwoParents(recordWithTwoParents)
-        } catch {
+        } catch CloudKitService.CloudKitError.recordAlreadyExists {
             XCTAssert(true)
+            return
+        } catch {
+            XCTFail("did not throw CloudKitError.recordAlreadyExists")
             return
         }
         XCTFail("failed to throw error")
@@ -245,6 +251,25 @@ final class CloudKitServiceTests: XCTestCase {
         try await sut.saveWithThreeParents(recordWithThreeParents)
         let fetchedRecord: MockRecordWithThreeParents = try await sut.threeParentChildren(of: firstParent).first!
         XCTAssertEqual(fetchedRecord.id, recordWithThreeParents.id)
+    }
+    
+    func test_saveWtihThreeParents_throwsIfRecordAlreadyExistsInDatabase() async throws {
+        let sut = try await makeSUT()
+        let firstParent = MockRecord()
+        let secondParent = SecondMockRecord()
+        let thirdParent = SecondMockRecord()
+        let recordWithThreeParents = MockRecordWithThreeParents(parent: firstParent, secondParent: secondParent, thirdParent: thirdParent)
+        try await sut.saveWithThreeParents(recordWithThreeParents)
+        do {
+            try await sut.saveWithThreeParents(recordWithThreeParents)
+        } catch CloudKitService.CloudKitError.recordAlreadyExists {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("did not throw CloudKitError.recordAlreadyExists")
+            return
+        }
+        XCTFail("failed to throw error")
     }
     
     // MARK: - Helper Methods
