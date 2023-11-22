@@ -294,17 +294,45 @@ final class UserManagerTests: XCTestCase {
         sut.usersInSelectedCoffeecule = [firstUser, secondUser, thirdUser]
         sut.transactionsInSelectedCoffeecule = transactions
         try sut.createUserRelationships()
-        sut.userRelationships.forEach { buyer, value in
-            value.forEach { receiver, transaction in
-                print(buyer.systemUserID, receiver.systemUserID, transaction)
-            }
-        }
         XCTAssertEqual(sut.userRelationships[thirdUser]?[firstUser], 1)
         XCTAssertEqual(sut.userRelationships[thirdUser]?[secondUser], -1)
         XCTAssertEqual(sut.userRelationships[secondUser]?[firstUser], 1)
         XCTAssertEqual(sut.userRelationships[secondUser]?[thirdUser], 1)
         XCTAssertEqual(sut.userRelationships[firstUser]?[thirdUser], -1)
         XCTAssertEqual(sut.userRelationships[firstUser]?[secondUser], -1)
+    }
+    
+    func test_createUserRelationships_throwsIfNoUsersFound() async throws {
+        let sut = await makeSUT()
+        do {
+            try sut.createUserRelationships()
+        } catch UserManagerError.noUsersFound {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("createUserRelationships did not throw UserManagerError.noUsersFound")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
+    
+    func test_createUserRelationships_throwsIfTransactionDoesNotHaveBuyerAndReceiver() async throws {
+        let sut = await makeSUT()
+        sut.usersInSelectedCoffeecule = [User(systemUserID: "Test")]
+        let transactions: [Transaction] = [
+            Transaction(from: CKRecord(recordType: "Test"), with: User(systemUserID: "Test"))!
+        ]
+        sut.transactionsInSelectedCoffeecule = transactions
+        do {
+            try sut.createUserRelationships()
+        } catch UserManagerError.invalidTransactionFormat {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("createUserRelationships did not throw UserManagerError.invalidTransactionFormat")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
     }
     
     // MARK: - Helper methods
