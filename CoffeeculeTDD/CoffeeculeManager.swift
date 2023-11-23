@@ -14,7 +14,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     var user: User? {
         get async { await ckService?.user }
     }
-    var coffeecules: [Coffeecule] = []
+    @Published var coffeecules: [Coffeecule] = []
     @Published var selectedCoffeecule: Coffeecule?
     
     @Published var usersInSelectedCoffeecule: [User] = [] 

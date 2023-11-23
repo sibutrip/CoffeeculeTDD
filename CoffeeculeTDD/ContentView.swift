@@ -19,7 +19,7 @@ struct ContentView: View {
             if isAuthenticating {
                 ProgressView()
             } else if isAuthenticated {
-                Text("Welcome to the world of coffeecule!")
+                CoffeeculeView()
             } else {
                 VStack {
                     Text("Not authenticated")
@@ -27,6 +27,7 @@ struct ContentView: View {
                 }
             }
         }
+        .environmentObject(coffeeculeManager)
         .onAppear {
             Task {
                 do {

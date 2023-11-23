@@ -17,7 +17,7 @@ struct Relationship: ChildWithTwoParents {
     
     var creationDate: Date?
     
-    static var recordType: String { "Coffeecule" }
+    static var recordType: String { "Relationship" }
     
     enum RecordKeys: String, CaseIterable {
         case id

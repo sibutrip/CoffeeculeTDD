@@ -21,6 +21,7 @@
 		74495C0E2B02D45800C1C7F7 /* MockDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */; };
 		74495C102B02D47A00C1C7F7 /* MockChildRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */; };
 		74565F3B2B0FC2EB00458634 /* ContainerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74565F3A2B0FC2EB00458634 /* ContainerInfo.swift */; };
+		74565F3E2B0FC7B900458634 /* CoffeeculeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74565F3D2B0FC7B900458634 /* CoffeeculeView.swift */; };
 		747BFA002B041DFB00296BCC /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747BF9FF2B041DFB00296BCC /* Relationship.swift */; };
 		74A6DFFE2B07C6560076042D /* SecondMockRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */; };
 		74A6E0002B07C66A0076042D /* MockRecordWithTwoParents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */; };
@@ -62,6 +63,7 @@
 		74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChildRecord.swift; sourceTree = "<group>"; };
 		74565F3A2B0FC2EB00458634 /* ContainerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerInfo.swift; sourceTree = "<group>"; };
 		74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoffeeculeTDD.entitlements; sourceTree = "<group>"; };
+		74565F3D2B0FC7B900458634 /* CoffeeculeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeView.swift; sourceTree = "<group>"; };
 		747BF9FF2B041DFB00296BCC /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondMockRecord.swift; sourceTree = "<group>"; };
 		74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithTwoParents.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */,
 				741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */,
 				741EA0E82B00144600E0AA09 /* ContentView.swift */,
+				74565F3D2B0FC7B900458634 /* CoffeeculeView.swift */,
 				74495C022B026DDD00C1C7F7 /* Models */,
 				74DF62E52B051CC1001D82D7 /* CoffeeculeManager.swift */,
 				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
@@ -311,6 +314,7 @@
 				74495C042B02774C00C1C7F7 /* ChildRecord.swift in Sources */,
 				747BFA002B041DFB00296BCC /* Relationship.swift in Sources */,
 				74DF62E62B051CC1001D82D7 /* CoffeeculeManager.swift in Sources */,
+				74565F3E2B0FC7B900458634 /* CoffeeculeView.swift in Sources */,
 				741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */,
 				74D8DAF42B003212005811AD /* User.swift in Sources */,
 				74D8DAF22B002DD6005811AD /* Record.swift in Sources */,
