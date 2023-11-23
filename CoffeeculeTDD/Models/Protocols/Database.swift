@@ -24,3 +24,9 @@ protocol Database {
         saving recordsToSave: [CKRecord],
         deleting recordIDsToDelete: [CKRecord.ID]) async throws -> (saveResults: [CKRecord.ID : Result<CKRecord, Error>], deleteResults: [CKRecord.ID : Result<Void, Error>])
 }
+
+extension CKDatabase: Database {
+    func modifyRecords(saving recordsToSave: [CKRecord], deleting recordIDsToDelete: [CKRecord.ID]) async throws -> (saveResults: [CKRecord.ID : Result<CKRecord, Error>], deleteResults: [CKRecord.ID : Result<Void, Error>]) {
+        return try await self.modifyRecords(saving: recordsToSave, deleting: recordIDsToDelete)
+    }
+}

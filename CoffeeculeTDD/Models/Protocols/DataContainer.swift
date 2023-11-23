@@ -13,3 +13,8 @@ protocol DataContainer {
     var `public`: Database { get }
 }
 
+extension CKContainer: DataContainer {
+    var `public`: Database {
+        return self.publicCloudDatabase
+    }
+}
