@@ -30,7 +30,8 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
     }
     
     func authenticate() async throws {
-        switch try await container.accountStatus() {
+        let accountStatus = try await container.accountStatus()
+        switch accountStatus {
         case .available:
             do {
                 self.userID = try await container.userRecordID()

@@ -61,6 +61,7 @@
 		74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataContainer.swift; sourceTree = "<group>"; };
 		74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChildRecord.swift; sourceTree = "<group>"; };
 		74565F3A2B0FC2EB00458634 /* ContainerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerInfo.swift; sourceTree = "<group>"; };
+		74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoffeeculeTDD.entitlements; sourceTree = "<group>"; };
 		747BF9FF2B041DFB00296BCC /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondMockRecord.swift; sourceTree = "<group>"; };
 		74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithTwoParents.swift; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		741EA0E52B00144600E0AA09 /* CoffeeculeTDD */ = {
 			isa = PBXGroup;
 			children = (
+				74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */,
 				741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */,
 				741EA0E82B00144600E0AA09 /* ContentView.swift */,
 				74495C022B026DDD00C1C7F7 /* Models */,
@@ -469,6 +471,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoffeeculeTDD/CoffeeculeTDD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CoffeeculeTDD/Preview Content\"";
@@ -498,6 +501,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoffeeculeTDD/CoffeeculeTDD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CoffeeculeTDD/Preview Content\"";

@@ -11,24 +11,41 @@ import CloudKit
 struct ContentView: View {
     @StateObject var coffeeculeManager = CoffeeculeManager<CloudKitService<CKContainer>>()
     @State private var isAuthenticating = true
+    @State private var isAuthenticated = false
+    @State private var couldNotAuthenticate = false
+    @State private var errorText = ""
     var body: some View {
         VStack {
             if isAuthenticating {
                 ProgressView()
+            } else if isAuthenticated {
+                Text("Welcome to the world of coffeecule!")
             } else {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundStyle(.tint)
-                Text("Hello, world!")
+                VStack {
+                    Text("Not authenticated")
+                    Text(errorText)
+                }
             }
         }
         .onAppear {
             Task {
-                let ckService = try await CloudKitService(with: ContainerInfo.container)
-                coffeeculeManager.ckService = ckService
+                do {
+                    let ckService = try await CloudKitService(with: ContainerInfo.container)
+                    coffeeculeManager.ckService = ckService
+                    isAuthenticated = true
+                } catch {
+                    couldNotAuthenticate = true
+                    errorText = error.localizedDescription
+                }
                 isAuthenticating = false
             }
         }
+        .alert("Could not authenticate", isPresented: $couldNotAuthenticate) {
+            Button("OK") { }
+        } message: {
+            Text(errorText)
+        }
+
     }
 }
 
