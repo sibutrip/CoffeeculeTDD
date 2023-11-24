@@ -87,9 +87,13 @@ struct CoffeeculeView: View {
         }
         .onChange(of: coffeeculeManager.selectedCoffeecule, { _, newValue in
             Task {
-                try await coffeeculeManager.fetchUsersInCoffeecule()
-                try await coffeeculeManager.fetchTransactionsInCoffeecule()
-                try coffeeculeManager.createUserRelationships()
+                do {
+                    try await coffeeculeManager.fetchUsersInCoffeecule()
+                    try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                    try coffeeculeManager.createUserRelationships()
+                } catch {
+                    errorText = error.localizedDescription
+                }
             }
         })
         .onAppear {
