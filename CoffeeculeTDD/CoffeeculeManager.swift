@@ -24,35 +24,37 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     @Published var selectedUsers: [User] = []
     
     /// [buyer: [receiver: debtAmount]]
-    var userRelationships: [User: [User: Int]] = [:]
+    @Published var userRelationships: [User: [User: Int]] = [:]
     
-    private var selectedUserDebts: [User: Int] {
-        let userDebts: [User: Int] = Dictionary(
-            uniqueKeysWithValues: userRelationships.compactMap { (buyer, receiverRelationship) in
-                if selectedUsers.contains(where: {$0 == buyer }) {
-                    let debt = receiverRelationship.reduce(0) { partialResult, receiverDebt in
-                        if selectedUsers.contains(where: {$0 == receiverDebt.key }) {
-                            return partialResult + receiverDebt.value
-                        }
-                        return partialResult
-                    }
-                    return (buyer, debt)
-                }
-                return nil
-            }
-        )
-        return userDebts
-    }
+    private var selectedUserDebts: [User: Int] = [:]
+//    {
+//        let userDebts: [User: Int] = Dictionary(
+//            uniqueKeysWithValues: userRelationships.compactMap { (buyer, receiverRelationship) in
+//                if selectedUsers.contains(where: {$0 == buyer }) {
+//                    let debt = receiverRelationship.reduce(0) { partialResult, receiverDebt in
+//                        if selectedUsers.contains(where: {$0 == receiverDebt.key }) {
+//                            return partialResult + receiverDebt.value
+//                        }
+//                        return partialResult
+//                    }
+//                    return (buyer, debt)
+//                }
+//                return nil
+//            }
+//        )
+//        return userDebts
+//    }
     
-    var mostIndebttedFromSelectedUsers: User? {
-        let mostInDebtUser: (user: User?, debt: Int) = selectedUserDebts.reduce((User?.none, Int.min)) { partialResult, buyerDebts in
-            if partialResult.1 <= buyerDebts.1 {
-                return buyerDebts
-            }
-            return partialResult
-        }
-        return mostInDebtUser.user
-    }
+    var mostIndebttedFromSelectedUsers: User? 
+//    {
+//        let mostInDebtUser: (user: User?, debt: Int) = selectedUserDebts.reduce((User?.none, Int.max)) { partialResult, buyerDebts in
+//            if buyerDebts.1 <= partialResult.1 {
+//                return buyerDebts
+//            }
+//            return partialResult
+//        }
+//        return mostInDebtUser.user
+//    }
         
     @Published var isLoading: Bool = true
     @Published var displayedError: Error?
@@ -96,6 +98,28 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
             partialResult[receiver]?[buyer] = receiverDebt - 1
         }
         self.userRelationships = userRelationships
+        let userDebts: [User: Int] = Dictionary(
+            uniqueKeysWithValues: userRelationships.compactMap { (buyer, receiverRelationship) in
+                if selectedUsers.contains(where: {$0 == buyer }) {
+                    let debt = receiverRelationship.reduce(0) { partialResult, receiverDebt in
+                        if selectedUsers.contains(where: {$0 == receiverDebt.key }) {
+                            return partialResult + receiverDebt.value
+                        }
+                        return partialResult
+                    }
+                    return (buyer, debt)
+                }
+                return nil
+            }
+        )
+        self.selectedUserDebts = userDebts
+        let mostInDebtUser: (user: User?, debt: Int) = selectedUserDebts.reduce((User?.none, Int.max)) { partialResult, buyerDebts in
+            if buyerDebts.1 <= partialResult.1 {
+                return buyerDebts
+            }
+            return partialResult
+        }
+        self.mostIndebttedFromSelectedUsers = mostInDebtUser.user
     }
     
     func createCoffeecule() async throws {
@@ -182,6 +206,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         if uploadedTransactions.count != transactions.count {
             throw UserManagerError.failedToConnectToDatabase
         }
+        try createUserRelationships()
     }
     
     func fetchTransactionsInCoffeecule() async throws {
@@ -193,7 +218,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
             throw UserManagerError.noCkServiceAvailable
         }
         
-        let transactions: [Transaction] = try await ckService.threeParentChildren(of: selectedCoffeecule, secondParent: nil, thirdParent: nil)
+        let transactions: [Transaction] = (try? await ckService.threeParentChildren(of: selectedCoffeecule, secondParent: nil, thirdParent: nil)) ?? []
         self.transactionsInSelectedCoffeecule = transactions
     }
     

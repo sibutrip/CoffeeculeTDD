@@ -130,12 +130,12 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let childCkRecord = record.ckRecord
         childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
         childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
-        if (try? await database.save(firstParent.ckRecord)) == nil {
-            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
-        }
-        if (try? await database.save(secondParent.ckRecord)) == nil {
-            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
-        }
+//        if (try? await database.save(firstParent.ckRecord)) == nil {
+//            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
+//        }
+//        if (try? await database.save(secondParent.ckRecord)) == nil {
+//            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
+//        }
         do {
             let _ = try await database.save(childCkRecord)
         } catch {
@@ -151,17 +151,17 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         }
         let childCkRecord = record.ckRecord
         childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
-        childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
-        childCkRecord.setValue(thirdParent.reference, forKey: ThirdParent.recordType)
-        if (try? await database.save(firstParent.ckRecord)) == nil {
-            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
-        }
-        if (try? await database.save(secondParent.ckRecord)) == nil {
-            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
-        }
-        if (try? await database.save(thirdParent.ckRecord)) == nil {
-            _ = try? await database.modifyRecords(saving: [thirdParent.ckRecord], deleting: [])
-        }
+        childCkRecord.setValue(secondParent.reference, forKey: "Buyer")
+        childCkRecord.setValue(thirdParent.reference, forKey: "Receiver")
+//        if (try? await database.save(firstParent.ckRecord)) == nil {
+//            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
+//        }
+//        if (try? await database.save(secondParent.ckRecord)) == nil {
+//            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
+//        }
+//        if (try? await database.save(thirdParent.ckRecord)) == nil {
+//            _ = try? await database.modifyRecords(saving: [thirdParent.ckRecord], deleting: [])
+//        }
         do {
             let _ = try await database.save(childCkRecord)
         } catch {
@@ -245,11 +245,11 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         }
         if let secondParent {
             let reference = CKRecord.Reference(recordID: secondParent.recordID, action: .none)
-            predicate = NSPredicate(format: "\(SecondParent.recordType) == %@", reference)
+            predicate = NSPredicate(format: "Buyer == %@", reference)
         }
         if let thirdParent {
             let reference = CKRecord.Reference(recordID: thirdParent.recordID, action: .none)
-            predicate = NSPredicate(format: "\(ThirdParent.recordType) == %@", reference)
+            predicate = NSPredicate(format: "Receiver == %@", reference)
         }
         guard let predicate else { throw CloudKitError.missingParentRecord }
         
@@ -275,12 +275,12 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
                         }
                     }
                     if secondParent == nil {
-                        if let secondParentReference = record[SecondParent.recordType] as? CKRecord.Reference {
+                        if let secondParentReference = record["Buyer"] as? CKRecord.Reference {
                             fetchedSecondParentCkRecord = try await self.database.record(for: secondParentReference.recordID)
                         }
                     }
                     if thirdParent == nil {
-                        if let thirdParentReference = record[ThirdParent.recordType] as? CKRecord.Reference {
+                        if let thirdParentReference = record["Receiver"] as? CKRecord.Reference {
                             fetchedThirdParentCkRecord = try await self.database.record(for: thirdParentReference.recordID)
                         }
                     }
@@ -298,25 +298,15 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
                     }
                     return Child(from: record, firstParent: parentRecord, secondParent: secondParentRecord, thirdParent: thirdParentRecord)
                 }
-                
-                var childRecords = [Child]()
-                while let child = try await group.next() {
-                    if let child {
-                        childRecords.append(child)
-                    }
-                }
-                return childRecords
-                
             }
-            
-            return unwrappedRecords.compactMap { record in
-                guard let firstParent = record[FirstParent.recordType] as? FirstParent,
-                      let secondParent = record[SecondParent.recordType] as? SecondParent,
-                      let thirdParent = record[ThirdParent.recordType] as? ThirdParent else {
-                    return nil
+                
+            var childRecords = [Child]()
+            while let child = try await group.next() {
+                if let child {
+                    childRecords.append(child)
                 }
-                return Child(from: record, firstParent: firstParent, secondParent: secondParent, thirdParent: thirdParent)
             }
+            return childRecords
         }
         return childRecords
     }

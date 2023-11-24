@@ -191,10 +191,10 @@ final class CloudKitServiceTests: XCTestCase {
     }
     
     func test_saveWithTwoParents_savesToTheDatabaseSuccessfully() async throws {
-        let sut = try await makeSUT()
         let firstParent = MockRecord()
         let secondParent = SecondMockRecord()
         let recordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
+        let sut = try await makeSUT(with: [firstParent.ckRecord, secondParent.ckRecord])
         try await sut.saveWithTwoParents(recordWithTwoParents)
         let fetchedRecord: MockRecordWithTwoParents = try await sut.twoParentChildren(of: firstParent).first!
         XCTAssertEqual(fetchedRecord.id, recordWithTwoParents.id)
@@ -221,10 +221,10 @@ final class CloudKitServiceTests: XCTestCase {
         let firstParent = MockRecord()
         let secondParent = SecondMockRecord()
         let recordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
-        let sut = try await makeSUT()
+        let sut = try await makeSUT(with: [firstParent.ckRecord, secondParent.ckRecord])
         try await sut.saveWithTwoParents(recordWithTwoParents)
-        let fetchedRecordFromFirstParent: MockRecordWithThreeParents = try await sut.threeParentChildren(of: firstParent, secondParent: nil, thirdParent: nil).first!
-        let fetchedRecordFromSecondParent: MockRecordWithThreeParents = try await sut.threeParentChildren(of: nil, secondParent: secondParent, thirdParent:  nil).first!
+        let fetchedRecordFromFirstParent: MockRecordWithTwoParents = try await sut.twoParentChildren(of: firstParent, secondParent: nil).first!
+        let fetchedRecordFromSecondParent: MockRecordWithTwoParents = try await sut.twoParentChildren(of: nil, secondParent: secondParent).first!
         let twoParentChildrenToCompare = [fetchedRecordFromFirstParent, fetchedRecordFromSecondParent]
         let recordIDsAreEqual = twoParentChildrenToCompare.filter { $0.id == recordWithTwoParents.id }.count == 2
         XCTAssertTrue(recordIDsAreEqual)
@@ -235,13 +235,13 @@ final class CloudKitServiceTests: XCTestCase {
         let secondParent = SecondMockRecord()
         let firstRecordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
         let secondRecordWithTwoParents = MockRecordWithTwoParents(firstParent: firstParent, secondParent: secondParent)
-        let sut = try await makeSUT()
+        let sut = try await makeSUT(with: [firstParent.ckRecord, secondParent.ckRecord])
         try await sut.saveWithTwoParents(firstRecordWithTwoParents)
         try await sut.saveWithTwoParents(secondRecordWithTwoParents)
-        let fetchedRecordsFromFirstParent: [MockRecordWithThreeParents] = try await sut.threeParentChildren(of: firstParent, secondParent: nil, thirdParent: nil)
-        let fetchedRecordsFromSecondParent: [MockRecordWithThreeParents] = try await sut.threeParentChildren(of: nil, secondParent: secondParent, thirdParent:  nil)
+        let fetchedRecordsFromFirstParent: [MockRecordWithTwoParents] = try await sut.twoParentChildren(of: firstParent, secondParent: nil)
+        let fetchedRecordsFromSecondParent: [MockRecordWithTwoParents] = try await sut.twoParentChildren(of: nil, secondParent: secondParent)
         let allTwoParentChildren = fetchedRecordsFromFirstParent + fetchedRecordsFromSecondParent
-        XCTAssertEqual(allTwoParentChildren.count, 2)
+        XCTAssertEqual(allTwoParentChildren.count, 4)
     }
     
     func test_twoParentChildren_throwsIfBothArgumentsAreEmpty() async throws {
@@ -259,10 +259,10 @@ final class CloudKitServiceTests: XCTestCase {
     }
     
     func test_saveWithThreeParents_savesToTheDatabaseSuccessfully() async throws {
-        let sut = try await makeSUT()
         let firstParent = MockRecord()
         let secondParent = SecondMockRecord()
         let thirdParent = SecondMockRecord()
+        let sut = try await makeSUT(with: [firstParent.ckRecord, secondParent.ckRecord, thirdParent.ckRecord])
         let recordWithThreeParents = MockRecordWithThreeParents(parent: firstParent, secondParent: secondParent, thirdParent: thirdParent)
         try await sut.saveWithThreeParents(recordWithThreeParents)
         let fetchedRecord: MockRecordWithThreeParents = try await sut.threeParentChildren(of: firstParent).first!
@@ -293,7 +293,7 @@ final class CloudKitServiceTests: XCTestCase {
         let secondParent = SecondMockRecord()
         let thirdParent = SecondMockRecord()
         let recordWithThreeParents = MockRecordWithThreeParents(parent: firstParent, secondParent: secondParent, thirdParent: thirdParent)
-        let sut = try await makeSUT()
+        let sut = try await makeSUT(with: [firstParent.ckRecord, secondParent.ckRecord, thirdParent.ckRecord])
         try await sut.saveWithThreeParents(recordWithThreeParents)
         let fetchedRecordFromFirstParent: MockRecordWithThreeParents = try await sut.threeParentChildren(of: firstParent, secondParent: nil, thirdParent: nil).first!
         let fetchedRecordFromSecondParent: MockRecordWithThreeParents = try await sut.threeParentChildren(of: nil, secondParent: secondParent, thirdParent:  nil).first!

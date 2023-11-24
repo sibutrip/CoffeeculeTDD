@@ -24,6 +24,7 @@ struct CoffeeculeView: View {
     
     var body: some View {
         VStack {
+            Spacer()
             if isFetchingCoffeecules {
                 ProgressView()
             } else if !coffeeculeManager.coffeecules.isEmpty {
@@ -42,18 +43,68 @@ struct CoffeeculeView: View {
                     }
                 }
             }
+            Spacer()
+            VStack {
+                Text("Users In selected cule")
+                ForEach(coffeeculeManager.usersInSelectedCoffeecule) { user in
+                    Text(user.name)
+                }
+            }
+            Spacer()
+            VStack {
+                Text("Selected Users")
+                ForEach(coffeeculeManager.usersInSelectedCoffeecule) { user in
+                    Button(user.name) {
+                        if coffeeculeManager.selectedUsers.contains(where: {$0 == user}) {
+                            coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.filter { $0 != user }
+                        } else {
+                            coffeeculeManager.selectedUsers.append(user)
+                        }
+                        try? coffeeculeManager.createUserRelationships()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(coffeeculeManager.selectedUsers.contains(where: {$0 == user}) ? Color.green : Color.red)
+                }
+            }
+            Spacer()
+            VStack {
+                Text("Transactions:")
+                ForEach(coffeeculeManager.transactionsInSelectedCoffeecule) { transaction in
+                    HStack {
+                        Text("Buyer: \(transaction.secondParent?.name ?? "")")
+                        Spacer()
+                        Text("Receiver: \(transaction.thirdParent?.name ?? "")")
+                    }
+                }
+                Text(coffeeculeManager.mostIndebttedFromSelectedUsers?.name ?? "")
+                Button("Add transaction") {
+                    Task {
+                        try await coffeeculeManager.addTransaction(withBuyer: coffeeculeManager.mostIndebttedFromSelectedUsers)
+                    }
+                }
+            }
+            Spacer()
         }
+        .onChange(of: coffeeculeManager.selectedCoffeecule, { _, newValue in
+            Task {
+                try await coffeeculeManager.fetchUsersInCoffeecule()
+                try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                try coffeeculeManager.createUserRelationships()
+            }
+        })
         .onAppear {
             Task {
                 do {
                     try await coffeeculeManager.fetchCoffeecules()
                     coffeeculeManager.selectedCoffeecule = coffeeculeManager.coffeecules.first
+                    try coffeeculeManager.createUserRelationships()
                 } catch {
                     errorText = error.localizedDescription
                 }
                 isFetchingCoffeecules = false
             }
         }
+        .padding(.horizontal)
     }
 }
 
