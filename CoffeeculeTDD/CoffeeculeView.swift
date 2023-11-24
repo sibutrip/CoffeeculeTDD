@@ -20,15 +20,17 @@ struct CoffeeculeView: View {
                 errorText = nil
             }
         }
-
     }
+    
     var body: some View {
         VStack {
             if isFetchingCoffeecules {
                 ProgressView()
-            } else {
-                ForEach(coffeeculeManager.coffeecules) { coffeecule in
-                    Text(coffeecule.id)
+            } else if !coffeeculeManager.coffeecules.isEmpty {
+                Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
+                    ForEach(coffeeculeManager.coffeecules) { coffeecule in
+                        Text(coffeecule.id).tag(Optional(coffeecule))
+                    }
                 }
             }
             Button("Create coffeecule") {
@@ -45,6 +47,7 @@ struct CoffeeculeView: View {
             Task {
                 do {
                     try await coffeeculeManager.fetchCoffeecules()
+                    coffeeculeManager.selectedCoffeecule = coffeeculeManager.coffeecules.first
                 } catch {
                     errorText = error.localizedDescription
                 }
