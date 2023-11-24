@@ -9,7 +9,8 @@ import CloudKit
 
 actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
     private let container: Container
-    var userID: CKRecord.ID? // userRecordID I think
+//    var userID: CKRecord.ID? // userRecordID I think
+    var user: User?
     
     lazy var database: Database = container.public
     
@@ -34,7 +35,12 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         switch accountStatus {
         case .available:
             do {
-                self.userID = try await container.userRecordID()
+                let userID = try await container.userRecordID()
+                guard let user: User = try? await records(withValue: userID.recordName, inField: .systemUserID).first else {
+                    self.user = User(systemUserID: userID.recordName)
+                    return
+                }
+                self.user = user
             } catch {
                 throw AuthenticationError.iCloudDriveDisabled
             }
@@ -213,24 +219,15 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
                     }
                     return Child(from: record, firstParent: parentRecord, secondParent: secondParentRecord)
                 }
-                
-                var childRecords = [Child]()
-                while let child = try await group.next() {
-                    if let child {
-                        childRecords.append(child)
-                    }
-                }
-                return childRecords
-                
             }
             
-            return unwrappedRecords.compactMap { record in
-                guard let firstParent = record[FirstParent.recordType] as? FirstParent,
-                      let secondParent = record[SecondParent.recordType] as? SecondParent else {
-                    return nil
+            var childRecords = [Child]()
+            while let child = try await group.next() {
+                if let child {
+                    childRecords.append(child)
                 }
-                return Child(from: record, firstParent: firstParent, secondParent: secondParent)
             }
+            return childRecords
         }
         return childRecords
     }
@@ -322,6 +319,23 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
             }
         }
         return childRecords
+    }
+    
+    #warning("add test to this")
+    func records<SomeRecord: Record>(withValue value: CVarArg, inField field: SomeRecord.RecordKeys) async throws -> [SomeRecord] {
+        let predicate = NSPredicate(format: "\(field) == %@", value)
+        let query = CKQuery(recordType: SomeRecord.recordType, predicate: predicate)
+        let fetchedRecords = try await database.records(matching: query, inZoneWith: nil, desiredKeys: nil, resultsLimit: CKQueryOperation.maximumResults)
+        let unwrappedRecords = fetchedRecords.matchResults.compactMap { record in
+            try? record.1.get()
+        }
+        if unwrappedRecords.isEmpty {
+            throw CloudKitError.recordDoesNotExist
+        }
+        
+        return unwrappedRecords.compactMap { record in
+            SomeRecord(from: record)
+        }
     }
     
     init(with container: Container) async throws {

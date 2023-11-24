@@ -10,8 +10,9 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 actor MockCKService: CKServiceProtocol {
+    var user: User?
+    
     typealias Container = MockDataContainer
-    var userID: CKRecord.ID?
     var databaseActionSuccess: Bool
     
     enum CloudKitError: Error {
@@ -122,7 +123,7 @@ actor MockCKService: CKServiceProtocol {
     }
     
     init(didAuthenticate: Bool = true, databaseActionSuccess: Bool = true) async {
-        self.userID = didAuthenticate ? CKRecord.ID.init(recordName: UUID().uuidString) : nil
+        self.user = didAuthenticate ? User(systemUserID: "Test") : nil
         self.databaseActionSuccess = databaseActionSuccess
     }
 }

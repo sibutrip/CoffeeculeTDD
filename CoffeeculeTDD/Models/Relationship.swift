@@ -20,7 +20,7 @@ struct Relationship: ChildWithTwoParents {
     static var recordType: String { "Relationship" }
     
     enum RecordKeys: String, CaseIterable {
-        case id
+        case none
     }
     
     enum ParentKeys: String, CaseIterable {

@@ -10,7 +10,8 @@ import CloudKit
 
 struct CoffeeculeView: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
-    @State var errorText: String?
+    @State private var errorText: String?
+    @State private var isFetchingCoffeecules = true
     var showingError: Binding<Bool> {
         Binding {
             errorText != nil
@@ -23,8 +24,12 @@ struct CoffeeculeView: View {
     }
     var body: some View {
         VStack {
-            ForEach(coffeeculeManager.coffeecules) { coffeecule in
-                Text(coffeecule.id)
+            if isFetchingCoffeecules {
+                ProgressView()
+            } else {
+                ForEach(coffeeculeManager.coffeecules) { coffeecule in
+                    Text(coffeecule.id)
+                }
             }
             Button("Create coffeecule") {
                 Task {
@@ -34,6 +39,16 @@ struct CoffeeculeView: View {
                         errorText = error.localizedDescription
                     }
                 }
+            }
+        }
+        .onAppear {
+            Task {
+                do {
+                    try await coffeeculeManager.fetchCoffeecules()
+                } catch {
+                    errorText = error.localizedDescription
+                }
+                isFetchingCoffeecules = false
             }
         }
     }

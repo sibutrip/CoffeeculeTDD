@@ -78,7 +78,9 @@ extension Record {
                 }
                 return label == recordKey
             }) {
-                record.setValue(propertyLabel.value, forKey: recordKey)
+//                if recordKey != "none" {
+                    record.setValue(propertyLabel.value, forKey: recordKey)
+//                }
             }
         }
         return record

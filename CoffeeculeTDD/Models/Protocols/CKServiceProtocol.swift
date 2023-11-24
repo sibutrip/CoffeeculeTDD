@@ -12,7 +12,7 @@ protocol CKServiceProtocol: Actor {
     associatedtype Container: DataContainer
     associatedtype CloudKitError: Error
     
-    var userID: CKRecord.ID? { get set }
+    var user: User? { get set }
             
     func updatedRecord<SomeRecord: Record>(for record: SomeRecord) async throws -> SomeRecord
     
@@ -37,12 +37,12 @@ protocol CKServiceProtocol: Actor {
     func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent?, secondParent: SecondParent?, thirdParent: ThirdParent?) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent
 }
 
-extension CKServiceProtocol {
-    public var user: User? {
-        guard let userID else { return nil }
-        let user = User(systemUserID: userID.recordName)
-        let userCkRecord = user.ckRecord
-        guard let user = User(from: userCkRecord) else { return nil }
-        return user
-    }
-}
+//extension CKServiceProtocol {
+//    public var user: User? {
+//        guard let userID else { return nil }
+//        let user = User(systemUserID: userID.recordName)
+//        let userCkRecord = user.ckRecord
+//        guard let user = User(from: userCkRecord) else { return nil }
+//        return user
+//    }
+//}
