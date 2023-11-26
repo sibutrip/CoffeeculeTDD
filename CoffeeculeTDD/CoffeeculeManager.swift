@@ -65,9 +65,6 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     }
     
     func createUserRelationships() throws {
-        guard !usersInSelectedCoffeecule.isEmpty else {
-            throw UserManagerError.noUsersFound
-        }
         let emptyRelationships: [User: [User: Int]] = Dictionary(
             uniqueKeysWithValues: usersInSelectedCoffeecule.map { buyer in
                 let receiverRelationships = Dictionary(
@@ -130,6 +127,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         let coffeecule = Coffeecule()
         let relationship = Relationship(user: user, coffecule: coffeecule)
         do {
+            _ = try await ckService.save(record: coffeecule)
             _ = try await ckService.saveWithTwoParents(relationship)
             self.coffeecules.append(coffeecule)
         } catch {

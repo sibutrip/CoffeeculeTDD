@@ -88,6 +88,7 @@ struct CoffeeculeView: View {
         .onChange(of: coffeeculeManager.selectedCoffeecule, { _, newValue in
             Task {
                 do {
+                    coffeeculeManager.usersInSelectedCoffeecule = []
                     try await coffeeculeManager.fetchUsersInCoffeecule()
                     try await coffeeculeManager.fetchTransactionsInCoffeecule()
                     try coffeeculeManager.createUserRelationships()
@@ -108,6 +109,11 @@ struct CoffeeculeView: View {
                 isFetchingCoffeecules = false
             }
         }
+        .alert("Uh oh", isPresented: showingError, actions: {
+            Button("ok") { }
+        }, message: {
+            Text(errorText ?? "")
+        })
         .padding(.horizontal)
     }
 }

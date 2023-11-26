@@ -92,9 +92,9 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let unwrappedRecords = records.matchResults.compactMap { record in
             try? record.1.get()
         }
-        if unwrappedRecords.isEmpty {
-            throw CloudKitError.childRecordsNotFound
-        }
+//        if unwrappedRecords.isEmpty {
+//            throw CloudKitError.childRecordsNotFound
+//        }
         
         return unwrappedRecords.compactMap { record in
             Child(from: record, with: parent)
@@ -191,9 +191,9 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let unwrappedRecords = records.matchResults.compactMap { record in
             try? record.1.get()
         }
-        if unwrappedRecords.isEmpty {
-            throw CloudKitError.childRecordsNotFound
-        }
+//        if unwrappedRecords.isEmpty {
+//            throw CloudKitError.childRecordsNotFound
+//        }
         
         let childRecords = try await withThrowingTaskGroup(of: Child?.self, returning: [Child].self) { group in
             for record in unwrappedRecords {
@@ -259,38 +259,42 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let unwrappedRecords = records.matchResults.compactMap { record in
             try? record.1.get()
         }
+        
         if unwrappedRecords.isEmpty {
             throw CloudKitError.childRecordsNotFound
         }
         
+        let recordToFetchParents = unwrappedRecords[0]
+        
+        async let firstParentCkRecordTask: CKRecord? = {
+            if parent == nil {
+                if let reference = recordToFetchParents[FirstParent.recordType] as? CKRecord.Reference {
+                    return try await self.database.record(for: reference.recordID)
+                }
+            }
+            return nil
+        }()
+        async let secondParentCkRecordTask: CKRecord? = {
+            if secondParent == nil {
+                if let reference = recordToFetchParents["Buyer"] as? CKRecord.Reference {
+                    return try await self.database.record(for: reference.recordID)
+                }
+            }
+            return nil
+        }()
+        async let thirdParentCkRecordTask: CKRecord? = {
+            if thirdParent == nil {
+                if let reference = recordToFetchParents["Receiver"] as? CKRecord.Reference {
+                    return try await self.database.record(for: reference.recordID)
+                }
+            }
+            return nil
+        }()
+        let (fetchedParentCkRecord, fetchedSecondParentCkRecord, fetchedThirdParentCkRecord) = try await (firstParentCkRecordTask, secondParentCkRecordTask, thirdParentCkRecordTask)
+        
         let childRecords = try await withThrowingTaskGroup(of: Child?.self, returning: [Child].self) { group in
             for record in unwrappedRecords {
                 group.addTask {
-                    async let firstParentCkRecordTask: CKRecord? = {
-                        if parent == nil {
-                            if let reference = record[FirstParent.recordType] as? CKRecord.Reference {
-                                return try await self.database.record(for: reference.recordID)
-                            }
-                        }
-                        return nil
-                    }()
-                    async let secondParentCkRecordTask: CKRecord? = {
-                        if secondParent == nil {
-                            if let reference = record["Buyer"] as? CKRecord.Reference {
-                                return try await self.database.record(for: reference.recordID)
-                            }
-                        }
-                        return nil
-                    }()
-                    async let thirdParentCkRecordTask: CKRecord? = {
-                        if thirdParent == nil {
-                            if let reference = record["Receiver"] as? CKRecord.Reference {
-                                return try await self.database.record(for: reference.recordID)
-                            }
-                        }
-                        return nil
-                    }()
-                    let (fetchedParentCkRecord, fetchedSecondParentCkRecord, fetchedThirdParentCkRecord) = try await (firstParentCkRecordTask, secondParentCkRecordTask, thirdParentCkRecordTask)
                     
                     guard let parentCkRecord = fetchedParentCkRecord ?? (parent?.ckRecord ?? secondParent?.ckRecord),
                           let secondParentCkRecord = fetchedSecondParentCkRecord ?? (secondParent?.ckRecord ?? parent?.ckRecord),

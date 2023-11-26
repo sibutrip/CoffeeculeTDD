@@ -307,18 +307,10 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.userRelationships[firstUser]?[secondUser], 1)
     }
     
-    func test_createUserRelationships_throwsIfNoUsersFound() async throws {
+    func test_createUserRelationships_doesNothingIfNoUsersFound() async throws {
         let sut = await makeSUT()
-        do {
-            try sut.createUserRelationships()
-        } catch UserManagerError.noUsersFound {
-            XCTAssert(true)
-            return
-        } catch {
-            XCTFail("createUserRelationships did not throw UserManagerError.noUsersFound")
-            return
-        }
-        XCTFail("addTransaction did not throw any errors")
+        try sut.createUserRelationships()
+        XCTAssertEqual(sut.userRelationships, [:])
     }
     
     func test_createUserRelationships_throwsIfTransactionDoesNotHaveBuyerAndReceiver() async throws {

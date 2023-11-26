@@ -125,19 +125,11 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssertEqual(updatedChildRecords.count, 2)
     }
     
-    func test_children_throwsIfNoParentFound() async throws {
+    func test_children_returnsEmptyArrayIfNoParentFound() async throws {
         let parentRecord = MockRecord()
         let sut = try await makeSUT()
-        do {
-            let _: [MockChildRecord] = try await sut.children(of: parentRecord)
-        } catch CloudKitService.CloudKitError.childRecordsNotFound {
-            XCTAssert(true)
-            return
-        } catch {
-            XCTFail("did not throw CloudKitError.childRecordsNotFound")
-            return
-        }
-        XCTFail("did not throw an error")
+            let fetchedRecords: [MockChildRecord] = try await sut.children(of: parentRecord)
+        XCTAssertEqual(fetchedRecords, [])
     }
     
     func test_updatedRecord_returnsUpdatedRecordFromCloud() async throws {
