@@ -9,7 +9,6 @@ import CloudKit
 
 actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
     private let container: Container
-//    var userID: CKRecord.ID? // userRecordID I think
     var user: User?
     
     lazy var database: Database = container.public
@@ -92,9 +91,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let unwrappedRecords = records.matchResults.compactMap { record in
             try? record.1.get()
         }
-//        if unwrappedRecords.isEmpty {
-//            throw CloudKitError.childRecordsNotFound
-//        }
         
         return unwrappedRecords.compactMap { record in
             Child(from: record, with: parent)
@@ -130,12 +126,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let childCkRecord = record.ckRecord
         childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
         childCkRecord.setValue(secondParent.reference, forKey: SecondParent.recordType)
-//        if (try? await database.save(firstParent.ckRecord)) == nil {
-//            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
-//        }
-//        if (try? await database.save(secondParent.ckRecord)) == nil {
-//            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
-//        }
         do {
             let _ = try await database.save(childCkRecord)
         } catch {
@@ -153,15 +143,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         childCkRecord.setValue(firstParent.reference, forKey: FirstParent.recordType)
         childCkRecord.setValue(secondParent.reference, forKey: "Buyer")
         childCkRecord.setValue(thirdParent.reference, forKey: "Receiver")
-//        if (try? await database.save(firstParent.ckRecord)) == nil {
-//            _ = try? await database.modifyRecords(saving: [firstParent.ckRecord], deleting: [])
-//        }
-//        if (try? await database.save(secondParent.ckRecord)) == nil {
-//            _ = try? await database.modifyRecords(saving: [secondParent.ckRecord], deleting: [])
-//        }
-//        if (try? await database.save(thirdParent.ckRecord)) == nil {
-//            _ = try? await database.modifyRecords(saving: [thirdParent.ckRecord], deleting: [])
-//        }
         do {
             let _ = try await database.save(childCkRecord)
         } catch {
@@ -191,9 +172,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         let unwrappedRecords = records.matchResults.compactMap { record in
             try? record.1.get()
         }
-//        if unwrappedRecords.isEmpty {
-//            throw CloudKitError.childRecordsNotFound
-//        }
         
         let childRecords = try await withThrowingTaskGroup(of: Child?.self, returning: [Child].self) { group in
             for record in unwrappedRecords {

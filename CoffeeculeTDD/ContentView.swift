@@ -46,7 +46,6 @@ struct ContentView: View {
         } message: {
             Text(errorText)
         }
-
     }
 }
 

@@ -41,12 +41,6 @@ protocol ChildWithTwoParents: ChildRecord {
     init?(from record: CKRecord, firstParent: Parent, secondParent: SecondParent)
 }
 
-//extension ChildWithTwoParents {
-//    init?(from record: CKRecord ) {
-//        return nil
-//    }
-//}
-
 /// A Record type that has a parent that is also a Record type.
 ///
 /// Read the Record documentation for implementation tips.
@@ -58,9 +52,3 @@ protocol ChildWithThreeParents: ChildWithTwoParents {
     
     init?(from record: CKRecord, firstParent: Parent, secondParent: SecondParent, thirdParent: ThirdParent)
 }
-
-//extension ChildWithThreeParents {
-//    init?(from record: CKRecord ) {
-//        return nil
-//    }
-//}

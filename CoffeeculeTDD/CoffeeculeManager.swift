@@ -27,34 +27,8 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     @Published var userRelationships: [User: [User: Int]] = [:]
     
     private var selectedUserDebts: [User: Int] = [:]
-//    {
-//        let userDebts: [User: Int] = Dictionary(
-//            uniqueKeysWithValues: userRelationships.compactMap { (buyer, receiverRelationship) in
-//                if selectedUsers.contains(where: {$0 == buyer }) {
-//                    let debt = receiverRelationship.reduce(0) { partialResult, receiverDebt in
-//                        if selectedUsers.contains(where: {$0 == receiverDebt.key }) {
-//                            return partialResult + receiverDebt.value
-//                        }
-//                        return partialResult
-//                    }
-//                    return (buyer, debt)
-//                }
-//                return nil
-//            }
-//        )
-//        return userDebts
-//    }
     
-    var mostIndebttedFromSelectedUsers: User? 
-//    {
-//        let mostInDebtUser: (user: User?, debt: Int) = selectedUserDebts.reduce((User?.none, Int.max)) { partialResult, buyerDebts in
-//            if buyerDebts.1 <= partialResult.1 {
-//                return buyerDebts
-//            }
-//            return partialResult
-//        }
-//        return mostInDebtUser.user
-//    }
+    var mostIndebttedFromSelectedUsers: User?
         
     @Published var isLoading: Bool = true
     @Published var displayedError: Error?
