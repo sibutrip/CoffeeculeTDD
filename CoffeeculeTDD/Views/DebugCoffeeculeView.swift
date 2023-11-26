@@ -1,5 +1,5 @@
 //
-//  CoffeeculeView.swift
+//  DebugCoffeeculeView.swift
 //  CoffeeculeTDD
 //
 //  Created by Cory Tripathy on 11/23/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import CloudKit
 
-struct CoffeeculeView: View {
+struct DebugCoffeeculeView: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var errorText: String?
     @State private var isFetchingCoffeecules = true
@@ -76,10 +76,10 @@ struct CoffeeculeView: View {
                         Text("Receiver: \(transaction.thirdParent?.name ?? "")")
                     }
                 }
-                Text(coffeeculeManager.mostIndebttedFromSelectedUsers?.name ?? "")
+                Text(coffeeculeManager.selectedBuyer?.name ?? "")
                 Button("Add transaction") {
                     Task {
-                        try await coffeeculeManager.addTransaction(withBuyer: coffeeculeManager.mostIndebttedFromSelectedUsers)
+                        try await coffeeculeManager.addTransaction(withBuyer: coffeeculeManager.selectedBuyer)
                     }
                 }
             }
@@ -119,5 +119,5 @@ struct CoffeeculeView: View {
 }
 
 #Preview {
-    CoffeeculeView()
+    DebugCoffeeculeView()
 }

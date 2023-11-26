@@ -15,6 +15,11 @@ struct Relationship: ChildWithTwoParents {
         self.parent = firstParent
     }
     
+    init?(from record: CKRecord) {
+        self.id = record.recordID.recordName
+        self.creationDate = record.creationDate
+    }
+    
     var creationDate: Date?
     
     static var recordType: String { "Relationship" }

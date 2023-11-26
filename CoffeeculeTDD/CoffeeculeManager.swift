@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 @MainActor
 class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
@@ -22,14 +23,13 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     @Published var transactionsInSelectedCoffeecule: [Transaction] = []
     
     @Published var selectedUsers: [User] = []
+    @Published var selectedBuyer: User?
     
     /// [buyer: [receiver: debtAmount]]
     @Published var userRelationships: [User: [User: Int]] = [:]
     
-    private var selectedUserDebts: [User: Int] = [:]
+    @Published var selectedUserDebts: [User: Int] = [:]
     
-    var mostIndebttedFromSelectedUsers: User?
-        
     @Published var isLoading: Bool = true
     @Published var displayedError: Error?
     
@@ -90,7 +90,11 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
             }
             return partialResult
         }
-        self.mostIndebttedFromSelectedUsers = mostInDebtUser.user
+        if selectedUserDebts.count > 1 {
+            self.selectedBuyer = mostInDebtUser.user
+        } else {
+            self.selectedBuyer = nil
+        }
     }
     
     func createCoffeecule() async throws {
@@ -189,8 +193,26 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         guard let ckService else {
             throw UserManagerError.noCkServiceAvailable
         }
-        
-        let transactions: [Transaction] = (try? await ckService.threeParentChildren(of: selectedCoffeecule, secondParent: nil, thirdParent: nil)) ?? []
+        let transactionRecords: [CKRecord]  = (try? await ckService.children(of: selectedCoffeecule, returning: Transaction.self)) ?? []
+        let buyerIDs: Set<String> = Set(transactionRecords.compactMap { ($0["Buyer"] as? CKRecord.Reference)?.recordID.recordName })
+        let receiverIDs: Set<String> = Set(transactionRecords.compactMap { ($0["Receiver"] as? CKRecord.Reference)?.recordID.recordName })
+        let allUserIDs = buyerIDs.union(receiverIDs)
+        let usersByReference: [String: User] = Dictionary(
+            uniqueKeysWithValues: allUserIDs.compactMap { userID in
+                if let user = usersInSelectedCoffeecule.first(where: { $0.recordID.recordName == userID }) {
+                    return (userID, user)
+                }
+                return nil
+        })
+        let transactions: [Transaction] = transactionRecords.compactMap { record in
+            guard let receiverID = (record["Receiver"] as? CKRecord.Reference)?.recordID.recordName,
+                  let buyerID = (record["Buyer"] as? CKRecord.Reference)?.recordID.recordName,
+                  let secondParent = usersByReference[buyerID],
+                  let thirdParent = usersByReference[receiverID] else {
+                return nil
+            }
+            return Transaction(from: record, firstParent: selectedCoffeecule, secondParent: secondParent, thirdParent: thirdParent)
+        }
         self.transactionsInSelectedCoffeecule = transactions
     }
     

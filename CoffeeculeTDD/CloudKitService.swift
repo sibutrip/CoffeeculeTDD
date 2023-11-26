@@ -82,7 +82,22 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         return someRecords
     }
     
-    func children<Child: ChildRecord, Parent: Record>(of parent: Parent) async throws -> [Child] where Child.Parent == Parent {
+//    func children<Child: ChildRecord, Parent: Record>(of parent: Parent) async throws -> [Child] where Child.Parent == Parent {
+//        let reference = CKRecord.Reference(recordID: parent.recordID, action: .none)
+//        let predicate = NSPredicate(format: "\(Parent.recordType) == %@", reference)
+//        let query = CKQuery(recordType: Child.recordType, predicate: predicate)
+//        
+//        let records = try await database.records(matching: query, inZoneWith: nil, desiredKeys: nil, resultsLimit: CKQueryOperation.maximumResults)
+//        let unwrappedRecords = records.matchResults.compactMap { record in
+//            try? record.1.get()
+//        }
+//        
+//        return unwrappedRecords.compactMap { record in
+//            Child(from: record, with: parent)
+//        }
+//    }
+    
+    func children<Parent: Record, Child: ChildRecord>(of parent: Parent, returning child: Child.Type) async throws -> [CKRecord] where Child.Parent == Parent {
         let reference = CKRecord.Reference(recordID: parent.recordID, action: .none)
         let predicate = NSPredicate(format: "\(Parent.recordType) == %@", reference)
         let query = CKQuery(recordType: Child.recordType, predicate: predicate)
@@ -92,9 +107,7 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
             try? record.1.get()
         }
         
-        return unwrappedRecords.compactMap { record in
-            Child(from: record, with: parent)
-        }
+        return unwrappedRecords
     }
     
     func update<SomeRecord: Record>(record: SomeRecord) async throws {
@@ -210,6 +223,7 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         return childRecords
     }
     
+    #warning("broken now :(")
     func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil, thirdParent: ThirdParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent {
         
         if parent?.ckRecord == secondParent?.ckRecord && parent?.ckRecord == thirdParent?.ckRecord && parent?.ckRecord == nil {

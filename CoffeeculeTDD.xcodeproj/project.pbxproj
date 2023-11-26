@@ -21,11 +21,28 @@
 		74495C0E2B02D45800C1C7F7 /* MockDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C0D2B02D45800C1C7F7 /* MockDataContainer.swift */; };
 		74495C102B02D47A00C1C7F7 /* MockChildRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */; };
 		74565F3B2B0FC2EB00458634 /* ContainerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74565F3A2B0FC2EB00458634 /* ContainerInfo.swift */; };
-		74565F3E2B0FC7B900458634 /* CoffeeculeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74565F3D2B0FC7B900458634 /* CoffeeculeView.swift */; };
+		74565F3E2B0FC7B900458634 /* DebugCoffeeculeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74565F3D2B0FC7B900458634 /* DebugCoffeeculeView.swift */; };
 		747BFA002B041DFB00296BCC /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747BF9FF2B041DFB00296BCC /* Relationship.swift */; };
 		74A6DFFE2B07C6560076042D /* SecondMockRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */; };
 		74A6E0002B07C66A0076042D /* MockRecordWithTwoParents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */; };
 		74A6E0022B07E33C0076042D /* MockRecordWithThreeParents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */; };
+		74A7DD132B13C2DA00BE97FF /* AllMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD032B13C2D900BE97FF /* AllMembersView.swift */; };
+		74A7DD142B13C2DA00BE97FF /* MemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD042B13C2D900BE97FF /* MemberView.swift */; };
+		74A7DD152B13C2DA00BE97FF /* CoffeeculeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD052B13C2D900BE97FF /* CoffeeculeView.swift */; };
+		74A7DD162B13C2DA00BE97FF /* SomeoneElseBuying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD062B13C2D900BE97FF /* SomeoneElseBuying.swift */; };
+		74A7DD172B13C2DA00BE97FF /* ColorPickerDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD082B13C2D900BE97FF /* ColorPickerDetail.swift */; };
+		74A7DD182B13C2DA00BE97FF /* CustomizeCupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD092B13C2D900BE97FF /* CustomizeCupView.swift */; };
+		74A7DD192B13C2DA00BE97FF /* CupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD0A2B13C2D900BE97FF /* CupView.swift */; };
+		74A7DD1A2B13C2DA00BE97FF /* CupPickerDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD0B2B13C2D900BE97FF /* CupPickerDetail.swift */; };
+		74A7DD1C2B13C2DA00BE97FF /* TransactionHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD0E2B13C2D900BE97FF /* TransactionHistory.swift */; };
+		74A7DD1D2B13C2DA00BE97FF /* TransactionHistoryDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD0F2B13C2D900BE97FF /* TransactionHistoryDetail.swift */; };
+		74A7DD1E2B13C2DA00BE97FF /* RelationshipWeb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD102B13C2D900BE97FF /* RelationshipWeb.swift */; };
+		74A7DD1F2B13C2DA00BE97FF /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD112B13C2D900BE97FF /* HistoryView.swift */; };
+		74A7DD202B13C2DA00BE97FF /* RelationshipWebDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD122B13C2D900BE97FF /* RelationshipWebDetail.swift */; };
+		74A7DD252B13C40200BE97FF /* MugIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD232B13C40200BE97FF /* MugIcon.swift */; };
+		74A7DD262B13C40200BE97FF /* UserColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD242B13C40200BE97FF /* UserColor.swift */; };
+		74A7DD292B13C4D300BE97FF /* ChildSizeReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD272B13C4D300BE97FF /* ChildSizeReader.swift */; };
+		74A7DD2A2B13C4D300BE97FF /* EqualWidthVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD282B13C4D300BE97FF /* EqualWidthVStack.swift */; };
 		74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */; };
 		74D8DAF22B002DD6005811AD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF12B002DD6005811AD /* Record.swift */; };
 		74D8DAF42B003212005811AD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF32B003212005811AD /* User.swift */; };
@@ -63,11 +80,29 @@
 		74495C0F2B02D47A00C1C7F7 /* MockChildRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChildRecord.swift; sourceTree = "<group>"; };
 		74565F3A2B0FC2EB00458634 /* ContainerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerInfo.swift; sourceTree = "<group>"; };
 		74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoffeeculeTDD.entitlements; sourceTree = "<group>"; };
-		74565F3D2B0FC7B900458634 /* CoffeeculeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeView.swift; sourceTree = "<group>"; };
+		74565F3D2B0FC7B900458634 /* DebugCoffeeculeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCoffeeculeView.swift; sourceTree = "<group>"; };
 		747BF9FF2B041DFB00296BCC /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondMockRecord.swift; sourceTree = "<group>"; };
 		74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithTwoParents.swift; sourceTree = "<group>"; };
 		74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithThreeParents.swift; sourceTree = "<group>"; };
+		74A7DD032B13C2D900BE97FF /* AllMembersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllMembersView.swift; sourceTree = "<group>"; };
+		74A7DD042B13C2D900BE97FF /* MemberView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberView.swift; sourceTree = "<group>"; };
+		74A7DD052B13C2D900BE97FF /* CoffeeculeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoffeeculeView.swift; sourceTree = "<group>"; };
+		74A7DD062B13C2D900BE97FF /* SomeoneElseBuying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SomeoneElseBuying.swift; sourceTree = "<group>"; };
+		74A7DD082B13C2D900BE97FF /* ColorPickerDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPickerDetail.swift; sourceTree = "<group>"; };
+		74A7DD092B13C2D900BE97FF /* CustomizeCupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomizeCupView.swift; sourceTree = "<group>"; };
+		74A7DD0A2B13C2D900BE97FF /* CupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CupView.swift; sourceTree = "<group>"; };
+		74A7DD0B2B13C2D900BE97FF /* CupPickerDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CupPickerDetail.swift; sourceTree = "<group>"; };
+		74A7DD0E2B13C2D900BE97FF /* TransactionHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHistory.swift; sourceTree = "<group>"; };
+		74A7DD0F2B13C2D900BE97FF /* TransactionHistoryDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHistoryDetail.swift; sourceTree = "<group>"; };
+		74A7DD102B13C2D900BE97FF /* RelationshipWeb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelationshipWeb.swift; sourceTree = "<group>"; };
+		74A7DD112B13C2D900BE97FF /* HistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		74A7DD122B13C2D900BE97FF /* RelationshipWebDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelationshipWebDetail.swift; sourceTree = "<group>"; };
+		74A7DD222B13C2F300BE97FF /* OLDContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OLDContentView.swift; path = ../../../Coffeecule/Coffeecule/Views/OLDContentView.swift; sourceTree = "<group>"; };
+		74A7DD232B13C40200BE97FF /* MugIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MugIcon.swift; sourceTree = "<group>"; };
+		74A7DD242B13C40200BE97FF /* UserColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserColor.swift; sourceTree = "<group>"; };
+		74A7DD272B13C4D300BE97FF /* ChildSizeReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChildSizeReader.swift; sourceTree = "<group>"; };
+		74A7DD282B13C4D300BE97FF /* EqualWidthVStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EqualWidthVStack.swift; sourceTree = "<group>"; };
 		74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitServiceTests.swift; sourceTree = "<group>"; };
 		74D8DAF12B002DD6005811AD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
@@ -132,8 +167,7 @@
 			children = (
 				74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */,
 				741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */,
-				741EA0E82B00144600E0AA09 /* ContentView.swift */,
-				74565F3D2B0FC7B900458634 /* CoffeeculeView.swift */,
+				74A7DD212B13C2EC00BE97FF /* Views */,
 				74495C022B026DDD00C1C7F7 /* Models */,
 				74DF62E52B051CC1001D82D7 /* CoffeeculeManager.swift */,
 				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
@@ -166,6 +200,8 @@
 		74495C022B026DDD00C1C7F7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				74A7DD232B13C40200BE97FF /* MugIcon.swift */,
+				74A7DD242B13C40200BE97FF /* UserColor.swift */,
 				74495BFB2B01968800C1C7F7 /* Coffeecule.swift */,
 				74565F3A2B0FC2EB00458634 /* ContainerInfo.swift */,
 				74D8DAF32B003212005811AD /* User.swift */,
@@ -174,6 +210,55 @@
 				74495BFF2B026DC800C1C7F7 /* Protocols */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		74A7DD072B13C2D900BE97FF /* Cups */ = {
+			isa = PBXGroup;
+			children = (
+				74A7DD082B13C2D900BE97FF /* ColorPickerDetail.swift */,
+				74A7DD092B13C2D900BE97FF /* CustomizeCupView.swift */,
+				74A7DD0A2B13C2D900BE97FF /* CupView.swift */,
+				74A7DD0B2B13C2D900BE97FF /* CupPickerDetail.swift */,
+			);
+			path = Cups;
+			sourceTree = "<group>";
+		};
+		74A7DD0D2B13C2D900BE97FF /* History */ = {
+			isa = PBXGroup;
+			children = (
+				74A7DD0E2B13C2D900BE97FF /* TransactionHistory.swift */,
+				74A7DD0F2B13C2D900BE97FF /* TransactionHistoryDetail.swift */,
+				74A7DD102B13C2D900BE97FF /* RelationshipWeb.swift */,
+				74A7DD112B13C2D900BE97FF /* HistoryView.swift */,
+				74A7DD122B13C2D900BE97FF /* RelationshipWebDetail.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		74A7DD212B13C2EC00BE97FF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				74A7DD222B13C2F300BE97FF /* OLDContentView.swift */,
+				741EA0E82B00144600E0AA09 /* ContentView.swift */,
+				74A7DD052B13C2D900BE97FF /* CoffeeculeView.swift */,
+				74A7DD032B13C2D900BE97FF /* AllMembersView.swift */,
+				74A7DD062B13C2D900BE97FF /* SomeoneElseBuying.swift */,
+				74A7DD042B13C2D900BE97FF /* MemberView.swift */,
+				74565F3D2B0FC7B900458634 /* DebugCoffeeculeView.swift */,
+				74A7DD072B13C2D900BE97FF /* Cups */,
+				74A7DD0D2B13C2D900BE97FF /* History */,
+				74A7DD2B2B13C4D500BE97FF /* Utilities */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		74A7DD2B2B13C4D500BE97FF /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				74A7DD272B13C4D300BE97FF /* ChildSizeReader.swift */,
+				74A7DD282B13C4D300BE97FF /* EqualWidthVStack.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		74C72B6F2B02E3E300718CAD /* CloudKitService */ = {
@@ -309,16 +394,33 @@
 				741EA1132B00148D00E0AA09 /* CloudKitService.swift in Sources */,
 				74D8DAF82B004564005811AD /* Database.swift in Sources */,
 				74DF62E82B064E07001D82D7 /* CKServiceProtocol.swift in Sources */,
+				74A7DD1A2B13C2DA00BE97FF /* CupPickerDetail.swift in Sources */,
 				74495BFE2B019AB600C1C7F7 /* DataContainer.swift in Sources */,
 				7402D2AC2B0C1CF200183682 /* Transaction.swift in Sources */,
 				74495C042B02774C00C1C7F7 /* ChildRecord.swift in Sources */,
 				747BFA002B041DFB00296BCC /* Relationship.swift in Sources */,
 				74DF62E62B051CC1001D82D7 /* CoffeeculeManager.swift in Sources */,
-				74565F3E2B0FC7B900458634 /* CoffeeculeView.swift in Sources */,
+				74A7DD262B13C40200BE97FF /* UserColor.swift in Sources */,
+				74A7DD292B13C4D300BE97FF /* ChildSizeReader.swift in Sources */,
+				74A7DD1C2B13C2DA00BE97FF /* TransactionHistory.swift in Sources */,
+				74565F3E2B0FC7B900458634 /* DebugCoffeeculeView.swift in Sources */,
 				741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */,
+				74A7DD252B13C40200BE97FF /* MugIcon.swift in Sources */,
 				74D8DAF42B003212005811AD /* User.swift in Sources */,
 				74D8DAF22B002DD6005811AD /* Record.swift in Sources */,
+				74A7DD152B13C2DA00BE97FF /* CoffeeculeView.swift in Sources */,
+				74A7DD172B13C2DA00BE97FF /* ColorPickerDetail.swift in Sources */,
+				74A7DD1D2B13C2DA00BE97FF /* TransactionHistoryDetail.swift in Sources */,
+				74A7DD2A2B13C4D300BE97FF /* EqualWidthVStack.swift in Sources */,
+				74A7DD1E2B13C2DA00BE97FF /* RelationshipWeb.swift in Sources */,
 				741EA0E72B00144600E0AA09 /* CoffeeculeTDDApp.swift in Sources */,
+				74A7DD1F2B13C2DA00BE97FF /* HistoryView.swift in Sources */,
+				74A7DD132B13C2DA00BE97FF /* AllMembersView.swift in Sources */,
+				74A7DD192B13C2DA00BE97FF /* CupView.swift in Sources */,
+				74A7DD142B13C2DA00BE97FF /* MemberView.swift in Sources */,
+				74A7DD162B13C2DA00BE97FF /* SomeoneElseBuying.swift in Sources */,
+				74A7DD182B13C2DA00BE97FF /* CustomizeCupView.swift in Sources */,
+				74A7DD202B13C2DA00BE97FF /* RelationshipWebDetail.swift in Sources */,
 				74565F3B2B0FC2EB00458634 /* ContainerInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

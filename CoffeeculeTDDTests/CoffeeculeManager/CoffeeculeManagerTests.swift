@@ -142,7 +142,7 @@ final class UserManagerTests: XCTestCase {
         sut.usersInSelectedCoffeecule = sut.selectedUsers
         sut.selectedCoffeecule = Coffeecule()
         try sut.createUserRelationships()
-        try await sut.addTransaction(withBuyer: sut.mostIndebttedFromSelectedUsers)
+        try await sut.addTransaction(withBuyer: sut.selectedBuyer)
         XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 2)
     }
     
@@ -178,7 +178,7 @@ final class UserManagerTests: XCTestCase {
         sut.usersInSelectedCoffeecule = sut.selectedUsers
         try sut.createUserRelationships()
         do {
-            try await sut.addTransaction(withBuyer: sut.mostIndebttedFromSelectedUsers)
+            try await sut.addTransaction(withBuyer: sut.selectedBuyer)
         } catch UserManagerError.noCoffeeculeSelected {
             XCTAssert(true)
             return
@@ -199,7 +199,7 @@ final class UserManagerTests: XCTestCase {
         sut.usersInSelectedCoffeecule = sut.selectedUsers
         try sut.createUserRelationships()
         do {
-            try await sut.addTransaction(withBuyer: sut.mostIndebttedFromSelectedUsers)
+            try await sut.addTransaction(withBuyer: sut.selectedBuyer)
         } catch UserManagerError.noCoffeeculeSelected {
             XCTAssert(true)
             return
@@ -214,7 +214,7 @@ final class UserManagerTests: XCTestCase {
         let sut = await makeSUT()
         sut.selectedCoffeecule = Coffeecule()
         do {
-            try await sut.addTransaction(withBuyer: sut.mostIndebttedFromSelectedUsers)
+            try await sut.addTransaction(withBuyer: sut.selectedBuyer)
         } catch UserManagerError.noReceiversSelected {
             XCTAssert(true)
             return
@@ -236,7 +236,7 @@ final class UserManagerTests: XCTestCase {
         sut.selectedCoffeecule = Coffeecule()
         try sut.createUserRelationships()
         do {
-            try await sut.addTransaction(withBuyer: sut.mostIndebttedFromSelectedUsers)
+            try await sut.addTransaction(withBuyer: sut.selectedBuyer)
         } catch UserManagerError.failedToConnectToDatabase {
             XCTAssert(true)
             return
