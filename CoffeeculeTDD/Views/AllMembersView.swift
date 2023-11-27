@@ -42,17 +42,17 @@ struct AllMembersView: View {
                 }
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(coffeeculeManager.usersInSelectedCoffeecule) { user in
+                        ForEach($coffeeculeManager.usersInSelectedCoffeecule) { user in
+                            let userValue = user.wrappedValue
                             Button {
-                                if coffeeculeManager.selectedUsers.contains(where: {$0 == user}) {
-                                    coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.filter { $0 != user }
+                                if coffeeculeManager.selectedUsers.contains(where: { $0 == userValue }) {
+                                    coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.filter { $0 != userValue }
                                 } else {
-                                    coffeeculeManager.selectedUsers.append(user)
+                                    coffeeculeManager.selectedUsers.append(userValue)
                                 }
                                 try? coffeeculeManager.createUserRelationships()
                             } label: {
-                                Text(user.name)
-//                                MemberView(vm: vm, relationship: $relationship)
+                                MemberView(with: user)
                             }
                             .disabled(editMode?.wrappedValue.isEditing ?? false)
                         }
