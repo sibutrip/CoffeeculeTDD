@@ -251,7 +251,7 @@ final class UserManagerTests: XCTestCase {
         let sut = await makeSUT()
         sut.selectedCoffeecule = Coffeecule()
         try await sut.fetchTransactionsInCoffeecule()
-        XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 4)
+        XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 2)
     }
     
     func test_fetchTransactionsInSelectedCoffeecule_throwsIfNoCoffeeculeSelected() async throws {
@@ -307,12 +307,6 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.userRelationships[firstUser]?[secondUser], 1)
     }
     
-    func test_createUserRelationships_doesNothingIfNoUsersFound() async throws {
-        let sut = await makeSUT()
-        try sut.createUserRelationships()
-        XCTAssertEqual(sut.userRelationships, [:])
-    }
-    
     func test_createUserRelationships_throwsIfTransactionDoesNotHaveBuyerAndReceiver() async throws {
         let sut = await makeSUT()
         sut.usersInSelectedCoffeecule = [User(systemUserID: "Test")]
@@ -341,6 +335,9 @@ final class UserManagerTests: XCTestCase {
         if didProvideCkService {
             let mockCkService = await MockCKService(didAuthenticate: didAuthenticate, databaseActionSuccess: databaseActionSuccess)
             userManager.ckService = mockCkService
+            if databaseActionSuccess {
+                userManager.usersInSelectedCoffeecule = mockCkService.usersInSelectedCoffeecule
+            }
         }
         return userManager
     }

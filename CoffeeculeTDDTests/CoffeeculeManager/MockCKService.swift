@@ -10,6 +10,12 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 actor MockCKService: CKServiceProtocol {
+    let selectedCoffeecule = Coffeecule()
+    let usersInSelectedCoffeecule: [User] = [
+        User(systemUserID: UUID().uuidString),
+        User(systemUserID: UUID().uuidString)
+    ]
+    
     var user: User?
     
     typealias Container = MockDataContainer
@@ -51,13 +57,21 @@ actor MockCKService: CKServiceProtocol {
         }
     }
     
-    func children<Child, Parent>(of parent: Parent) async throws -> [Child] where Child : CoffeeculeTDD.ChildRecord, Parent : CoffeeculeTDD.Record, Parent == Child.Parent {
+    func children<Parent, Child>(of parent: Parent, returning child: Child.Type) async throws -> [CKRecord] where Parent : CoffeeculeTDD.Record, Parent == Child.Parent, Child : CoffeeculeTDD.ChildRecord {
         if databaseActionSuccess {
-            let child1 = Child(from: parent.ckRecord, with: parent)!
-            let child2 = Child(from: parent.ckRecord, with: parent)!
-            let child3 = Child(from: parent.ckRecord, with: parent)!
-            let child4 = Child(from: parent.ckRecord, with: parent)!
-            return [child1, child2, child3, child4]
+            if child.recordType == "Transaction" {
+                let record1 = CKRecord(recordType: "Relationship")
+                let record2 = CKRecord(recordType: "Relationship")
+                let buyer =  usersInSelectedCoffeecule[0].ckRecord
+                let receiver =  usersInSelectedCoffeecule[1].ckRecord
+                record1["Buyer"] = CKRecord.Reference(record: buyer, action: .none)
+                record1["Receiver"] = CKRecord.Reference(record: receiver, action: .none)
+                record2["Buyer"] = CKRecord.Reference(record: buyer, action: .none)
+                record2["Receiver"] = CKRecord.Reference(record: receiver, action: .none)
+                return [record1, record2]
+            } else {
+                return [CKRecord(recordType: "Test"), CKRecord(recordType: "Test")]
+            }
         } else {
             throw CloudKitError.couldNotSaveToDatabase
         }

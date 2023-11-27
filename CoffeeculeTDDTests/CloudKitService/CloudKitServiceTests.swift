@@ -121,14 +121,14 @@ final class CloudKitServiceTests: XCTestCase {
         let secondChildRecord = MockChildRecord(withParent: existingParentRecord)
         try await sut.saveWithOneParent(firstChildRecord)
         try await sut.saveWithOneParent(secondChildRecord)
-        let updatedChildRecords: [MockChildRecord] = try await sut.children(of: existingParentRecord)
+        let updatedChildRecords: [CKRecord] = try await sut.children(of: existingParentRecord, returning: MockChildRecord.self)
         XCTAssertEqual(updatedChildRecords.count, 2)
     }
     
     func test_children_returnsEmptyArrayIfNoParentFound() async throws {
         let parentRecord = MockRecord()
         let sut = try await makeSUT()
-            let fetchedRecords: [MockChildRecord] = try await sut.children(of: parentRecord)
+        let fetchedRecords: [CKRecord] = try await sut.children(of: parentRecord, returning: MockChildRecord.self)
         XCTAssertEqual(fetchedRecords, [])
     }
     
@@ -162,8 +162,8 @@ final class CloudKitServiceTests: XCTestCase {
         let parent = MockRecord()
         let recordWithParent = MockChildRecord(withParent: MockRecord())
         try await sut.saveWithOneParent(recordWithParent)
-        let fetchedRecord: MockRecordWithTwoParents = try await sut.children(of: parent).first!
-        XCTAssertEqual(fetchedRecord.id, recordWithParent.id)
+        let fetchedRecord: CKRecord = try await sut.children(of: parent, returning: MockRecordWithTwoParents.self).first!
+        XCTAssertEqual(fetchedRecord.recordID.recordName, recordWithParent.id)
     }
     
     func test_saveWithOneParent_throwsIfRecordAlreadyExistsInDatabase() async throws {
