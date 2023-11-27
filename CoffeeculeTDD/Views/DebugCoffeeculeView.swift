@@ -79,7 +79,7 @@ struct DebugCoffeeculeView: View {
                 Text(coffeeculeManager.selectedBuyer?.name ?? "")
                 Button("Add transaction") {
                     Task {
-                        try await coffeeculeManager.addTransaction(withBuyer: coffeeculeManager.selectedBuyer)
+                        try await coffeeculeManager.addTransaction()
                     }
                 }
             }

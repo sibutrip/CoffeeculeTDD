@@ -141,12 +141,12 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
     }
     
-    func addTransaction(withBuyer buyer: User?) async throws {
+    func addTransaction() async throws {
         guard !selectedUsers.isEmpty else {
             throw UserManagerError.noReceiversSelected
         }
         
-        guard let buyer else {
+        guard let buyer = selectedBuyer else {
             throw UserManagerError.noBuyerSelected
         }
 

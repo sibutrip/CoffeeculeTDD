@@ -38,7 +38,7 @@ struct CoffeeculeView: View {
                 if !someoneElseBuying {
                     AllMembersView(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
                 } else {
-//                    SomeoneElseBuying(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
+                    SomeoneElseBuying(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
                 }
             }
             .refreshable {
@@ -76,19 +76,19 @@ struct CoffeeculeView: View {
         }, message: {
             Text(errorText ?? "")
         })
-//        .alert("Is \(coffeeculeManager.currentBuyer.name) buying coffee?", isPresented: $isBuying) {
-//            HStack {
-//                Button("Yes") {
-//                    Task(priority: .userInitiated) {
-//                        await coffeeculeManager.buyCoffee(receivers: coffeeculeManager.presentPeople)
-//                    }
-//                    someoneElseBuying = false
-//                }
-//                Button("Cancel", role: .cancel) {
-//                    isBuying = false
-//                }
-//            }
-//        }
+        .alert("Is \(coffeeculeManager.selectedBuyer?.name ?? "") buying coffee?", isPresented: $isBuying) {
+            HStack {
+                Button("Yes") {
+                    Task(priority: .userInitiated) {
+                        try await coffeeculeManager.addTransaction()
+                    }
+                    someoneElseBuying = false
+                }
+                Button("Cancel", role: .cancel) {
+                    isBuying = false
+                }
+            }
+        }
         .animation(.default, value: someoneElseBuying)
     }
 }
