@@ -43,7 +43,7 @@ struct AllMembersView: View {
         timerCancellable = Timer.publish(every: 0.01, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
-                let step: Double = 0.025
+                let step: Double = 0.05
                 if self.opacity > 0.0 {
                     self.opacity -= step
                 } else {
@@ -57,7 +57,7 @@ struct AllMembersView: View {
         timerCancellable = Timer.publish(every: 0.01, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
-                let step: Double = 0.025
+                let step: Double = 0.05
                 if self.opacity < 1.0 {
                     self.opacity += step
                 } else {
@@ -157,7 +157,7 @@ struct AllMembersView: View {
                     )
                     .onTapGesture {
                         withAnimation {
-                            if dragDistance == 0 {
+                            if (dragDistance ?? 0) == 0 {
                                 dragDistance = geo.size.height / 2
                                 raiseOpacity()
                             } else {
