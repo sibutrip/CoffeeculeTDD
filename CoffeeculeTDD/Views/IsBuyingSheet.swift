@@ -120,6 +120,11 @@ struct IsBuyingSheet: View {
                     }
                 }
             }
+            .onAppear {
+                withAnimation(nil) {
+                    opacity = 0
+                }
+            }
             .onDisappear {
                 dragDistance = 0
             }
