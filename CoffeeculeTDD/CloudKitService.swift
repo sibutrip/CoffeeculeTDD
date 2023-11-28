@@ -82,7 +82,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         return someRecords
     }
     
-    #warning("add to tests")
     func remove<SomeRecord: Record>(_ record: SomeRecord) async throws {
         let (_, deleteResults) = try await database.modifyRecords(saving: [], deleting: [record.recordID])
         guard let deleteResult = deleteResults.first else {

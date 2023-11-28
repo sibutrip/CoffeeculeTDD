@@ -316,6 +316,18 @@ final class CloudKitServiceTests: XCTestCase {
         XCTAssert(true)
     }
     
+    func test_remove_throwsIfRecordNotInDatabase() async throws {
+        let recordToRemove = MockRecord()
+        let sut = try await makeSUT()
+        do {
+            try await sut.remove(recordToRemove)
+        } catch {
+            XCTAssert(true)
+            return
+        }
+        XCTFail("failed to throw error")
+    }
+    
     // MARK: - Helper Methods
     
     private func makeSUT(with ckRecords: [CKRecord] = [],

@@ -324,6 +324,40 @@ final class UserManagerTests: XCTestCase {
         XCTFail("addTransaction did not throw any errors")
     }
     
+    func test_remove_removesTransactionFromTransactionsInSelectedCoffeecule() async throws {
+        let sut = await makeSUT()
+        let coffeecule = Coffeecule()
+        let buyer = User(systemUserID: "Test")
+        let receiver = User(systemUserID: "Test2")
+        let existingTransactions = [
+            Transaction(buyer: buyer, receiver: receiver, in: coffeecule),
+            Transaction(buyer: buyer, receiver: receiver, in: coffeecule)]
+        sut.transactionsInSelectedCoffeecule = existingTransactions
+        try await sut.remove(existingTransactions[0])
+        XCTAssertEqual(sut.transactionsInSelectedCoffeecule[0], existingTransactions[1])
+    }
+    
+    func test_remove_throwsIfNoCkServiceAvailable() async throws {
+        let sut = await makeSUT(didProvideCkService: false)
+        let coffeecule = Coffeecule()
+        let buyer = User(systemUserID: "Test")
+        let receiver = User(systemUserID: "Test2")
+        let existingTransactions = [
+            Transaction(buyer: buyer, receiver: receiver, in: coffeecule),
+            Transaction(buyer: buyer, receiver: receiver, in: coffeecule)]
+        sut.transactionsInSelectedCoffeecule = existingTransactions
+        do {
+            try await sut.remove(existingTransactions[0])
+        } catch UserManagerError.noCkServiceAvailable {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("addTransaction did not throw UserManagerError.noCkServiceAvailable")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true,
