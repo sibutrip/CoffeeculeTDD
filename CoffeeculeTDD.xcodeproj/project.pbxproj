@@ -98,7 +98,6 @@
 		74A7DD102B13C2D900BE97FF /* RelationshipWeb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelationshipWeb.swift; sourceTree = "<group>"; };
 		74A7DD112B13C2D900BE97FF /* HistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		74A7DD122B13C2D900BE97FF /* RelationshipWebDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelationshipWebDetail.swift; sourceTree = "<group>"; };
-		74A7DD222B13C2F300BE97FF /* OLDContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OLDContentView.swift; path = ../../../Coffeecule/Coffeecule/Views/OLDContentView.swift; sourceTree = "<group>"; };
 		74A7DD232B13C40200BE97FF /* MugIcon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MugIcon.swift; sourceTree = "<group>"; };
 		74A7DD242B13C40200BE97FF /* UserColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserColor.swift; sourceTree = "<group>"; };
 		74A7DD272B13C4D300BE97FF /* ChildSizeReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChildSizeReader.swift; sourceTree = "<group>"; };
@@ -238,7 +237,6 @@
 		74A7DD212B13C2EC00BE97FF /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				74A7DD222B13C2F300BE97FF /* OLDContentView.swift */,
 				741EA0E82B00144600E0AA09 /* ContentView.swift */,
 				74A7DD052B13C2D900BE97FF /* CoffeeculeView.swift */,
 				74A7DD032B13C2D900BE97FF /* AllMembersView.swift */,
