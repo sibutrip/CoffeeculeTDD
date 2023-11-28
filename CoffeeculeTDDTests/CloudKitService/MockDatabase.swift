@@ -48,16 +48,34 @@ actor MockDatabase: Database {
                 return existingRecord
             }
         }
-        if savedRecords.isEmpty {
+        var deletedRecordIDs = [CKRecord.ID]()
+        self.records = records.compactMap { existingRecord in
+            if recordIDsToDelete.contains(where: { $0 == existingRecord.recordID }) {
+                let recordIDToDelete = recordIDsToDelete.first { $0 == existingRecord.recordID } ?? existingRecord.recordID
+                deletedRecordIDs.append(recordIDToDelete)
+                return nil
+            } else {
+                return existingRecord
+            }
+        }
+        if savedRecords.isEmpty && deletedRecordIDs.isEmpty {
             throw NSError(domain: "no records modified", code: 0)
         }
+        
         let saveResults: [Result<CKRecord, Error>] = savedRecords.map {
             .success($0)
         }
         let saveIDs = savedRecords.map { $0.recordID }
         let zippedSavedRecords = zip(saveIDs, saveResults)
         let saveResultsWithIDs = Dictionary(uniqueKeysWithValues: zippedSavedRecords)
-        return (saveResults: saveResultsWithIDs, deleteResults: [:])
+        
+        let deleteResults: [Result<Void, Error>] = deletedRecordIDs.map { _ in
+                .success({}())
+        }
+        let zippedDeletedRecords = zip(deletedRecordIDs, deleteResults)
+        let deleteResultsWithIDs = Dictionary(uniqueKeysWithValues: zippedDeletedRecords)
+        
+        return (saveResults: saveResultsWithIDs, deleteResults: deleteResultsWithIDs)
     }
     
     func record(for recordID: CKRecord.ID) async throws -> CKRecord {

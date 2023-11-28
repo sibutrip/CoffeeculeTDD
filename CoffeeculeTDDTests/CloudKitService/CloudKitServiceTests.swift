@@ -309,6 +309,13 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("did not throw an error")
     }
     
+    func test_remove_doesNotThrowIfSuccessful() async throws {
+        let recordToRemove = MockRecord()
+        let sut = try await makeSUT(with: [recordToRemove.ckRecord])
+        try await sut.remove(recordToRemove)
+        XCTAssert(true)
+    }
+    
     // MARK: - Helper Methods
     
     private func makeSUT(with ckRecords: [CKRecord] = [],

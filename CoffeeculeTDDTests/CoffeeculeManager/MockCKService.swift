@@ -10,6 +10,7 @@ import CloudKit
 @testable import CoffeeculeTDD
 
 actor MockCKService: CKServiceProtocol {
+    
     let selectedCoffeecule = Coffeecule()
     let usersInSelectedCoffeecule: [User] = [
         User(systemUserID: UUID().uuidString),
@@ -23,6 +24,10 @@ actor MockCKService: CKServiceProtocol {
     
     enum CloudKitError: Error {
         case couldNotSaveToDatabase
+    }
+    
+    func remove<SomeRecord>(_ record: SomeRecord) async throws where SomeRecord : CoffeeculeTDD.Record {
+        return
     }
     
     func updatedRecord<SomeRecord>(for record: SomeRecord) async throws -> SomeRecord where SomeRecord : CoffeeculeTDD.Record {

@@ -55,5 +55,9 @@ struct Transaction: ChildWithThreeParents {
     
     var creationDate: Date?
     
-    
+    var roundedDate: Date? {
+        guard let creationDate else { return nil }
+        let dateComponents = Calendar.autoupdatingCurrent.dateComponents([.calendar,.day,.month,.year], from: creationDate)
+        return Calendar.autoupdatingCurrent.date(from: dateComponents)
+    }
 }

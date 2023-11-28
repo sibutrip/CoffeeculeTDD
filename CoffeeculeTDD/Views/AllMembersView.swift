@@ -18,6 +18,7 @@ struct AllMembersView: View {
     @State private var customizingCup = false
     @State private var isDeletingCoffeecule = false
     @State private var isSharing = false
+    @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
     
@@ -99,16 +100,25 @@ struct AllMembersView: View {
         .toolbar {
             ToolbarItem {
                 Button {
+                    selectingCoffeecule = true
+                } label: {
+                    Label("Select Your Coffeecule", systemImage: "arrow.triangle.2.circlepath.circle")
+                }
+            }
+            ToolbarItem {
+                Button {
                     customizingCup = true
                 } label: {
                     Label("Customize Your Cup", systemImage: "cup.and.saucer")
                 }
             }
-            ToolbarItem {
-                Button {
-                    viewingHistory = true
-                } label: {
-                    Label("Transaction History", systemImage: "dollarsign.arrow.circlepath")
+            if coffeeculeManager.coffeecules.count > 1 {
+                ToolbarItem {
+                    Button {
+                        viewingHistory = true
+                    } label: {
+                        Label("Transaction History", systemImage: "dollarsign.arrow.circlepath")
+                    }
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
@@ -116,10 +126,13 @@ struct AllMembersView: View {
             }
         }
         .sheet(isPresented: $viewingHistory) {
-            //            TransactionHistory(vm: vm)
+            TransactionHistory()
         }
         .sheet(isPresented: $customizingCup) {
             //            CustomizeCupView(vm: vm)
+        }
+        .sheet(isPresented: $selectingCoffeecule) {
+            
         }
         .alert("Are you sure you want to delete your Coffeecule? This action is not reversable.", isPresented: $isDeletingCoffeecule) {
             HStack {

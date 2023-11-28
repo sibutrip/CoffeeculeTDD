@@ -185,6 +185,17 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         try createUserRelationships()
     }
     
+    #warning("add to tests")
+    func remove(_ transaction: Transaction) async throws {
+        guard let ckService else {
+            throw UserManagerError.noCkServiceAvailable
+        }
+        
+        try await ckService.remove(transaction)
+        self.transactionsInSelectedCoffeecule = transactionsInSelectedCoffeecule.filter { $0.id != transaction.id }
+        try createUserRelationships()
+    }
+    
     func fetchTransactionsInCoffeecule() async throws {
         guard let selectedCoffeecule else {
             throw UserManagerError.noCoffeeculeSelected
