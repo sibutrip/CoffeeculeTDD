@@ -9,19 +9,19 @@ import SwiftUI
 import CloudKit
 
 struct AllMembersView: View {
-    @State var share: CKShare?
-    @State var container: CKContainer?
+//    @State var share: CKShare?
+//    @State var container: CKContainer?
     @State var editMode: EditMode = .inactive
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
-    @State private var userIsOwner = false
+//    @State private var userIsOwner = false
     @State private var viewingHistory = false
     @State private var customizingCup = false
     @State private var isDeletingCoffeecule = false
-    @State private var isSharing = false
+//    @State private var isSharing = false
     @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
-    @State private var isToggled = false
+//    @State private var isToggled = false
     
     private let columns = [
         GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0),
@@ -130,7 +130,7 @@ struct AllMembersView: View {
             TransactionHistory()
         }
         .sheet(isPresented: $customizingCup) {
-            //            CustomizeCupView(vm: vm)
+            CustomizeCupView(user: $coffeeculeManager.user)
         }
         .sheet(isPresented: $selectingCoffeecule) {
             

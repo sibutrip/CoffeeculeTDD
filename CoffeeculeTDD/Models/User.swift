@@ -18,10 +18,10 @@ struct User: Record {
     var name: String
     var systemUserID: String
     var creationDate: Date?
-    var mugIcon: MugIcon = .disposable
-    var userColor: UserColor = .purple
-    var mugIconString: String { mugIcon.rawValue }
-    var userColorString: String { mugIcon.rawValue }
+    var mugIcon: MugIcon { MugIcon(rawValue: mugIconString) ?? .disposable }
+    var userColor: UserColor { UserColor(rawValue: userColorString) ?? .purple }
+    var mugIconString: MugIcon.RawValue = "disposable"
+    var userColorString: UserColor.RawValue = "purple"
     
     init?(from record: CKRecord) {
         guard let name = record["name"] as? String,
@@ -32,8 +32,8 @@ struct User: Record {
         self.id = record.recordID.recordName
         self.name = name
         self.systemUserID = systemUserID
-        self.mugIcon = MugIcon(rawValue: record["userColorString"] as? String ?? "") ?? .disposable
-        self.userColor = UserColor(rawValue: record["mugIconString"] as? String ?? "") ?? .purple
+        self.mugIconString = record["mugIconString"] as? String ?? "disposable"
+        self.userColorString = record["userColorString"] as? String ?? "purple"
     }
     
     init(systemUserID: String) {

@@ -24,7 +24,7 @@ protocol CKServiceProtocol: Actor {
     
     func children<Parent: Record, Child: ChildRecord>(of parent: Parent, returning child: Child.Type) async throws -> [CKRecord] where Child.Parent == Parent
     
-    func update<SomeRecord: Record>(record: SomeRecord) async throws
+    func update<SomeRecord: Record>(record: SomeRecord, updatingFields fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord
     
     func saveWithOneParent<Child: ChildRecord, Parent: Record>(_ record: Child) async throws where Child.RecordKeys.AllCases == [Child.RecordKeys], Child.Parent == Parent
     

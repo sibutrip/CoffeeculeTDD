@@ -120,9 +120,24 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         return unwrappedRecords
     }
     
-    func update<SomeRecord: Record>(record: SomeRecord) async throws {
+    #warning("change test to make this return value")
+    func update<SomeRecord: Record>(record: SomeRecord, updatingFields fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord {
+        let fetchedCkRecord = try! await database.record(for: record.recordID)
+        for field in fields {
+            guard let fieldKey = field.rawValue as? CKRecord.FieldKey else { throw CloudKitError.invalidRequest }
+            let newField = record.ckRecord[fieldKey]
+            fetchedCkRecord[fieldKey] = newField
+        }
         do {
-            let (_,_) = try await database.modifyRecords(saving: [record.ckRecord], deleting: [])
+            let (saveResult,_) = try await database.modifyRecords(saving: [fetchedCkRecord], deleting: [])
+            guard let returnedResult = saveResult[record.recordID] else {
+                throw CloudKitError.invalidRequest
+            }
+            let returnedCkRecord = try returnedResult.get()
+                    guard let returnedRecord = SomeRecord(from: returnedCkRecord) else {
+                throw CloudKitError.invalidRequest
+            }
+            return returnedRecord
         } catch {
             throw CloudKitError.invalidRequest
         }

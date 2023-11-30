@@ -12,9 +12,7 @@ import CloudKit
 class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     
     var ckService: CKService?
-    var user: User? {
-        get async { await ckService?.user }
-    }
+    @Published var user: User?
     @Published var coffeecules: [Coffeecule] = []
     @Published var selectedCoffeecule: Coffeecule?
     
@@ -23,11 +21,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     @Published var transactionsInSelectedCoffeecule: [Transaction] = []
     
     @Published var selectedUsers: [User] = []
-    @Published var selectedBuyer: User? {
-        didSet {
-            print(selectedBuyer?.name ?? "none")
-        }
-    }
+    @Published var selectedBuyer: User?
     
     /// [buyer: [receiver: debtAmount]]
     @Published var userRelationships: [User: [User: Int]] = [:]
@@ -187,6 +181,21 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
             throw UserManagerError.failedToConnectToDatabase
         }
         try createUserRelationships()
+    }
+    
+    #warning("add to tests")
+    func update(_ user: User?) async throws {
+        guard let user else {
+            throw UserManagerError.noUsersFound
+        }
+        guard let ckService else {
+            throw UserManagerError.noCkServiceAvailable
+        }
+        let updatedUser = try! await ckService.update(record: user, updatingFields: [.mugIconString, .userColorString])
+        self.user = updatedUser
+        self.usersInSelectedCoffeecule = usersInSelectedCoffeecule.map { user in
+            return user.id == updatedUser.id ? updatedUser : user
+        }
     }
     
     func remove(_ transaction: Transaction) async throws {

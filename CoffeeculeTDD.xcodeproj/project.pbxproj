@@ -218,10 +218,10 @@
 		74A7DD072B13C2D900BE97FF /* Cups */ = {
 			isa = PBXGroup;
 			children = (
-				74A7DD082B13C2D900BE97FF /* ColorPickerDetail.swift */,
 				74A7DD092B13C2D900BE97FF /* CustomizeCupView.swift */,
-				74A7DD0A2B13C2D900BE97FF /* CupView.swift */,
 				74A7DD0B2B13C2D900BE97FF /* CupPickerDetail.swift */,
+				74A7DD082B13C2D900BE97FF /* ColorPickerDetail.swift */,
+				74A7DD0A2B13C2D900BE97FF /* CupView.swift */,
 			);
 			path = Cups;
 			sourceTree = "<group>";

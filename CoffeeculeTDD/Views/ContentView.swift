@@ -33,6 +33,7 @@ struct ContentView: View {
                 do {
                     let ckService = try await CloudKitService(with: ContainerInfo.container)
                     coffeeculeManager.ckService = ckService
+                    coffeeculeManager.user = await ckService.user
                     isAuthenticated = true
                 } catch {
                     couldNotAuthenticate = true

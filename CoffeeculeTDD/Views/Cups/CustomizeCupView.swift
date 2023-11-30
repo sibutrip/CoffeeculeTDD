@@ -1,76 +1,75 @@
-////
-////  CustomizeCupView.swift
-////  Coffeecule
-////
-////  Created by Cory Tripathy on 9/8/23.
-////
 //
-//import SwiftUI
+//  CustomizeCupView.swift
+//  Coffeecule
 //
-//struct CustomizeCupView: View {
-//    @Environment(\.dismiss) var dismiss
-//    @ObservedObject var vm: ViewModel
-//    let relationship: Relationship
+//  Created by Cory Tripathy on 9/8/23.
+//
+
+import SwiftUI
+import CloudKit
+
+struct CustomizeCupView: View {
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
+    @Binding var user: User?
 //    var person: Person { relationship.person }
-//    let columns = [
-//        GridItem(.flexible(minimum: 10, maximum: .infinity)),
-//        GridItem(.flexible(minimum: 10, maximum: .infinity))
-//    ]
-//    @State var userNotFound = false
-//    @Binding var selectedColor: UserColor
-//    @Binding var selectedMug: MugIcon
-//    
-//    
-//    var body: some View {
-//        NavigationStack {
-//            VStack(alignment: .leading) {
-//                Spacer()
-//                LazyVGrid(columns: columns, spacing: 0) {
-//                    ForEach(MugIcon.allCases,id: \.rawValue) { mugIcon in
-//                        Button {
-//                            selectedMug = mugIcon
-//                        } label: {
-//                            CupPickerDetail(person: person, icon: mugIcon, selectedMugIcon: $selectedMug, color: $selectedColor)
-//                        }
-//                    }
-//                }
-//                Spacer()
-//                HStack {
-//                    ForEach(UserColor.allCases,id: \.rawValue) { color in
-//                        Button {
-//                            selectedColor = color
-//                        } label: {
-//                            ColorPickerDetail(color: color, selectedColor: $selectedColor)
-//                        }
-//                    }
-//                }
-//                Spacer()
-//                Spacer()
-//            }
-//            .padding(.horizontal)
-//            .navigationTitle("Customize Your Cup")
-//            .navigationBarTitleDisplayMode(.inline)
-//            .toolbar {
-//                ToolbarItem {
-//                    Button("Done") {
-//                        dismiss()
-//                    }
-//                }
-//            }
-//        }
-//        .alert("Could not find your profile! Try restarting the app", isPresented: $userNotFound) {
-//            Button("Ok") { userNotFound = false }
-//        }
-//        .onDisappear {
-//            let relationships = vm.relationships.filter { $0.person == person }
-//            if relationships.count > 0 {
-//                let newRelationship = relationships[0]
-//                Task {
-//                    try await vm.updateInCloud(person: newRelationship.person)
-//                }
-//            }
-//        }
-//    }
+    let columns = [
+        GridItem(.flexible(minimum: 10, maximum: .infinity)),
+        GridItem(.flexible(minimum: 10, maximum: .infinity))
+    ]
+    @State var userNotFound = false
+    
+    
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading) {
+                Spacer()
+                LazyVGrid(columns: columns, spacing: 0) {
+                    ForEach(MugIcon.allCases,id: \.rawValue) { mugIcon in
+                        Button {
+                            user?.mugIconString = mugIcon.rawValue
+                        } label: {
+                            CupPickerDetail(user: $user, icon: mugIcon)
+                        }
+                    }
+                }
+                Spacer()
+                HStack {
+                    ForEach(UserColor.allCases,id: \.rawValue) { color in
+                        Button {
+                            user?.userColorString = color.rawValue
+                        } label: {
+                            ColorPickerDetail(user: $user, color: color)
+                        }
+                    }
+                }
+                Spacer()
+                Spacer()
+            }
+            .padding(.horizontal)
+            .navigationTitle("Customize Your Cup")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .alert("Could not find your profile! Try restarting the app", isPresented: $userNotFound) {
+            Button("Ok") { userNotFound = false }
+        }
+        .onDisappear {
+            Task {
+                do {
+                    try await coffeeculeManager.update(user)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
 //    init(vm: ViewModel) {
 //        
 //        
@@ -112,10 +111,10 @@
 //            }
 //        }
 //    }
-//}
-//
-//#Preview {
-//    GeometryReader { geo in
-//        CustomizeCupView(vm: ViewModel())
-//    }
-//}
+}
+
+#Preview {
+    GeometryReader { geo in
+        CustomizeCupView(user: .constant(User(systemUserID: "Test")))
+    }
+}

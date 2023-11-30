@@ -118,7 +118,6 @@ struct TransactionHistory: View {
             let transactions = coffeeculeManager.transactionsInSelectedCoffeecule.sorted { first, second in
                 first.creationDate ?? Date() > second.roundedDate ?? Date()
             }
-            print(transactions)
             let datesAndTransactions = Dictionary(grouping: transactions) { $0.roundedDate! }
             self.datesAndTransactions = datesAndTransactions
             //            transactions.forEach { print($0.buyerName) }
