@@ -184,18 +184,18 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     }
     
     #warning("add to tests")
-    func update(_ user: User?) async throws {
-        guard let user else {
+    func update(_ userToUpdate: User?) async throws {
+        guard let userToUpdate else {
             throw UserManagerError.noUsersFound
+        }
+        self.user = userToUpdate
+        self.usersInSelectedCoffeecule = usersInSelectedCoffeecule.map { user in
+            return user.id == userToUpdate.id ? userToUpdate : user
         }
         guard let ckService else {
             throw UserManagerError.noCkServiceAvailable
         }
-        let updatedUser = try! await ckService.update(record: user, updatingFields: [.mugIconString, .userColorString])
-        self.user = updatedUser
-        self.usersInSelectedCoffeecule = usersInSelectedCoffeecule.map { user in
-            return user.id == updatedUser.id ? updatedUser : user
-        }
+        _ = try await ckService.update(record: userToUpdate, updatingFields: [.mugIconString, .userColorString, .name])
     }
     
     func remove(_ transaction: Transaction) async throws {
