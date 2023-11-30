@@ -9,7 +9,7 @@ import CloudKit
 import SwiftUI
 
 struct CoffeeculeView: View {
-    @Environment(\.editMode) var editMode
+//    @Environment(\.editMode) var editMode
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     let columns = [
         GridItem(.flexible(minimum: 10, maximum: .infinity)),
@@ -89,6 +89,6 @@ struct CoffeeculeView: View {
                 }
             }
         }
-        .animation(.default, value: someoneElseBuying)
+//        .animation(.default, value: someoneElseBuying)
     }
 }

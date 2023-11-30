@@ -11,7 +11,7 @@ import CloudKit
 struct AllMembersView: View {
     @State var share: CKShare?
     @State var container: CKContainer?
-    @Environment(\.editMode) var editMode
+    @State var editMode: EditMode = .inactive
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var userIsOwner = false
     @State private var viewingHistory = false
@@ -21,6 +21,7 @@ struct AllMembersView: View {
     @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
+    @State private var isToggled = false
     
     private let columns = [
         GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0),
@@ -52,12 +53,12 @@ struct AllMembersView: View {
                             } label: {
                                 MemberView(with: user)
                             }
-                            .disabled(editMode?.wrappedValue.isEditing ?? false)
+                            .disabled(editMode == .active)
                         }
                     }
                 }
                 IsBuyingSheet(geo: geo, someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
-                if editMode?.wrappedValue.isEditing ?? false {
+                if editMode == .active {
                     let transition = AnyTransition.move(edge: .bottom)
                     EqualWidthVStackLayout(spacing: 10) {
                         Button {
@@ -75,20 +76,20 @@ struct AllMembersView: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
-                        if userIsOwner {
-                            Button {
-                                isDeletingCoffeecule = true
-                            } label: {
-                                Label("Delete Coffeecule", systemImage: "trash")
-                                    .font(.title2)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundStyle(.red)
-                            }
-                            .buttonStyle(.bordered)
-                        }
+//                        if userIsOwner {
+//                            Button {
+//                                isDeletingCoffeecule = true
+//                            } label: {
+//                                Label("Delete Coffeecule", systemImage: "trash")
+//                                    .font(.title2)
+//                                    .frame(maxWidth: .infinity)
+//                                    .foregroundStyle(.red)
+//                            }
+//                            .buttonStyle(.bordered)
+//                        }
                     }
                     .padding()
-                    .padding(.bottom, 30)
+//                    .padding(.bottom, 30)
                     .frame(width: geo.size.width)
                     .background(.regularMaterial)
                     .transition(transition)
@@ -151,6 +152,7 @@ struct AllMembersView: View {
                 
             }
         }
+        .environment(\.editMode, $editMode)
     }
     init(someoneElseBuying: Binding<Bool>, isBuying: Binding<Bool>) {
         _someoneElseBuying = someoneElseBuying

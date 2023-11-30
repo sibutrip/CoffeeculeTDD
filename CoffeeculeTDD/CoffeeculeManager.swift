@@ -23,7 +23,11 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     @Published var transactionsInSelectedCoffeecule: [Transaction] = []
     
     @Published var selectedUsers: [User] = []
-    @Published var selectedBuyer: User?
+    @Published var selectedBuyer: User? {
+        didSet {
+            print(selectedBuyer?.name ?? "none")
+        }
+    }
     
     /// [buyer: [receiver: debtAmount]]
     @Published var userRelationships: [User: [User: Int]] = [:]
