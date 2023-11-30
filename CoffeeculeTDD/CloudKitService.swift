@@ -35,7 +35,7 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         case .available:
             do {
                 let userID = try await container.userRecordID()
-                guard let user: User = try? await records(withValue: userID.recordName, inField: .systemUserID).first else {
+                guard let user: User = try? await records(matchingValue: userID.recordName, inField: .systemUserID).first else {
                     self.user = User(systemUserID: userID.recordName)
                     return
                 }
@@ -340,7 +340,7 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
     }
     
     #warning("add test to this")
-    func records<SomeRecord: Record>(withValue value: CVarArg, inField field: SomeRecord.RecordKeys) async throws -> [SomeRecord] {
+    func records<SomeRecord: Record>(matchingValue value: CVarArg, inField field: SomeRecord.RecordKeys) async throws -> [SomeRecord] {
         let predicate = NSPredicate(format: "\(field) == %@", value)
         let query = CKQuery(recordType: SomeRecord.recordType, predicate: predicate)
         let fetchedRecords = try await database.records(matching: query, inZoneWith: nil, desiredKeys: nil, resultsLimit: CKQueryOperation.maximumResults)

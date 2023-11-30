@@ -37,7 +37,7 @@ struct DebugCoffeeculeView: View {
             Button("Create coffeecule") {
                 Task {
                     do {
-                        try await coffeeculeManager.createCoffeecule()
+                        try await coffeeculeManager.createCoffeecule(with: "Test name")
                     } catch {
                         errorText = error.localizedDescription
                     }

@@ -95,12 +95,18 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
     }
     
-    func createCoffeecule() async throws {
-        guard let user = await user,
+    #warning("update tests to see fi already exists")
+    func createCoffeecule(with name: String) async throws {
+        guard let user,
               let ckService else {
             throw UserManagerError.noCkServiceAvailable
         }
-        let coffeecule = Coffeecule()
+        var coffeecule = Coffeecule(with: name)
+        var fetchedCule: Coffeecule? = try? await ckService.records(matchingValue: coffeecule.shortCode, inField: .shortCode).first
+        while fetchedCule != nil {
+            coffeecule = Coffeecule(with: name)
+            fetchedCule = try? await ckService.records(matchingValue: coffeecule.shortCode, inField: .shortCode).first
+        }
         let relationship = Relationship(user: user, coffecule: coffeecule)
         do {
             _ = try await ckService.save(record: coffeecule)
@@ -112,7 +118,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     }
     
     func fetchCoffeecules() async throws {
-        guard let user = await user,
+        guard let user,
               let ckService else {
             throw UserManagerError.noCkServiceAvailable
         }
