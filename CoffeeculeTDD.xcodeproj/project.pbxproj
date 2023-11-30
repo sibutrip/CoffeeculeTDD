@@ -45,6 +45,7 @@
 		74A7DD2A2B13C4D300BE97FF /* EqualWidthVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7DD282B13C4D300BE97FF /* EqualWidthVStack.swift */; };
 		74B139712B162C4F00683214 /* IsBuyingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B139702B162C4F00683214 /* IsBuyingSheet.swift */; };
 		74B139752B17A42C00683214 /* View+OnChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B139742B17A42C00683214 /* View+OnChange.swift */; };
+		74B139772B19066100683214 /* SelectCoffeeculeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B139762B19066000683214 /* SelectCoffeeculeSheet.swift */; };
 		74D8DAF02B0016C7005811AD /* CloudKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */; };
 		74D8DAF22B002DD6005811AD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF12B002DD6005811AD /* Record.swift */; };
 		74D8DAF42B003212005811AD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D8DAF32B003212005811AD /* User.swift */; };
@@ -106,6 +107,7 @@
 		74A7DD282B13C4D300BE97FF /* EqualWidthVStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EqualWidthVStack.swift; sourceTree = "<group>"; };
 		74B139702B162C4F00683214 /* IsBuyingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsBuyingSheet.swift; sourceTree = "<group>"; };
 		74B139742B17A42C00683214 /* View+OnChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OnChange.swift"; sourceTree = "<group>"; };
+		74B139762B19066000683214 /* SelectCoffeeculeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCoffeeculeSheet.swift; sourceTree = "<group>"; };
 		74D8DAE62B00169E005811AD /* CoffeeculeTDDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoffeeculeTDDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D8DAEF2B0016C7005811AD /* CloudKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitServiceTests.swift; sourceTree = "<group>"; };
 		74D8DAF12B002DD6005811AD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				74A7DD052B13C2D900BE97FF /* CoffeeculeView.swift */,
 				74A7DD032B13C2D900BE97FF /* AllMembersView.swift */,
 				74B139702B162C4F00683214 /* IsBuyingSheet.swift */,
+				74B139762B19066000683214 /* SelectCoffeeculeSheet.swift */,
 				74A7DD062B13C2D900BE97FF /* SomeoneElseBuying.swift */,
 				74A7DD042B13C2D900BE97FF /* MemberView.swift */,
 				74565F3D2B0FC7B900458634 /* DebugCoffeeculeView.swift */,
@@ -425,6 +428,7 @@
 				74A7DD192B13C2DA00BE97FF /* CupView.swift in Sources */,
 				74A7DD142B13C2DA00BE97FF /* MemberView.swift in Sources */,
 				74A7DD162B13C2DA00BE97FF /* SomeoneElseBuying.swift in Sources */,
+				74B139772B19066100683214 /* SelectCoffeeculeSheet.swift in Sources */,
 				74A7DD182B13C2DA00BE97FF /* CustomizeCupView.swift in Sources */,
 				74A7DD202B13C2DA00BE97FF /* RelationshipWebDetail.swift in Sources */,
 				74565F3B2B0FC2EB00458634 /* ContainerInfo.swift in Sources */,

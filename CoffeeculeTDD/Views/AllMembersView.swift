@@ -34,11 +34,6 @@ struct AllMembersView: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
-                Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
-                    ForEach(coffeeculeManager.coffeecules) { coffeecule in
-                        Text(coffeecule.id).tag(Optional(coffeecule))
-                    }
-                }
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach($coffeeculeManager.usersInSelectedCoffeecule) { user in
@@ -130,10 +125,10 @@ struct AllMembersView: View {
             TransactionHistory()
         }
         .sheet(isPresented: $customizingCup) {
-            CustomizeCupView(user: $coffeeculeManager.user)
+            CustomizeCupView()
         }
         .sheet(isPresented: $selectingCoffeecule) {
-            
+            SelectCoffeeculeSheet()
         }
         .alert("Are you sure you want to delete your Coffeecule? This action is not reversable.", isPresented: $isDeletingCoffeecule) {
             HStack {

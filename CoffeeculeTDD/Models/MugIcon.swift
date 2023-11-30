@@ -67,13 +67,13 @@ enum MugIcon: String, CaseIterable {
     var maxWidthPercentage: CGFloat {
         switch self {
         case .espresso:
-            return 0.406
+            return 0.35
         case .latte:
-            return 0.611
+            return 0.48
         case .mug:
-            return 0.576
+            return 0.55
         case .disposable:
-            return 0.481
+            return 0.43
         }
     }
 }

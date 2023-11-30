@@ -32,49 +32,50 @@ struct MemberView: View {
     @State private var zstackSize = CGSize.zero
     
     var body: some View {
-        ChildSizeReader(size: $zstackSize) {
-            ZStack {
-                if isPresent {
-                    Image(icon.selectedImageBackground)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(Color("user.background"))
-                    Image(icon.selectedImage)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(Color(color.colorName))
-                    
-                    if isBuying {
-                        Image(icon.isBuyingBadgeImage)
+        ZStack {
+            ChildSizeReader(size: $zstackSize) {
+                Group {
+                    if isPresent {
+                        Image(icon.selectedImageBackground)
                             .resizable()
                             .scaledToFit()
-                    } else if someoneElseBuying {
-                        Image(icon.someoneElseBuyingBadgeImage)
+                            .foregroundColor(Color("user.background"))
+                        Image(icon.selectedImage)
                             .resizable()
                             .scaledToFit()
+                            .foregroundColor(Color(color.colorName))
+                        
+                        if isBuying {
+                            Image(icon.isBuyingBadgeImage)
+                                .resizable()
+                                .scaledToFit()
+                        } else if someoneElseBuying {
+                            Image(icon.someoneElseBuyingBadgeImage)
+                                .resizable()
+                                .scaledToFit()
+                        }
+                    } else {
+                        Image(icon.imageBackground)
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(Color("user.background"))
+                        Image(icon.image)
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(Color(color.colorName))
                     }
-                } else {
-                    Image(icon.imageBackground)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(Color("user.background"))
-                    Image(icon.image)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(Color(color.colorName))
                 }
-                
-                Text(name)
-                    .multilineTextAlignment(.center)
-                    .font(.title.weight(.semibold))
-                    .foregroundColor(isPresent ? Color("background") : Color(color.colorName))
-                    .minimumScaleFactor(0.4)
-                    .lineLimit(1)
-                    .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: icon.offsetPercentage.1 * zstackSize.height / 2)
-                    .frame(maxWidth: icon.maxWidthPercentage * zstackSize.width)
             }
-            .animation(.default, value: coffeeculeManager.selectedBuyer)
+            Text(name)
+                .multilineTextAlignment(.center)
+                .font(.title.weight(.semibold))
+                .foregroundColor(isPresent ? Color("background") : Color(color.colorName))
+                .minimumScaleFactor(0.3)
+                .lineLimit(2)
+                .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: icon.offsetPercentage.1 * zstackSize.height / 2)
+                .frame(maxWidth: icon.maxWidthPercentage * zstackSize.width)
         }
+        .animation(.default, value: coffeeculeManager.selectedBuyer)
     }
     init(with user: Binding<User>, someoneElseBuying: Bool = false) {
         _user = user

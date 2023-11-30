@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct SelectCoffeeculeSheet: View {
+    @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
+            ForEach(coffeeculeManager.coffeecules) { coffeecule in
+                Text(coffeecule.id).tag(Optional(coffeecule))
+            }
+        }
     }
 }
 

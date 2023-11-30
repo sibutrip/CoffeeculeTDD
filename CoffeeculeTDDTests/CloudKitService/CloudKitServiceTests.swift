@@ -138,13 +138,16 @@ final class CloudKitServiceTests: XCTestCase {
         _ = try await sut.save(record: mockRecord)
         var updatedMockRecord = mockRecord
         updatedMockRecord.testField1 = UUID().uuidString
+        
         let fetchedMockRecord = try await sut.updatedRecord(for: mockRecord)
+        
         XCTAssertEqual(fetchedMockRecord, updatedMockRecord)
     }
     
     func test_updatedRecord_throwsRecordDoesNotExistIfNoRecordFound() async throws {
         let sut = try await makeSUT()
         let mockRecord = MockRecord()
+        
         do {
             let _ = try await sut.updatedRecord(for: mockRecord)
         } catch CloudKitService.CloudKitError.recordDoesNotExist {

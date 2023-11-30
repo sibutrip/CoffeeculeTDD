@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct ColorPickerDetail: View {
+    @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @Environment(\.colorScheme) var colorScheme
-    @Binding var user: User?
     let color: UserColor
     var body: some View {
         Group {
-            if color == user?.userColor {
+            if color == coffeeculeManager.user?.userColor {
                 Circle()
                     .foregroundColor(Color(color.colorName))
             } else {
@@ -30,5 +31,5 @@ struct ColorPickerDetail: View {
 }
 
 #Preview {
-    ColorPickerDetail(user: .constant(User(systemUserID: "Test")), color: .purple)
+    ColorPickerDetail(color: .purple)
 }

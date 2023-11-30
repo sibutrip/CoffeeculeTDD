@@ -9,17 +9,17 @@ import SwiftUI
 import CloudKit
 
 struct CupPickerDetail: View {
-    @Binding var user: User?
+    @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     let icon: MugIcon
     var isSelected: Bool {
-        user?.mugIcon == icon
+        coffeeculeManager.user?.mugIcon == icon
     }
     @State private var zstackSize: CGSize = .zero
     var body: some View {
         ChildSizeReader(size: $zstackSize) {
             
             ZStack {
-                if let user {
+                if let user = coffeeculeManager.user {
                     if isSelected {
                         Image(icon.selectedImageBackground)
                             .resizable()
@@ -33,8 +33,8 @@ struct CupPickerDetail: View {
                             .multilineTextAlignment(.center)
                             .font(.title.weight(.semibold))
                             .foregroundColor(Color("background"))
-                            .minimumScaleFactor(0.4)
-                            .lineLimit(1)
+                            .minimumScaleFactor(0.3)
+                            .lineLimit(2)
                             .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: icon.offsetPercentage.1 * zstackSize.height / 2)
                             .frame(maxWidth: icon.maxWidthPercentage * zstackSize.width)
                     } else {
@@ -55,5 +55,5 @@ struct CupPickerDetail: View {
 }
 
 #Preview {
-    CupPickerDetail(user: .constant(User(systemUserID: "Test")), icon: .disposable)
+    CupPickerDetail(icon: .disposable)
 }
