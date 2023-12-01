@@ -37,6 +37,8 @@ struct TransactionHistoryDetail: View {
     }
     
     @State private var textSize: CGSize = .zero
+    @State private var buyerIconSize: CGSize = .zero
+    
     var body: some View {
         HStack {
             ZStack {
@@ -53,7 +55,6 @@ struct TransactionHistoryDetail: View {
             ChildSizeReader(size: $textSize) {
                 Text(receiverName)
                     .font(.title2)
-//                    .padding(.vertical)
                     .foregroundStyle(Color(receiverColor.colorName))
             }
             Spacer()
@@ -63,7 +64,6 @@ struct TransactionHistoryDetail: View {
             ChildSizeReader(size: $textSize) {
                 Text(buyerName)
                     .font(.title2)
-//                    .padding(.vertical)
                     .foregroundStyle(Color(buyerColor.colorName))
             }
             ZStack {
@@ -75,12 +75,14 @@ struct TransactionHistoryDetail: View {
                     .resizable()
                     .frame(width: textSize.height, height: textSize.height)
                     .foregroundColor(Color(buyerColor.colorName))
-//            }
-//            .overlay {
-                Image(buyerIcon.isBuyingBadgeImage)
-                    .resizable()
-                    .frame(width: textSize.height, height: textSize.height)
-//                    .offset(x: -textSize.height / 2, y: -textSize.height / 2)
+            }
+            .overlay {
+                ChildSizeReader(size: $buyerIconSize) {
+                    Image(buyerIcon.isBuyingBadgeImage)
+                        .resizable()
+                        .frame(width: textSize.height * 2, height: textSize.height * 2)
+                        .offset(x: -buyerIconSize.width / 8, y: buyerIconSize.height / 8)
+                }
             }
         }
     }

@@ -32,6 +32,8 @@ struct CustomizeCupView: View {
             VStack(alignment: .leading) {
                 Spacer()
                 TextField("Display Name:", text: displayName)
+                    .font(.title2)
+                    .textFieldStyle(.roundedBorder)
                 Spacer()
                 LazyVGrid(columns: columns, spacing: 0) {
                     ForEach(MugIcon.allCases,id: \.rawValue) { mugIcon in
