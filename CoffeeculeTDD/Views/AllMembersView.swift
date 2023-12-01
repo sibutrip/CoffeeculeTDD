@@ -17,12 +17,23 @@ struct AllMembersView: View {
     @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
+    @State private var currentMagnification: CGFloat = 1
+    @State private var zoomDirection: ZoomDirection?
     @AppStorage("Column Count") var columnCount = 2
     private var columns: [GridItem] {
         (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
     }
     var hasBuyer: Bool {
         coffeeculeManager.selectedBuyer != nil
+    }
+    
+    var scaleAmount: CGFloat {
+        guard let zoomDirection else { return 1 }
+        return zoomDirection == .in ? 1.1 : 0.9
+    }
+    
+    enum ZoomDirection {
+        case `in`, out
     }
     
     var body: some View {
@@ -41,6 +52,8 @@ struct AllMembersView: View {
                                 try? coffeeculeManager.createUserRelationships()
                             } label: {
                                 MemberView(with: user)
+                                    .animation(.bouncy, value: scaleAmount)
+                                    .scaleEffect(scaleAmount)
                             }
                             .disabled(editMode == .active)
                         }
@@ -51,16 +64,29 @@ struct AllMembersView: View {
                     AddPersonSheet(geo: geo)
                 }
             }
-            .gesture(
-                MagnifyGesture().onEnded { magnifyValue in
-                    if magnifyValue.magnification > 1 {
-                        if columnCount > 1 {
-                            columnCount -= 1
+            .highPriorityGesture(
+                MagnifyGesture()
+                    .onChanged { magnifyValue in
+                        withAnimation {
+                            if magnifyValue.magnification > currentMagnification {
+                                zoomDirection = .in
+                            } else {
+                                zoomDirection = .out
+                            }
                         }
-                    } else {
-                        columnCount += 1
+                        currentMagnification = magnifyValue.magnification
                     }
-                }
+                    .onEnded { magnifyValue in
+                        if magnifyValue.magnification > 1 {
+                            if columnCount > 1 {
+                                columnCount -= 1
+                            }
+                        } else if columnCount < max(4, coffeeculeManager.usersInSelectedCoffeecule.count) {
+                            columnCount += 1
+                        }
+                        withAnimation { zoomDirection = nil }
+                        currentMagnification = 1
+                    }
             )
             .animation(.default, value: hasBuyer)
             .navigationTitle("Who's Here?")

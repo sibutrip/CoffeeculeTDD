@@ -124,7 +124,9 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
         do {
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: user, secondParent: nil)
-            self.coffeecules = relationships.compactMap { $0.secondParent }
+            self.coffeecules = relationships
+                .compactMap { $0.secondParent }
+                .sorted { $0.name < $1.name}
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
