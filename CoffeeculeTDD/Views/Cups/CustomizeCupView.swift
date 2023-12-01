@@ -72,7 +72,10 @@ struct CustomizeCupView: View {
         .onDisappear {
             Task {
                 do {
-                    try await coffeeculeManager.update(coffeeculeManager.user)
+                    async let _ = try await coffeeculeManager.update(coffeeculeManager.user)
+                    if let user = coffeeculeManager.user {
+                        async let _ = coffeeculeManager.updateTransactions(withNewNameFrom: user)
+                    }
                 } catch {
                     print(error.localizedDescription)
                 }

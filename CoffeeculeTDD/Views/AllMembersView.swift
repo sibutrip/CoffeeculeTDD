@@ -9,21 +9,16 @@ import SwiftUI
 import CloudKit
 
 struct AllMembersView: View {
-//    @State var share: CKShare?
-//    @State var container: CKContainer?
     @State var editMode: EditMode = .inactive
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
-//    @State private var userIsOwner = false
     @State private var viewingHistory = false
     @State private var customizingCup = false
     @State private var isDeletingCoffeecule = false
-//    @State private var isSharing = false
     @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
-//    @State private var isToggled = false
     
-    private let columns = [
+    @State private var columns = [
         GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0),
         GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0)
     ]
@@ -90,6 +85,17 @@ struct AllMembersView: View {
                     .transition(transition)
                 }
             }
+            .gesture(
+                MagnifyGesture().onEnded { magnifyValue in
+                    if magnifyValue.magnification > 1 {
+                        if columns.count > 2 {
+                            columns.removeFirst()
+                        }
+                    } else {
+                        columns.append(GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0))
+                    }
+                }
+            )
             .animation(.default, value: hasBuyer)
             .navigationTitle("Who's Here?")
         }

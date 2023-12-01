@@ -139,7 +139,9 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
         do {
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: nil, secondParent: selectedCoffeecule)
-            self.usersInSelectedCoffeecule = relationships.compactMap { $0.parent }
+            self.usersInSelectedCoffeecule = relationships
+                .compactMap { $0.parent }
+                .sorted { $0.name < $1.name}
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
@@ -202,6 +204,19 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
             throw UserManagerError.noCkServiceAvailable
         }
         _ = try await ckService.update(record: userToUpdate, updatingFields: [.mugIconString, .userColorString, .name])
+    }
+    
+    #warning("add to tests")
+    func updateTransactions(withNewNameFrom user: User) {
+        self.transactionsInSelectedCoffeecule = self.transactionsInSelectedCoffeecule.map { transaction in
+            var transaction = transaction
+            if transaction.secondParent?.id == user.id {
+                transaction.secondParent = user
+            } else if transaction.thirdParent?.id == user.id {
+                transaction.thirdParent = user
+            }
+            return transaction
+        }
     }
     
     func remove(_ transaction: Transaction) async throws {

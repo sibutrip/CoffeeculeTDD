@@ -9,12 +9,7 @@ import CloudKit
 import SwiftUI
 
 struct CoffeeculeView: View {
-//    @Environment(\.editMode) var editMode
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
-    let columns = [
-        GridItem(.flexible(minimum: 10, maximum: .infinity)),
-        GridItem(.flexible(minimum: 10, maximum: .infinity))
-    ]
     @State var someoneElseBuying = false
     @State var isBuying = false
     @State var isDeletingCoffeecule = false
@@ -43,7 +38,12 @@ struct CoffeeculeView: View {
             }
             .refreshable {
                 Task {
-//                    await coffeeculeManager.refreshData()
+                    do {
+                        try await coffeeculeManager.fetchUsersInCoffeecule()
+                        try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                    } catch {
+                        errorText = error.localizedDescription
+                    }
                 }
             }
         }
