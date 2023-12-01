@@ -15,31 +15,31 @@ struct SelectCoffeeculeSheet: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(coffeeculeManager.coffeecules) { coffeecule in
-                    Button {
-                        coffeeculeManager.selectedCoffeecule = coffeecule
-                    } label: {
-                        HStack {
-                            if coffeeculeManager.selectedCoffeecule?.id == coffeecule.id {
-                                Image(systemName: "checkmark.circle")
-                            } else {
-                                Image(systemName: "circle")
+            VStack {
+                List {
+                    ForEach(coffeeculeManager.coffeecules) { coffeecule in
+                        Button {
+                            coffeeculeManager.selectedCoffeecule = coffeecule
+                        } label: {
+                            HStack {
+                                if coffeeculeManager.selectedCoffeecule?.id == coffeecule.id {
+                                    Image(systemName: "checkmark.circle")
+                                } else {
+                                    Image(systemName: "circle")
+                                }
+                                Text(coffeecule.name)
                             }
-                            Text(coffeecule.name)
                         }
                     }
+                    .foregroundStyle(Color.primary)
                 }
-                .foregroundStyle(Color.primary)
                 Button {
                     isCreatingCoffeecule = true
                 } label: {
-                    HStack {
-                        Spacer()
                         Text("Create A Coffeecule")
-                        Spacer()
-                    }
                 }
+                .buttonStyle(.borderedProminent)
+                .padding(.vertical)
             }
             .toolbar {
                 Button("Done") { dismiss() }
@@ -47,13 +47,6 @@ struct SelectCoffeeculeSheet: View {
             .navigationTitle("Select Your Coffeecule")
             .navigationBarTitleDisplayMode(.inline)
         }
-        //        VStack {
-        //            Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
-        //                ForEach(coffeeculeManager.coffeecules) { coffeecule in
-        //                    Text(coffeecule.name).tag(Optional(coffeecule))
-        //                }
-        //            }
-        //        }
         .alert("Create A Coffeecule", isPresented: $isCreatingCoffeecule) {
             VStack {
                 TextField("Coffeecule Display Name", text: $coffeeculeName)

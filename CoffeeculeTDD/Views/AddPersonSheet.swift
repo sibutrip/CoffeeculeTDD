@@ -6,42 +6,45 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct AddPersonSheet: View {
     let geo: GeometryProxy
+    @Environment(\.editMode) var editMode
+    @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     private let transition = AnyTransition.move(edge: .bottom)
     @State private var addingPerson = false
+    private var showingSheet: Binding<Bool> {
+        Binding {
+            editMode?.wrappedValue.isEditing == true
+        } set: { _ in }
+    }
+//    @State var sheetSize: CGSize = .zero
+    @State var personShowing = true
+//    var sheetIsExpanded: Bool { sheetSize.height > geo.size.height / 4 }
     var body: some View {
-        Group {
-            if !addingPerson {
+//        ChildSizeReader(size: $sheetSize) {
+            DraggableSheet(geo: geo, sheetAppears: $personShowing) {
                 EqualWidthVStackLayout(spacing: 10) {
-                    Button {
-                        withAnimation {
-                            addingPerson = true
+                    Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
+                        .font(.title2)
+                        .frame(maxWidth: .infinity)
+                        .background {
+                            Group {
+//                                if sheetIsExpanded { EmptyView() }
+//                                else {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .foregroundStyle(Color.accentColor)
+//                                }
+                            }
                         }
-                    } label: {
-                        Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
-                            .font(.title2)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding()
                 }
-            } else {
-                VStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .frame(width: geo.size.width / 8, height: 8)
-                        .foregroundStyle(.gray)
-                        .padding(.top, 10)
-                        .padding(.bottom, 5)
-                    Text("Wooo")
-                }
+                .padding(.vertical)
+            } content: {
+                Text(coffeeculeManager.selectedCoffeecule?.name ?? "")
             }
-        }
-        .frame(width: geo.size.width)
-        .padding(.bottom, addingPerson ? geo.size.height / 2 : 0)
-        .background(.regularMaterial)
-        .transition(transition)
+//        }
+//        .animation(nil, value: sheetIsExpanded)
     }
 }
 

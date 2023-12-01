@@ -17,11 +17,10 @@ struct AllMembersView: View {
     @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
-    
-    @State private var columns = [
-        GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0),
-        GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0)
-    ]
+    @AppStorage("Column Count") var columnCount = 2
+    private var columns: [GridItem] {
+        (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
+    }
     var hasBuyer: Bool {
         coffeeculeManager.selectedBuyer != nil
     }
@@ -55,11 +54,11 @@ struct AllMembersView: View {
             .gesture(
                 MagnifyGesture().onEnded { magnifyValue in
                     if magnifyValue.magnification > 1 {
-                        if columns.count > 2 {
-                            columns.removeFirst()
+                        if columnCount > 1 {
+                            columnCount -= 1
                         }
                     } else {
-                        columns.append(GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0))
+                        columnCount += 1
                     }
                 }
             )
