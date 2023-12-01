@@ -49,40 +49,7 @@ struct AllMembersView: View {
                 }
                 IsBuyingSheet(geo: geo, someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
                 if editMode == .active {
-                    let transition = AnyTransition.move(edge: .bottom)
-                    EqualWidthVStackLayout(spacing: 10) {
-                        Button {
-                            //                            Task {
-                            //                                try await vm.shareCoffeecule()
-                            //                                if let share = await vm.repository.rootShare {
-                            //                                    self.share = share
-                            //                                    self.container = Repository.container
-                            //                                    isSharing = true
-                            //                                }
-                            //                            }
-                        } label: {
-                            Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
-                                .font(.title2)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-//                        if userIsOwner {
-//                            Button {
-//                                isDeletingCoffeecule = true
-//                            } label: {
-//                                Label("Delete Coffeecule", systemImage: "trash")
-//                                    .font(.title2)
-//                                    .frame(maxWidth: .infinity)
-//                                    .foregroundStyle(.red)
-//                            }
-//                            .buttonStyle(.bordered)
-//                        }
-                    }
-                    .padding()
-//                    .padding(.bottom, 30)
-                    .frame(width: geo.size.width)
-                    .background(.regularMaterial)
-                    .transition(transition)
+                    AddPersonSheet(geo: geo)
                 }
             }
             .gesture(

@@ -12,20 +12,51 @@ struct SelectCoffeeculeSheet: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var coffeeculeName = ""
     @State private var isCreatingCoffeecule = false
+    @Environment(\.dismiss) private var dismiss: DismissAction
     var body: some View {
-        VStack {
-            Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
+        NavigationStack {
+            List {
                 ForEach(coffeeculeManager.coffeecules) { coffeecule in
-                    Text(coffeecule.name).tag(Optional(coffeecule))
+                    Button {
+                        coffeeculeManager.selectedCoffeecule = coffeecule
+                    } label: {
+                        HStack {
+                            if coffeeculeManager.selectedCoffeecule?.id == coffeecule.id {
+                                Image(systemName: "checkmark.circle")
+                            } else {
+                                Image(systemName: "circle")
+                            }
+                            Text(coffeecule.name)
+                        }
+                    }
+                }
+                .foregroundStyle(Color.primary)
+                Button {
+                    isCreatingCoffeecule = true
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text("Create A Coffeecule")
+                        Spacer()
+                    }
                 }
             }
-            Button("Create Coffeecule") {
-                isCreatingCoffeecule = true
+            .toolbar {
+                Button("Done") { dismiss() }
             }
+            .navigationTitle("Select Your Coffeecule")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .alert("Create a coffeecule", isPresented: $isCreatingCoffeecule) {
+        //        VStack {
+        //            Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
+        //                ForEach(coffeeculeManager.coffeecules) { coffeecule in
+        //                    Text(coffeecule.name).tag(Optional(coffeecule))
+        //                }
+        //            }
+        //        }
+        .alert("Create A Coffeecule", isPresented: $isCreatingCoffeecule) {
             VStack {
-                TextField("Name", text: $coffeeculeName)
+                TextField("Coffeecule Display Name", text: $coffeeculeName)
                 HStack {
                     Button("Create") {
                         Task {

@@ -112,13 +112,14 @@ struct TransactionHistory: View {
                 }
             }
             .navigationTitle("Transaction History")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .task {
             isLoading = true
             let transactions = coffeeculeManager.transactionsInSelectedCoffeecule.sorted { first, second in
                 first.creationDate ?? Date() > second.roundedDate ?? Date()
             }
-            let datesAndTransactions = Dictionary(grouping: transactions) { $0.roundedDate! }
+            let datesAndTransactions = Dictionary(grouping: transactions) { $0.roundedDate ?? Calendar.autoupdatingCurrent.dateComponents([.calendar,.day,.month,.year], from: Date()).date! }
             self.datesAndTransactions = datesAndTransactions
             //            transactions.forEach { print($0.buyerName) }
             isLoading = false
