@@ -81,7 +81,7 @@ struct AllMembersView: View {
                             if columnCount > 1 {
                                 columnCount -= 1
                             }
-                        } else if columnCount < max(4, coffeeculeManager.usersInSelectedCoffeecule.count) {
+                        } else if columnCount < 4 {
                             columnCount += 1
                         }
                         withAnimation { zoomDirection = nil }
