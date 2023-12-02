@@ -11,6 +11,7 @@ import CloudKit
 struct AddPersonSheet: View {
     let geo: GeometryProxy
     @Environment(\.editMode) var editMode
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     private let transition = AnyTransition.move(edge: .bottom)
     @State private var addingPerson = false
@@ -19,32 +20,43 @@ struct AddPersonSheet: View {
             editMode?.wrappedValue.isEditing == true
         } set: { _ in }
     }
-//    @State var sheetSize: CGSize = .zero
-    @State var personShowing = true
-//    var sheetIsExpanded: Bool { sheetSize.height > geo.size.height / 4 }
+    @State var contentIsShowing = false
+    @State var textColor = Color.primary
     var body: some View {
-//        ChildSizeReader(size: $sheetSize) {
-            DraggableSheet(geo: geo, sheetAppears: $personShowing) {
-                EqualWidthVStackLayout(spacing: 10) {
-                    Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
-                        .font(.title2)
-                        .frame(maxWidth: .infinity)
-                        .background {
-                            Group {
-//                                if sheetIsExpanded { EmptyView() }
-//                                else {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .foregroundStyle(Color.accentColor)
-//                                }
+        DraggableSheet(geo: geo, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
+            EqualWidthVStackLayout(spacing: 10) {
+                Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
+                    .font(.title2)
+                    .padding(6)
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(textColor)
+                    .background {
+                        Group {
+                            if contentIsShowing { EmptyView() }
+                            else {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundStyle(Color.accentColor)
                             }
                         }
-                }
-                .padding(.vertical)
-            } content: {
-                Text(coffeeculeManager.selectedCoffeecule?.name ?? "")
+                    }
             }
-//        }
-//        .animation(nil, value: sheetIsExpanded)
+            .padding(.vertical)
+        } content: {
+            Text(coffeeculeManager.selectedCoffeecule?.name ?? "")
+        }
+        .onAppear {
+            self.textColor = colorScheme == .light ? Color.white : Color.black
+        }
+        .onChangeiOS17Compatible(of: contentIsShowing) { contentIsShowing in
+            if !contentIsShowing {
+                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(300))) {
+                    self.textColor = colorScheme == .light ? Color.white : Color.black
+                }
+            } else {
+                self.textColor = Color.primary
+            }
+        }
     }
 }
 

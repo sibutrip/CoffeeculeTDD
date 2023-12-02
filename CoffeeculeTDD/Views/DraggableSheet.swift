@@ -40,9 +40,21 @@ struct DraggableSheet<Header: View, Content: View>: View {
                 }
             }
     }
-    
+    @Binding var contentIsShowing: Bool
     let header: () -> Header
     let content: () -> Content
+    private var contentIsHalfSheet: Bool {
+        let value = dragDistance ?? .zero >= geo.size.height / 4
+        return value
+    }
+    
+    init(geo: GeometryProxy, sheetAppears: Binding<Bool>, contentIsShowing: Binding<Bool>? = nil, header: @escaping () -> Header, content: @escaping () -> Content) {
+        self.geo = geo
+        _sheetAppears = sheetAppears
+        _contentIsShowing = contentIsShowing ?? .constant(false)
+        self.header = header
+        self.content = content
+    }
     
     var body: some View {
         Group {
@@ -82,14 +94,21 @@ struct DraggableSheet<Header: View, Content: View>: View {
                                 }
                         )
                         .onTapGesture {
-                            withAnimation {
-                                if (dragDistance ?? 0) == 0 {
+                            if (dragDistance ?? 0) == 0 {
+                                withAnimation {
                                     dragDistance = geo.size.height / 2
                                     incrementOpacity(with: +)
-                                } else {
-                                    dragDistance = 0
-                                    incrementOpacity(with: -)
                                 }
+                            } else {
+                                withAnimation(.default.delay(0.3)) {
+                                    contentIsShowing = false
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(10))) {
+                                    withAnimation {
+                                        dragDistance = 0
+                                    }
+                                }
+                                incrementOpacity(with: -)
                             }
                         }
                         .onAppear {
@@ -105,6 +124,10 @@ struct DraggableSheet<Header: View, Content: View>: View {
                 }
             }
         }
+        .preference(key: ContentShowingPreferenceKey.self, value: contentIsHalfSheet)
+        .onPreferenceChange(ContentShowingPreferenceKey.self) { contentIsHalfSheet in
+            self.contentIsShowing = contentIsHalfSheet
+        }
         .onChangeiOS17Compatible(of: sheetAppears, perform: { isAppearing in
             let animation = isAppearing ? Animation.default : Animation.default.delay(0.2)
             withAnimation(animation) {
@@ -116,8 +139,11 @@ struct DraggableSheet<Header: View, Content: View>: View {
     }
 }
 
-#Preview {
-    GeometryReader { geo in
-        IsBuyingSheet(geo: geo, someoneElseBuying: .constant(false), isBuying: .constant(false))
+struct ContentShowingPreferenceKey: PreferenceKey {
+    typealias Value = Bool
+    static var defaultValue: Value = false
+
+    static func reduce(value _: inout Value, nextValue: () -> Value) {
+        _ = nextValue()
     }
 }

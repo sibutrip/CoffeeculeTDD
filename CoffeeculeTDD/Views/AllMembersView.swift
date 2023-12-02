@@ -64,7 +64,7 @@ struct AllMembersView: View {
                     AddPersonSheet(geo: geo)
                 }
             }
-            .highPriorityGesture(
+            .gesture(
                 MagnifyGesture()
                     .onChanged { magnifyValue in
                         withAnimation {
