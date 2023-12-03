@@ -41,56 +41,42 @@ struct IsBuyingSheet: View {
     
     var body: some View {
         DraggableSheet(geo: geo, sheetAppears: isShowingSheet, contentIsShowing: $contentIsShowing) {
-//            ZStack {
-                VStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .frame(width: geo.size.width / 8, height: 8)
-                        .foregroundStyle(.gray)
-                        .padding(.top, 10)
-                    if contentIsShowing {
-                        //                    VStack {
-                        Text("Current Debts")
-                            .font(.title2)
-//                            .padding(.top)
-                        //                        .opacity(contentIsShowing ? 1.0 : 0.0)
-                        //                        .animation(contentIsShowing ? .default : nil, value: contentIsShowing)
-                        //                    }
-                            .transition(.asymmetric(insertion: .opacity, removal: .identity))
-                        
-                    } else {
-                        VStack {
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .frame(width: geo.size.width / 8, height: 8)
-//                                .foregroundStyle(.gray)
-//                                .padding(.top, 10)
-//                                .padding(.bottom, 5)
-                            EqualWidthVStackLayout(spacing: 10) {
-                                Button {
-                                    isBuying = true
-                                } label: {
-                                    Text("\(coffeeculeManager.selectedBuyer?.name ?? "") is buying")
-                                        .font(.title2)
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(.borderedProminent)
-                                
-                                Button {
-                                    someoneElseBuying = true
-                                } label: {
-                                    Text("Someone else is buying")
-                                        .font(.title2)
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(.bordered)
-                            }
-                        }
-                        .padding(.top, 5)
-                        //                    .opacity(contentIsShowing ? 0.0 : 1.0)
+            VStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: geo.size.width / 8, height: 8)
+                    .foregroundStyle(.gray)
+                    .padding(.top, 10)
+                if contentIsShowing {
+                    Text("Current Debts")
+                        .font(.title2)
                         .transition(.asymmetric(insertion: .opacity, removal: .identity))
-                        //                    .animation(contentIsShowing ? nil : .default, value: contentIsShowing)
+                    
+                } else {
+                    VStack {
+                        EqualWidthVStackLayout(spacing: 10) {
+                            Button {
+                                isBuying = true
+                            } label: {
+                                Text("\(coffeeculeManager.selectedBuyer?.name ?? "") is buying")
+                                    .font(.title2)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            
+                            Button {
+                                someoneElseBuying = true
+                            } label: {
+                                Text("Someone else is buying")
+                                    .font(.title2)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                        }
                     }
+                    .padding(.top, 5)
+                    .transition(.asymmetric(insertion: .opacity, removal: .identity))
                 }
-//            }
+            }
             .animation(.default, value: contentIsShowing)
         } content: {
             relationshipWebChart
