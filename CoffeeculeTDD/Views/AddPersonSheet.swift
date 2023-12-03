@@ -22,7 +22,6 @@ struct AddPersonSheet: View {
         } set: { _ in }
     }
     @State var contentIsShowing = false
-//    @State var contentIsShowingAfterAnimation = false
     @State var textColor = Color.primary
     @State private var colorChange: AnyCancellable?
     var body: some View {
@@ -61,18 +60,7 @@ struct AddPersonSheet: View {
             self.textColor = colorScheme == .light ? Color.white : Color.black
         }
         .onChangeiOS17Compatible(of: contentIsShowing) { contentIsShowing in
-            if !contentIsShowing {
-//                colorChange?.cancel()
-//                colorChange = Timer.publish(every: 0.3, on: .main, in: .common)
-//                    .autoconnect()
-//                    .sink { _ in
-                        self.textColor = colorScheme == .light ? Color.white : Color.black
-//                        colorChange?.cancel()
-//                    }
-            } else {
-                colorChange?.cancel()
-                self.textColor = Color.primary
-            }
+            textColor = contentIsShowing ? Color.primary : (colorScheme == .light ? Color.white : Color.black)
         }
     }
 }

@@ -85,7 +85,6 @@ struct DraggableSheet<Header: View, Content: View>: View {
                 let currentDistance = firstTriangleArea + secondTriangleArea
                 let smallestOfStartAndEndLocations = min(startLocation,endLocation)
                 let largestOfStartAndEndLocations = max(startLocation, endLocation)
-                let dragDistance = dragDistance ?? 0
                 let newValue = action(startingDistance, currentDistance)
                 let adjustedValue = max(min((largestOfStartAndEndLocations), newValue), smallestOfStartAndEndLocations)
                 self.dragDistance = adjustedValue
@@ -133,7 +132,7 @@ struct DraggableSheet<Header: View, Content: View>: View {
                                 }
                                 .onEnded { newValue in
                                     let dragDistance = (dragDistance ?? 0)
-                                    let newDistance = -newValue.predictedEndTranslation.height + dragDistance
+                                    let newDistance = -newValue.translation.height + dragDistance
                                     if contentIsShowing {
                                         if newDistance < 0 {
                                             incrementDragDistance(from: dragDistance, to: 0, with: +)
@@ -188,6 +187,6 @@ struct DraggableSheet<Header: View, Content: View>: View {
             }
         }
         .opacity(sheetOpacity)
-//        .animation(.default, value: sheetAppears)
+        .animation(.default, value: sheetAppears)
     }
 }
