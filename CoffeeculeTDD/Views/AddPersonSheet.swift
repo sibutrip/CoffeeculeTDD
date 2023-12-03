@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CloudKit
+import Combine
 
 struct AddPersonSheet: View {
     let geo: GeometryProxy
@@ -21,25 +22,36 @@ struct AddPersonSheet: View {
         } set: { _ in }
     }
     @State var contentIsShowing = false
+//    @State var contentIsShowingAfterAnimation = false
     @State var textColor = Color.primary
+    @State private var colorChange: AnyCancellable?
     var body: some View {
         DraggableSheet(geo: geo, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
             EqualWidthVStackLayout(spacing: 10) {
-                Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
-                    .font(.title2)
-                    .padding(6)
-                    .padding(.horizontal)
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(textColor)
-                    .background {
-                        Group {
-                            if contentIsShowing { EmptyView() }
-                            else {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .foregroundStyle(Color.accentColor)
-                            }
+                HStack {
+                    if !contentIsShowing {
+                        Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
+                            .labelStyle(.iconOnly)
+                            .transition(.asymmetric(insertion: .scale.combined(with: .move(edge: .bottom)), removal: .identity))
+                    }
+                    Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
+                        .labelStyle(.titleOnly)
+                }
+                .animation(.default, value: contentIsShowing)
+                .font(.title2)
+                .padding(6)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(textColor)
+                .background {
+                    Group {
+                        if contentIsShowing { EmptyView() }
+                        else {
+                            RoundedRectangle(cornerRadius: 8)
+                                .foregroundStyle(Color.accentColor)
                         }
                     }
+                }
             }
             .padding(.vertical)
         } content: {
@@ -50,10 +62,15 @@ struct AddPersonSheet: View {
         }
         .onChangeiOS17Compatible(of: contentIsShowing) { contentIsShowing in
             if !contentIsShowing {
-                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(300))) {
-                    self.textColor = colorScheme == .light ? Color.white : Color.black
-                }
+                colorChange?.cancel()
+                colorChange = Timer.publish(every: 0.3, on: .main, in: .common)
+                    .autoconnect()
+                    .sink { _ in
+                        self.textColor = colorScheme == .light ? Color.white : Color.black
+                        colorChange?.cancel()
+                    }
             } else {
+                colorChange?.cancel()
                 self.textColor = Color.primary
             }
         }

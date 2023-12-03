@@ -21,6 +21,7 @@ struct IsBuyingSheet: View {
     @State private var dragDistance: CGFloat? = nil
     @State private var buyButtonsSize: CGSize = .zero
     @State private var relationshipChartSize: CGSize = .zero
+    @State private var contentIsShowing = false
     
     @State private var timerCancellable: AnyCancellable?
     @State private var chartOpacity: CGFloat = 0
@@ -58,7 +59,7 @@ struct IsBuyingSheet: View {
     
     var body: some View {
         //        if hasBuyer && !(editMode?.wrappedValue.isEditing ?? false) {
-        DraggableSheet(geo: geo, sheetAppears: isShowingSheet) {
+        DraggableSheet(geo: geo, sheetAppears: isShowingSheet, contentIsShowing: $contentIsShowing) {
             ChildSizeReader(size: $buyButtonsSize) {
                 VStack {
                     RoundedRectangle(cornerRadius: 10)
