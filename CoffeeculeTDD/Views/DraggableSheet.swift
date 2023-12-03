@@ -181,6 +181,7 @@ struct DraggableSheet<Header: View, Content: View>: View {
                         }
                         .onDisappear {
                             dragDistance = 0
+                            contentIsShowing = false
                         }
                         .transition(transition)
                 }

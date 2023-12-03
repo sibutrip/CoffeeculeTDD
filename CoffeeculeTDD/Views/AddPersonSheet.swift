@@ -62,13 +62,13 @@ struct AddPersonSheet: View {
         }
         .onChangeiOS17Compatible(of: contentIsShowing) { contentIsShowing in
             if !contentIsShowing {
-                colorChange?.cancel()
-                colorChange = Timer.publish(every: 0.3, on: .main, in: .common)
-                    .autoconnect()
-                    .sink { _ in
+//                colorChange?.cancel()
+//                colorChange = Timer.publish(every: 0.3, on: .main, in: .common)
+//                    .autoconnect()
+//                    .sink { _ in
                         self.textColor = colorScheme == .light ? Color.white : Color.black
-                        colorChange?.cancel()
-                    }
+//                        colorChange?.cancel()
+//                    }
             } else {
                 colorChange?.cancel()
                 self.textColor = Color.primary

@@ -31,165 +31,73 @@ struct IsBuyingSheet: View {
         coffeeculeManager.selectedBuyer != nil
     }
     
-    private func incrementOpacity(with action: @escaping (CGFloat, CGFloat) -> CGFloat) {
-        timerCancellable?.cancel()
-        timerCancellable = Timer.publish(every: 0.01, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                let step: CGFloat = 0.05
-                if self.chartOpacity >= 0 && self.chartOpacity <= 1 {
-                    let newValue = action(self.chartOpacity, step)
-                    let adjustedValue = max(min(1, newValue), 0)
-                    self.chartOpacity = adjustedValue
-                    if adjustedValue == 1 || adjustedValue == 0 {
-                        timerCancellable?.cancel()
-                    }
-                }
-            }
-    }
-    
     var isShowingSheet: Binding<Bool> {
         Binding {
             (hasBuyer && !(editMode?.wrappedValue.isEditing ?? false))
         } set: { _ in
             
         }
-
     }
     
     var body: some View {
-        //        if hasBuyer && !(editMode?.wrappedValue.isEditing ?? false) {
         DraggableSheet(geo: geo, sheetAppears: isShowingSheet, contentIsShowing: $contentIsShowing) {
-            ChildSizeReader(size: $buyButtonsSize) {
+//            ZStack {
                 VStack {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: geo.size.width / 8, height: 8)
                         .foregroundStyle(.gray)
                         .padding(.top, 10)
-                        .padding(.bottom, 5)
-                    EqualWidthVStackLayout(spacing: 10) {
-                        Button {
-                            isBuying = true
-                        } label: {
-                            Text("\(coffeeculeManager.selectedBuyer?.name ?? "") is buying")
-                                .font(.title2)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
+                    if contentIsShowing {
+                        //                    VStack {
+                        Text("Current Debts")
+                            .font(.title2)
+//                            .padding(.top)
+                        //                        .opacity(contentIsShowing ? 1.0 : 0.0)
+                        //                        .animation(contentIsShowing ? .default : nil, value: contentIsShowing)
+                        //                    }
+                            .transition(.asymmetric(insertion: .opacity, removal: .identity))
                         
-                        Button {
-                            someoneElseBuying = true
-                        } label: {
-                            Text("Someone else is buying")
-                                .font(.title2)
-                                .frame(maxWidth: .infinity)
+                    } else {
+                        VStack {
+//                            RoundedRectangle(cornerRadius: 10)
+//                                .frame(width: geo.size.width / 8, height: 8)
+//                                .foregroundStyle(.gray)
+//                                .padding(.top, 10)
+//                                .padding(.bottom, 5)
+                            EqualWidthVStackLayout(spacing: 10) {
+                                Button {
+                                    isBuying = true
+                                } label: {
+                                    Text("\(coffeeculeManager.selectedBuyer?.name ?? "") is buying")
+                                        .font(.title2)
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                
+                                Button {
+                                    someoneElseBuying = true
+                                } label: {
+                                    Text("Someone else is buying")
+                                        .font(.title2)
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.bordered)
+                            }
                         }
-                        .buttonStyle(.bordered)
+                        .padding(.top, 5)
+                        //                    .opacity(contentIsShowing ? 0.0 : 1.0)
+                        .transition(.asymmetric(insertion: .opacity, removal: .identity))
+                        //                    .animation(contentIsShowing ? nil : .default, value: contentIsShowing)
                     }
                 }
-            }
+//            }
+            .animation(.default, value: contentIsShowing)
         } content: {
             relationshipWebChart
         }
+        .animation(.default, value: contentIsShowing)
     }
 }
-
-//        Group {
-//            if hasBuyer && !(editMode?.wrappedValue.isEditing ?? false) {
-//                let transition = AnyTransition.move(edge: .bottom)
-//                ChildSizeReader(size: $buyButtonsSize) {
-//                    VStack {
-//                        RoundedRectangle(cornerRadius: 10)
-//                            .frame(width: geo.size.width / 8, height: 8)
-//                            .foregroundStyle(.gray)
-//                            .padding(.top, 10)
-//                            .padding(.bottom, 5)
-//                        EqualWidthVStackLayout(spacing: 10) {
-//                            Button {
-//                                isBuying = true
-//                            } label: {
-//                                Text("\(coffeeculeManager.selectedBuyer?.name ?? "") is buying")
-//                                    .font(.title2)
-//                                    .frame(maxWidth: .infinity)
-//                            }
-//                            .buttonStyle(.borderedProminent)
-//                            
-//                            Button {
-//                                someoneElseBuying = true
-//                            } label: {
-//                                Text("Someone else is buying")
-//                                    .font(.title2)
-//                                    .frame(maxWidth: .infinity)
-//                            }
-//                            .buttonStyle(.bordered)
-//                        }
-//                    }
-//                    .frame(width: geo.size.width)
-//                }
-//                .padding(.bottom, 40 + (dragDistance ?? 0) )
-//                .overlay {
-//                    VStack {
-//                        Spacer()
-//                        relationshipWebChart
-//                            .frame(height: max((dragDistance ?? 0), CGFloat(0)))
-//                            .opacity(chartOpacity)
-//                    }
-//                }
-//                .background(.regularMaterial)
-//                .highPriorityGesture(
-//                    DragGesture()
-//                        .onChanged { newValue in
-//                            let newDistance = -newValue.translation.height + (dragDistance ?? 0)
-//                            if newDistance < geo.size.height * 0.8 {
-//                                self.dragDistance = newDistance
-//                                chartOpacity = min(max(0, newDistance - geo.size.height / 20) / (geo.size.height * 0.8 / 4), 1)
-//                            }
-//                        }
-//                        .onEnded { newValue in
-//                            withAnimation {
-//                                if (dragDistance ?? 0) + -newValue.predictedEndLocation.y > geo.size.height * (1/4) {
-//                                    dragDistance = geo.size.height / 2
-//                                    incrementOpacity(with: +)
-//                                } else {
-//                                    dragDistance = 0
-//                                    incrementOpacity(with: -)
-//                                }
-//                            }
-//                        }
-//                )
-//                .onTapGesture {
-//                    withAnimation {
-//                        if (dragDistance ?? 0) == 0 {
-//                            dragDistance = geo.size.height / 2
-//                            incrementOpacity(with: +)
-//                        } else {
-//                            dragDistance = 0
-//                            incrementOpacity(with: -)
-//                        }
-//                    }
-//                }
-//                .onAppear {
-//                    withAnimation(nil) {
-//                        chartOpacity = 0
-//                        sheetOpacity = 1
-//                    }
-//                }
-//                .onDisappear {
-//                    dragDistance = 0
-//                }
-//                .transition(transition)
-//            }
-//        }
-//        .onChangeiOS17Compatible(of: hasBuyer, perform: { hasBuyer in
-//            let animation = hasBuyer ? Animation.default : Animation.default.delay(0.2)
-//            withAnimation(animation) {
-//                sheetOpacity = hasBuyer ? 1 : 0
-//            }
-//        })
-//        .opacity(sheetOpacity)
-//        .animation(.default, value: self.hasBuyer)
-//}
-
 
 extension IsBuyingSheet {
     var relationshipWebChart: some View {
