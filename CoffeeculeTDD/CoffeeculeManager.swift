@@ -95,7 +95,6 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
     }
     
-#warning("update tests to see if coffecule already exists. also throws if coffeecule name already exists locally")
     func createCoffeecule(with name: String) async throws {
         guard let user,
               let ckService else {

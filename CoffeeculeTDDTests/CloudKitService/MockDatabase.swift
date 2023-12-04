@@ -25,7 +25,9 @@ actor MockDatabase: Database {
         let fieldToMatch = predicate.predicateFormat.components(separatedBy: " == ").first ?? ""
         let results: [(CKRecord.ID, Result<CKRecord, any Error>)] = records.compactMap { record in
             if !fieldToMatch.isEmpty && fieldToMatch != "TRUEPREDICATE" {
-                guard let _ = record[fieldToMatch] as? CKRecord.Reference else {
+                let resultAsReference = record[fieldToMatch] as? CKRecord.Reference
+                let resultAsString = record[fieldToMatch] as? String
+                if resultAsString == nil && resultAsReference == nil {
                     return nil
                 }
                 let result: Result<CKRecord, any Error> = .success(record)

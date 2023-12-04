@@ -331,6 +331,33 @@ final class CloudKitServiceTests: XCTestCase {
         XCTFail("failed to throw error")
     }
     
+    func test_records_returnsAllRecordsWithMatchingValueInField() async throws {
+        let sut = try await makeSUT()
+        var firstMockRecord = MockRecord()
+        var secondMockRecord = MockRecord()
+        firstMockRecord.testField1 = "Updated Field"
+        secondMockRecord.testField1 = "Updated Field"
+        _ = try await sut.save(record: firstMockRecord)
+        _ = try await sut.save(record: secondMockRecord)
+        
+        let fetchedRecords: [MockRecord] = try await sut.records(matchingValue: "Updated Field", inField: .testField1)
+        XCTAssertEqual(fetchedRecords.count, 2)
+    }
+    
+    func test_records_throwsRecordDoesNotExistIfNoRecordsFetched() async throws {
+        let sut = try await makeSUT()
+        do {
+            let fetchedRecords: [MockRecord] = try await sut.records(matchingValue: "Updated Field", inField: .testField1)
+        } catch CloudKitService.CloudKitError.recordDoesNotExist {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("did not throw CloudKitError.recordDoesNotExist")
+            return
+        }
+        XCTFail("did not throw an error")
+    }
+    
     // MARK: - Helper Methods
     
     private func makeSUT(with ckRecords: [CKRecord] = [],

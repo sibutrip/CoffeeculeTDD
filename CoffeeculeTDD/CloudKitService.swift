@@ -120,7 +120,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         return unwrappedRecords
     }
     
-    #warning("change test to make this return value")
     func update<SomeRecord: Record>(record: SomeRecord, updatingFields fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord {
         guard let fetchedCkRecord = try? await database.record(for: record.recordID) else {
             throw CloudKitError.recordDoesNotExist
@@ -250,7 +249,7 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         return childRecords
     }
     
-    #warning("broken now :(")
+    // not needed now
     func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil, thirdParent: ThirdParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent {
         
         if parent?.ckRecord == secondParent?.ckRecord && parent?.ckRecord == thirdParent?.ckRecord && parent?.ckRecord == nil {
