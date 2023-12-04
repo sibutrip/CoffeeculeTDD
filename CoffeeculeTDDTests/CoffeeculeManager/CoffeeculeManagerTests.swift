@@ -375,10 +375,27 @@ final class UserManagerTests: XCTestCase {
     
     func test_update_updatesLocalUserIfSuccessful() async throws {
         let sut = await makeSUT()
+        sut.usersInSelectedCoffeecule = [sut.user!]
         var modifiedUser = sut.user!
         modifiedUser.userColorString = "orange"
+        
         try await sut.update(modifiedUser)
+        
         XCTAssertEqual(sut.user?.userColor, UserColor.orange)
+        XCTAssertEqual(sut.usersInSelectedCoffeecule.first(where: {$0.id == modifiedUser.id})!.userColor, UserColor.orange)
+    }
+    
+    func test_update_updatesLocalUserIfNoDatabse() async throws {
+        let sut = await makeSUT(databaseActionSuccess: false)
+        sut.usersInSelectedCoffeecule = [sut.user!]
+        var modifiedUser = sut.user!
+        modifiedUser.userColorString = "orange"
+        do {
+            try await sut.update(modifiedUser)
+        } catch { }
+        
+        XCTAssertEqual(sut.user?.userColor, UserColor.orange)
+        XCTAssertEqual(sut.usersInSelectedCoffeecule.first(where: {$0.id == modifiedUser.id})!.userColor, UserColor.orange)
     }
         
 //        func update(_ userToUpdate: User?) async throws {
