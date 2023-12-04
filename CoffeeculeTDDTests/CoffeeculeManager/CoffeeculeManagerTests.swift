@@ -373,6 +373,29 @@ final class UserManagerTests: XCTestCase {
         XCTFail("addTransaction did not throw any errors")
     }
     
+    func test_update_updatesLocalUserIfSuccessful() async throws {
+        let sut = await makeSUT()
+        var modifiedUser = sut.user!
+        modifiedUser.userColorString = "orange"
+        try await sut.update(modifiedUser)
+        XCTAssertEqual(sut.user?.userColor, UserColor.orange)
+    }
+        
+//        func update(_ userToUpdate: User?) async throws {
+//            guard let userToUpdate else {
+//                throw UserManagerError.noUsersFound
+//            }
+//            self.user = userToUpdate
+//            self.usersInSelectedCoffeecule = usersInSelectedCoffeecule.map { user in
+//                return user.id == userToUpdate.id ? userToUpdate : user
+//            }
+//            guard let ckService else {
+//                throw UserManagerError.noCkServiceAvailable
+//            }
+//            _ = try await ckService.update(record: userToUpdate, updatingFields: [.mugIconString, .userColorString, .name])
+//        }
+        
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true,
