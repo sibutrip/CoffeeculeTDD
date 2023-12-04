@@ -412,6 +412,20 @@ final class UserManagerTests: XCTestCase {
         XCTFail("addTransaction did not throw any errors")
     }
     
+    func test_updateTransactions_updatesTransactionsInSelectedCoffeecule() async {
+        let sut = await makeSUT()
+        let coffeecule = Coffeecule(with: "Test")
+        let firstUser = sut.user!
+        let secondUser = User(systemUserID: UUID().uuidString)
+        sut.transactionsInSelectedCoffeecule = [Transaction(buyer: firstUser, receiver: secondUser, in: coffeecule)]
+        var modifiedUser = sut.user!
+        modifiedUser.name = "Cornelius the Great"
+        
+        sut.updateTransactions(withNewNameFrom: modifiedUser)
+        
+        XCTAssertEqual(sut.transactionsInSelectedCoffeecule.first!.secondParent?.name, modifiedUser.name)
+    }
+    
     // MARK: - Helper methods
     
     private func makeSUT(didAuthenticate: Bool = true,
