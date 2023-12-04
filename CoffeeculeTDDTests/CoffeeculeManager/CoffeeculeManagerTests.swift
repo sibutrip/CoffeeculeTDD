@@ -17,19 +17,19 @@ final class UserManagerTests: XCTestCase {
     
     func test_init_assignsUserToUserManager() async {
         let sut = await makeSUT(didAuthenticate: true)
-        let user = await sut.user
+        let user = sut.user
         XCTAssertNotNil(user)
     }
     
     func test_init_failsIfUserDoesNotHaveAccount() async {
         let sut = await makeSUT(didAuthenticate: false)
-        let user = await sut.user
+        let user = sut.user
         XCTAssertNil(user)
     }
     
     func test_createCoffeecule_addsCoffeeculeToManagerIfSuccessful() async throws {
         let sut = await makeSUT(databaseActionSuccess: true)
-        try await sut.createCoffeecule()
+        try await sut.createCoffeecule(with: "Test")
         let coffeecules = sut.coffeecules
         XCTAssertEqual(1, coffeecules.count)
     }
@@ -37,7 +37,7 @@ final class UserManagerTests: XCTestCase {
     func test_createCoffeecule_failsIfDidNotConnectToDatabase() async throws {
         let sut = await makeSUT(databaseActionSuccess: false)
         do {
-            try await sut.createCoffeecule()
+            try await sut.createCoffeecule(with: "Test")
         } catch UserManagerError.failedToConnectToDatabase {
             XCTAssert(true)
             return
@@ -51,12 +51,27 @@ final class UserManagerTests: XCTestCase {
     func test_createCoffeecule_throwsIfNoCkServiceAvailable() async throws {
         let sut = await makeSUT(didAuthenticate: false, databaseActionSuccess: false)
         do {
-            try await sut.createCoffeecule()
+            try await sut.createCoffeecule(with: "Test")
         } catch UserManagerError.noCkServiceAvailable {
             XCTAssertEqual(sut.coffeecules, [])
             return
         } catch {
             XCTFail("createCoffeecule did not throw UserManagerError.noCKServiceAvailable")
+            return
+        }
+        XCTFail("createCoffeecule did not throw any errors")
+    }
+    
+    func test_createCoffeecule_throwsIfCoffeeculeNameExistsLocally() async throws {
+        let sut = await makeSUT()
+        sut.coffeecules.append(Coffeecule(with: "CorysCule"))
+        do {
+            try await sut.createCoffeecule(with: "CorysCule")
+        } catch UserManagerError.coffeeculeNameTaken {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("createCoffeecule did not throw UserManagerError.coffeeculeNameTaken")
             return
         }
         XCTFail("createCoffeecule did not throw any errors")
@@ -98,7 +113,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_fetchUsersInCoffeecule_addsUsersToManagerIfSuccessful() async throws {
         let sut = await makeSUT()
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         try await sut.fetchUsersInCoffeecule()
         XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 4)
     }
@@ -119,7 +134,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_fetchUsersInCoffeecule_throwsIfFailedToConnectToDatabase() async {
         let sut = await makeSUT(databaseActionSuccess: false)
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         do {
             try await sut.fetchUsersInCoffeecule()
         } catch UserManagerError.failedToConnectToDatabase {
@@ -140,7 +155,7 @@ final class UserManagerTests: XCTestCase {
             User(systemUserID: UUID().uuidString)
         ]
         sut.usersInSelectedCoffeecule = sut.selectedUsers
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         try sut.createUserRelationships()
         try await sut.addTransaction()
         XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 2)
@@ -152,7 +167,7 @@ final class UserManagerTests: XCTestCase {
             User(systemUserID: UUID().uuidString)
         ]
         sut.usersInSelectedCoffeecule = sut.selectedUsers
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         try sut.createUserRelationships()
         do {
             try await sut.addTransaction()
@@ -210,7 +225,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_addTransaction_throwsIfNoReceiverSelected() async throws {
         let sut = await makeSUT()
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         do {
             try await sut.addTransaction()
         } catch UserManagerError.noReceiversSelected {
@@ -231,7 +246,7 @@ final class UserManagerTests: XCTestCase {
             User(systemUserID: UUID().uuidString)
         ]
         sut.usersInSelectedCoffeecule = sut.selectedUsers
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         try sut.createUserRelationships()
         do {
             try await sut.addTransaction()
@@ -247,7 +262,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_fetchTransactionsInSelectedCoffeecule_populatesManagerWithTransactionsIfSuccessful() async throws {
         let sut = await makeSUT()
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         try await sut.fetchTransactionsInCoffeecule()
         XCTAssertEqual(sut.transactionsInSelectedCoffeecule.count, 2)
     }
@@ -268,7 +283,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_fetchTransactionsInSelectedCoffeecule_throwsIfNoCkServiceAvailable() async throws {
         let sut = await makeSUT(didProvideCkService: false)
-        sut.selectedCoffeecule = Coffeecule()
+        sut.selectedCoffeecule = Coffeecule(with: "Test")
         do {
             try await sut.fetchTransactionsInCoffeecule()
         } catch UserManagerError.noCkServiceAvailable {
@@ -286,7 +301,7 @@ final class UserManagerTests: XCTestCase {
         let firstUser = User(systemUserID: "firstUser")
         let secondUser = User(systemUserID: "secondUser")
         let thirdUser = User(systemUserID: "thirdUser")
-        let coffeecule = Coffeecule()
+        let coffeecule = Coffeecule(with: "Test")
         let transactions: [Transaction] = [
             Transaction(buyer: firstUser, receiver: secondUser, in: coffeecule),
             Transaction(buyer: firstUser, receiver: secondUser, in: coffeecule),
@@ -326,7 +341,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_remove_removesTransactionFromTransactionsInSelectedCoffeecule() async throws {
         let sut = await makeSUT()
-        let coffeecule = Coffeecule()
+        let coffeecule = Coffeecule(with: "Test")
         let buyer = User(systemUserID: "Test")
         let receiver = User(systemUserID: "Test2")
         let existingTransactions = [
@@ -339,7 +354,7 @@ final class UserManagerTests: XCTestCase {
     
     func test_remove_throwsIfNoCkServiceAvailable() async throws {
         let sut = await makeSUT(didProvideCkService: false)
-        let coffeecule = Coffeecule()
+        let coffeecule = Coffeecule(with: "Test")
         let buyer = User(systemUserID: "Test")
         let receiver = User(systemUserID: "Test2")
         let existingTransactions = [
@@ -367,6 +382,7 @@ final class UserManagerTests: XCTestCase {
         if didProvideCkService {
             let mockCkService = await MockCKService(didAuthenticate: didAuthenticate, databaseActionSuccess: databaseActionSuccess)
             userManager.ckService = mockCkService
+            userManager.user = await mockCkService.user
             if databaseActionSuccess {
                 userManager.usersInSelectedCoffeecule = mockCkService.usersInSelectedCoffeecule
             }

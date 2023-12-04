@@ -33,7 +33,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     
     
     enum UserManagerError: Error {
-        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected
+        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected, coffeeculeNameTaken
     }
     
     func createUserRelationships() throws {
@@ -95,11 +95,14 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
     }
     
-    #warning("update tests to see if coffecule already exists")
+#warning("update tests to see if coffecule already exists. also throws if coffeecule name already exists locally")
     func createCoffeecule(with name: String) async throws {
         guard let user,
               let ckService else {
             throw UserManagerError.noCkServiceAvailable
+        }
+        if coffeecules.contains(where: {$0.name == name}) {
+            throw UserManagerError.coffeeculeNameTaken
         }
         var coffeecule = Coffeecule(with: name)
         var fetchedCule: Coffeecule? = try? await ckService.records(matchingValue: coffeecule.shortCode, inField: .shortCode).first

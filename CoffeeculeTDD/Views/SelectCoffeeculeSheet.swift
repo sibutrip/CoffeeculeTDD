@@ -12,6 +12,10 @@ struct SelectCoffeeculeSheet: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var coffeeculeName = ""
     @State private var isCreatingCoffeecule = false
+    
+    @State private var shortCode = ""
+    @State private var isJoiningCoffeecule = false
+    
     @Environment(\.dismiss) private var dismiss: DismissAction
     var body: some View {
         NavigationStack {
@@ -33,13 +37,28 @@ struct SelectCoffeeculeSheet: View {
                     }
                     .foregroundStyle(Color.primary)
                 }
-                Button {
-                    isCreatingCoffeecule = true
-                } label: {
-                        Text("Create A Coffeecule")
+                VStack {
+                    EqualWidthVStackLayout(spacing: 10) {
+                        Button {
+                            isCreatingCoffeecule = true
+                        } label: {
+                            Text("Create A Coffeecule")
+                                .font(.title2)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        Button {
+                            isJoiningCoffeecule = true
+                        } label: {
+                            Text("Join A Coffeecule")
+                                .font(.title2)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .padding(.vertical)
+                .padding(.top, 5)
+                .padding(.bottom, 40)
             }
             .toolbar {
                 Button("Done") { dismiss() }
@@ -55,6 +74,28 @@ struct SelectCoffeeculeSheet: View {
                         Task {
                             do {
                                 try await coffeeculeManager.createCoffeecule(with: coffeeculeName)
+                            } catch {
+                                fatalError(error.localizedDescription)
+                            }
+                        }
+                    }
+                    Button("Cancel", role: .cancel) { }
+                }
+            }
+        }
+        .alert("Join A Coffeecule", isPresented: $isJoiningCoffeecule) {
+            VStack {
+                TextField("Coffeecule Short Code",
+                          text: Binding { shortCode
+                } set: { newValue in
+                    shortCode = newValue.uppercased()
+                })
+                .autocorrectionDisabled()
+                HStack {
+                    Button("Join") {
+                        Task {
+                            do {
+                                //                                try await coffeeculeManager.createCoffeecule(with: coffeeculeName)
                             } catch {
                                 fatalError(error.localizedDescription)
                             }

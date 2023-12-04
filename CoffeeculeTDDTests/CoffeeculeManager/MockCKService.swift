@@ -11,7 +11,7 @@ import CloudKit
 
 actor MockCKService: CKServiceProtocol {
     
-    let selectedCoffeecule = Coffeecule()
+    let selectedCoffeecule = Coffeecule(with: UUID().uuidString)
     let usersInSelectedCoffeecule: [User] = [
         User(systemUserID: UUID().uuidString),
         User(systemUserID: UUID().uuidString)
@@ -24,6 +24,10 @@ actor MockCKService: CKServiceProtocol {
     
     enum CloudKitError: Error {
         case couldNotSaveToDatabase
+    }
+    
+    func records<SomeRecord>(matchingValue value: CVarArg, inField field: SomeRecord.RecordKeys) async throws -> [SomeRecord] where SomeRecord : CoffeeculeTDD.Record {
+        return []
     }
     
     func remove<SomeRecord>(_ record: SomeRecord) async throws where SomeRecord : CoffeeculeTDD.Record {
@@ -90,9 +94,9 @@ actor MockCKService: CKServiceProtocol {
         }
     }
     
-    func update<SomeRecord>(record: SomeRecord) async throws where SomeRecord : CoffeeculeTDD.Record {
+    func update<SomeRecord>(record: SomeRecord, updatingFields fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord where SomeRecord : CoffeeculeTDD.Record {
         if databaseActionSuccess {
-            return
+            return record
         } else {
             throw CloudKitError.couldNotSaveToDatabase
         }
@@ -108,10 +112,10 @@ actor MockCKService: CKServiceProtocol {
     func twoParentChildren<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent {
         if databaseActionSuccess {
             let relationships = [
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init()),
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init()),
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init()),
-                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init())
+                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init(with: UUID().uuidString)),
+                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init(with: UUID().uuidString)),
+                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init(with: UUID().uuidString)),
+                Relationship(user: .init(systemUserID: UUID().uuidString), coffecule: .init(with: UUID().uuidString))
                 ]
             return relationships as! [Child]
         } else {
@@ -130,10 +134,10 @@ actor MockCKService: CKServiceProtocol {
     func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent? = nil, secondParent: SecondParent? = nil, thirdParent: ThirdParent? = nil) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent {
         if databaseActionSuccess {
             let transactions = [
-                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule()),
-                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule()),
-                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule()),
-                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule())
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule(with: UUID().uuidString)),
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule(with: UUID().uuidString)),
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule(with: UUID().uuidString)),
+                Transaction(buyer: User(systemUserID: UUID().uuidString), receiver: User(systemUserID: UUID().uuidString), in: Coffeecule(with: UUID().uuidString))
                 ]
             return transactions as! [Child]
         } else {

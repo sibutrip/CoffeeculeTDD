@@ -122,7 +122,9 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
     
     #warning("change test to make this return value")
     func update<SomeRecord: Record>(record: SomeRecord, updatingFields fields: [SomeRecord.RecordKeys]) async throws -> SomeRecord {
-        let fetchedCkRecord = try! await database.record(for: record.recordID)
+        guard let fetchedCkRecord = try? await database.record(for: record.recordID) else {
+            throw CloudKitError.recordDoesNotExist
+        }
         for field in fields {
             guard let fieldKey = field.rawValue as? CKRecord.FieldKey else { throw CloudKitError.invalidRequest }
             let newField = record.ckRecord[fieldKey]

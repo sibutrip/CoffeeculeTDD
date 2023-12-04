@@ -87,13 +87,13 @@ final class CloudKitServiceTests: XCTestCase {
             return record
         }
         let updatedRecord = updatedRecords.first { $0.testField1 == newTestField1 }!
-        try await sut.update(record: updatedRecord)
-        let databaseUpdatedRecords: [MockRecord] = try await sut.fetch()
-        let databaseUpdatedRecord = databaseUpdatedRecords.filter { $0.id == updatedRecord.id }.first!
+        let databaseUpdatedRecord = try await sut.update(record: updatedRecord, updatingFields: [.testField1])
+//        let databaseUpdatedRecords: [MockRecord] = try await sut.fetch()
+//        let databaseUpdatedRecord = databaseUpdatedRecords.filter { $0.id == updatedRecord.id }.first!
         XCTAssertEqual(updatedRecord, databaseUpdatedRecord)
     }
     
-    func test_update_throwsInvalidRequestIfRecordDoesntExist() async throws {
+    func test_update_throwsRecordDoesNotExistIfRecordDoesntExist() async throws {
         let existingRecords = [
             MockRecord(),
             MockRecord(),
@@ -103,8 +103,8 @@ final class CloudKitServiceTests: XCTestCase {
         
         let newRecord = MockRecord()
         do {
-            let _ = try await sut.update(record: newRecord)
-        } catch CloudKitService.CloudKitError.invalidRequest {
+            let _ = try await sut.update(record: newRecord, updatingFields: [.testField1])
+        } catch CloudKitService.CloudKitError.recordDoesNotExist {
             XCTAssert(true)
             return
         } catch {
