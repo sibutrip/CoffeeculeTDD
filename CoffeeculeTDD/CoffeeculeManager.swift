@@ -196,7 +196,6 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         try createUserRelationships()
     }
     
-    #warning("add to tests")
     func update(_ userToUpdate: User?) async throws {
         guard let userToUpdate else {
             throw UserManagerError.noUsersFound
@@ -205,10 +204,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         self.usersInSelectedCoffeecule = usersInSelectedCoffeecule.map { user in
             return user.id == userToUpdate.id ? userToUpdate : user
         }
-        guard let ckService else {
-            throw UserManagerError.noCkServiceAvailable
-        }
-        _ = try await ckService.update(record: userToUpdate, updatingFields: [.mugIconString, .userColorString, .name])
+        _ = try await ckService?.update(record: userToUpdate, updatingFields: [.mugIconString, .userColorString, .name])
     }
     
     #warning("add to tests")

@@ -397,21 +397,20 @@ final class UserManagerTests: XCTestCase {
         XCTAssertEqual(sut.user?.userColor, UserColor.orange)
         XCTAssertEqual(sut.usersInSelectedCoffeecule.first(where: {$0.id == modifiedUser.id})!.userColor, UserColor.orange)
     }
-        
-//        func update(_ userToUpdate: User?) async throws {
-//            guard let userToUpdate else {
-//                throw UserManagerError.noUsersFound
-//            }
-//            self.user = userToUpdate
-//            self.usersInSelectedCoffeecule = usersInSelectedCoffeecule.map { user in
-//                return user.id == userToUpdate.id ? userToUpdate : user
-//            }
-//            guard let ckService else {
-//                throw UserManagerError.noCkServiceAvailable
-//            }
-//            _ = try await ckService.update(record: userToUpdate, updatingFields: [.mugIconString, .userColorString, .name])
-//        }
-        
+    
+    func test_update_throwsNoUserIfNoCKService() async throws {
+        let sut = await makeSUT(didProvideCkService: false)
+        do {
+            try await sut.update(sut.user)
+        } catch UserManagerError.noUsersFound {
+            XCTAssert(true)
+            return
+        } catch {
+            XCTFail("addTransaction did not throw UserManagerError.noUsersFound")
+            return
+        }
+        XCTFail("addTransaction did not throw any errors")
+    }
     
     // MARK: - Helper methods
     
