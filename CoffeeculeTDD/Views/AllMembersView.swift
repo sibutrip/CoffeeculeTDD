@@ -48,6 +48,9 @@ struct AllMembersView: View {
                                     coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.filter { $0 != userValue }
                                 } else {
                                     coffeeculeManager.selectedUsers.append(userValue)
+                                    coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.sorted {
+                                        $0.name < $1.name
+                                    }
                                 }
                                 try? coffeeculeManager.createUserRelationships()
                             } label: {

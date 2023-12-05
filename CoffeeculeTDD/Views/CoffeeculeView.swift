@@ -90,6 +90,6 @@ struct CoffeeculeView: View {
                 }
             }
         }
-//        .animation(.default, value: someoneElseBuying)
+        .animation(.default, value: someoneElseBuying)
     }
 }
