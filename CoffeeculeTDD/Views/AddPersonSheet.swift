@@ -83,6 +83,7 @@ struct AddPersonSheet: View {
                             RoundedRectangle(cornerRadius: 8)
                                 .foregroundStyle(codeIsCopied.wrappedValue ? Color.secondary : Color.accentColor)
                         }
+                        
                     }
                     Text("OR")
                         .font(.title2)
@@ -90,8 +91,13 @@ struct AddPersonSheet: View {
                     ShareLink(item: coffeecule.inviteCode, preview: SharePreview("Invite Code", image: "AppIcon")) {
                         Label("Share Invite Code", systemImage: "square.and.arrow.up")
                             .font(.title2)
+                            .foregroundStyle(buttonTextColor)
+                            .padding(8)
+                            .background {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundStyle(Color.accentColor)
+                            }
                     }
-                    .buttonStyle(.borderedProminent)
                 }
                 Spacer()
             }
