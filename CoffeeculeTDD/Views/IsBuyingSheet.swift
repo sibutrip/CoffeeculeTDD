@@ -14,8 +14,6 @@ struct IsBuyingSheet: View {
     let geo: GeometryProxy
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
-    @Environment(\.editMode) var editMode
-    //    @Binding var editMode: EditMode
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     
     @State private var dragDistance: CGFloat? = nil
@@ -33,10 +31,8 @@ struct IsBuyingSheet: View {
     
     var isShowingSheet: Binding<Bool> {
         Binding {
-            (hasBuyer && !(editMode?.wrappedValue.isEditing ?? false))
-        } set: { _ in
-            
-        }
+            hasBuyer
+        } set: { _ in }
     }
     
     var body: some View {
@@ -48,7 +44,8 @@ struct IsBuyingSheet: View {
                     .padding(.top, 10)
                 if contentIsShowing {
                     Text("Current Debts")
-                        .font(.title2)
+//                        .font(.title2)
+                        .bold()
                         .transition(.asymmetric(insertion: .opacity, removal: .identity))
                     
                 } else {

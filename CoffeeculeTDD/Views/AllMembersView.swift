@@ -61,10 +61,11 @@ struct AllMembersView: View {
                         }
                     }
                 }
+                .scrollDisabled(zoomDirection != nil)
                 IsBuyingSheet(geo: geo, someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
-
+                    .transition(.slide)
             }
-            .gesture(
+            .highPriorityGesture(
                 MagnifyGesture()
                     .onChanged { magnifyValue in
                         withAnimation {
@@ -86,7 +87,7 @@ struct AllMembersView: View {
                         }
                         withAnimation { zoomDirection = nil }
                         currentMagnification = 1
-                    }
+                    }, including: hasBuyer ? .subviews : .all
             )
             .animation(.default, value: hasBuyer)
             .navigationTitle("Who's Here?")
