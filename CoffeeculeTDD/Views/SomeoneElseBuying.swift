@@ -34,13 +34,6 @@ struct SomeoneElseBuying: View {
                         }
                     }
                 }
-//                .toolbar {
-//                    ToolbarItem(placement: .topBarLeading) {
-//                        Button("Cancel") {
-//                            someoneElseBuying = false
-//                        }
-//                    }
-//                }
                 if let selectedBuyer = coffeeculeManager.selectedBuyer {
                     let transition = AnyTransition.move(edge: .bottom)
                     EqualWidthVStackLayout(spacing: 10) {

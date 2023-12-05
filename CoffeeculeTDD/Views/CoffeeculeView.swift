@@ -60,11 +60,9 @@ struct CoffeeculeView: View {
                                 }
                                 .padding()
                             }
-//                            .transition(.opacity)
                             .transition(.asymmetric(insertion: .identity, removal: .move(edge: .leading)))
                         } else {
                             CreateOrJoinView()
-//                                .transition(.opacity)
                                 .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .identity))
                         }
                     }
@@ -115,8 +113,8 @@ struct CoffeeculeView: View {
                 } catch {
                     errorText = error.localizedDescription
                 }
-                if coffeeculeManager.user?.name != "Test" {
-                    nameIsSubmitted = true
+                if coffeeculeManager.user?.name != "TEST" {
+                    nameIsSubmitted = false
                 }
                 isFetchingCoffeecules = false
             }

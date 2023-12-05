@@ -94,21 +94,6 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         }
     }
     
-//    func children<Child: ChildRecord, Parent: Record>(of parent: Parent) async throws -> [Child] where Child.Parent == Parent {
-//        let reference = CKRecord.Reference(recordID: parent.recordID, action: .none)
-//        let predicate = NSPredicate(format: "\(Parent.recordType) == %@", reference)
-//        let query = CKQuery(recordType: Child.recordType, predicate: predicate)
-//        
-//        let records = try await database.records(matching: query, inZoneWith: nil, desiredKeys: nil, resultsLimit: CKQueryOperation.maximumResults)
-//        let unwrappedRecords = records.matchResults.compactMap { record in
-//            try? record.1.get()
-//        }
-//        
-//        return unwrappedRecords.compactMap { record in
-//            Child(from: record, with: parent)
-//        }
-//    }
-    
     func children<Parent: Record, Child: ChildRecord>(of parent: Parent, returning child: Child.Type) async throws -> [CKRecord] where Child.Parent == Parent {
         let reference = CKRecord.Reference(recordID: parent.recordID, action: .none)
         let predicate = NSPredicate(format: "\(Parent.recordType) == %@", reference)

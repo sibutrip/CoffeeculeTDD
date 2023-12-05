@@ -44,7 +44,6 @@ struct IsBuyingSheet: View {
                     .padding(.top, 10)
                 if contentIsShowing {
                     Text("Current Debts")
-//                        .font(.title2)
                         .bold()
                         .transition(.asymmetric(insertion: .opacity, removal: .identity))
                     

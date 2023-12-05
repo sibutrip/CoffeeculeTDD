@@ -37,16 +37,4 @@ protocol CKServiceProtocol: Actor {
     func twoParentChildren<Child: ChildWithTwoParents, FirstParent: Record, SecondParent: Record>(of parent: FirstParent?, secondParent: SecondParent?) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent
     
     func remove<SomeRecord: Record>(_ record: SomeRecord) async throws
-//
-//    func threeParentChildren<Child: ChildWithThreeParents, FirstParent: Record, SecondParent: Record, ThirdParent: Record>(of parent: FirstParent?, secondParent: SecondParent?, thirdParent: ThirdParent?) async throws -> [Child] where Child : ChildRecord, FirstParent : Record, FirstParent == Child.Parent, SecondParent == Child.SecondParent, ThirdParent == Child.ThirdParent
 }
-
-//extension CKServiceProtocol {
-//    public var user: User? {
-//        guard let userID else { return nil }
-//        let user = User(systemUserID: userID.recordName)
-//        let userCkRecord = user.ckRecord
-//        guard let user = User(from: userCkRecord) else { return nil }
-//        return user
-//    }
-//}

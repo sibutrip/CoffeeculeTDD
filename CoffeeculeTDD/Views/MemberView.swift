@@ -82,18 +82,3 @@ struct MemberView: View {
         self.someoneElseBuying = someoneElseBuying
     }
 }
-
-//struct MemberView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LazyVGrid(columns: Array(repeating: GridItem(), count: 2)) {
-//            MemberView(vm: ViewModel(), relationship: .constant(Relationship(Person(name: "Zoe", associatedRecord: CKRecord(recordType: "test")))))
-//            MemberView(vm: ViewModel(), relationship: .constant(Relationship(Person(name: "Cory", associatedRecord: CKRecord(recordType: "test")))))
-//            //            MemberView(name: "Zoe", icon: .latte, color: .purple, isSelected: false, isBuying: false)
-//            //            MemberView(name: "Tomothy Barbados", icon: .espresso, color: .orange, isSelected: true, isBuying: false)
-//            //            MemberView(name: "Cory", icon: .disposable, color: .teal, isSelected: true, isBuying: true)
-//            //            MemberView(name: "Kiana", icon: .mug, color: .pink, isSelected: false, isBuying: false)
-//            //            MemberView(name: "Telayne3334", icon: .disposable, color: .purple, isSelected: false, isBuying: false)
-//            //            MemberView(name: "Nick", icon: .espresso, color: .teal, isSelected: false, isBuying: false)
-//        }
-//    }
-//}
