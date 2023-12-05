@@ -11,6 +11,7 @@ import Combine
 
 struct AddPersonSheet: View {
     let geo: GeometryProxy
+    let coffeecule: Coffeecule
     @Environment(\.editMode) var editMode
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
@@ -21,9 +22,12 @@ struct AddPersonSheet: View {
             editMode?.wrappedValue.isEditing == true
         } set: { _ in }
     }
-    @State var contentIsShowing = false
-    @State var textColor = Color.primary
+    @State private var contentIsShowing = false
+    @State private var textColor = Color.primary
+    @State private var codeIsCopied = false
+    var buttonTextColor: Color { colorScheme == .light ? .white : .primary }
     @State private var colorChange: AnyCancellable?
+    @State private var linkCopied = ""
     var body: some View {
         DraggableSheet(geo: geo, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
             EqualWidthVStackLayout(spacing: 10) {
@@ -54,7 +58,41 @@ struct AddPersonSheet: View {
             }
             .padding(.vertical)
         } content: {
-            Text(coffeeculeManager.selectedCoffeecule?.name ?? "")
+            VStack {
+                Spacer()
+                Spacer()
+                Button {
+                    linkCopied = coffeecule.inviteCode
+                    codeIsCopied = true
+                } label: {
+                    ZStack {
+                        if codeIsCopied {
+                            Label("Copied!", systemImage: "list.bullet.clipboard")
+                        }
+                        Label("Copy Invite Code", systemImage: "rectangle.portrait.on.rectangle.portrait")
+                            .opacity(codeIsCopied ? 0.0 : 1.0)
+                            .foregroundStyle(buttonTextColor)
+                    }
+                    .font(.title2)
+                    .padding(8)
+                    .background {
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundStyle(codeIsCopied ? Color.secondary : Color.accentColor)
+                    }
+                }
+                Spacer()
+                Text("OR")
+                    .font(.title2)
+                    .foregroundStyle(Color.secondary)
+                Spacer()
+                ShareLink(item: coffeecule.inviteCode, preview: SharePreview("Invite Code", image: "AppIcon")) {
+                    Label("Share Invite Code", systemImage: "square.and.arrow.up")
+                        .font(.title2)
+                }
+                .buttonStyle(.borderedProminent)
+                Spacer()
+                Spacer()
+            }
         }
         .onAppear {
             self.textColor = colorScheme == .light ? Color.white : Color.black
@@ -67,6 +105,9 @@ struct AddPersonSheet: View {
 
 #Preview {
     GeometryReader { geo in
-        AddPersonSheet(geo: geo)
+        VStack {
+            Spacer()
+            AddPersonSheet(geo: geo, coffeecule: Coffeecule(with: "Test"))
+        }
     }
 }

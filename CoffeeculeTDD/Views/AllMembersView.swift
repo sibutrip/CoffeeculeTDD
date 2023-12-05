@@ -61,7 +61,9 @@ struct AllMembersView: View {
                 }
                 IsBuyingSheet(geo: geo, someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
                 if editMode == .active {
-                    AddPersonSheet(geo: geo)
+                    if let coffeecule = coffeeculeManager.selectedCoffeecule {
+                        AddPersonSheet(geo: geo, coffeecule: coffeecule)
+                    }
                 }
             }
             .gesture(

@@ -9,11 +9,11 @@ import CloudKit
 
 struct Coffeecule: Record {
     init?(from record: CKRecord) {
-        guard let shortCode = record[Coffeecule.RecordKeys.shortCode.rawValue] as? String,
+        guard let inviteCode = record[Coffeecule.RecordKeys.inviteCode.rawValue] as? String,
         let name = record[Coffeecule.RecordKeys.name.rawValue] as? String else {
             return nil
         }
-        self.shortCode = shortCode
+        self.inviteCode = inviteCode
         self.name = name
         self.creationDate = record.creationDate
         self.id = record.recordID.recordName
@@ -24,16 +24,16 @@ struct Coffeecule: Record {
     static let recordType = "Coffeecule"
     
     enum RecordKeys: String, CaseIterable {
-        case shortCode, name
+        case inviteCode, name
     }
     
     var id: String
-    var shortCode: String
+    var inviteCode: String
     var name: String
     
     init(with name: String) {
         self.id = UUID().uuidString
         self.name = name
-        self.shortCode = String((0..<8).map { _ in "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".randomElement()! })
+        self.inviteCode = String((0..<6).map { _ in "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".randomElement()! })
     }
 }

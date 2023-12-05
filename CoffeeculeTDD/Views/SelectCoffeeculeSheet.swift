@@ -8,12 +8,12 @@
 import SwiftUI
 import CloudKit
 
-struct SelectCoffeeculeSheet: View {
+struct SelectCoffeeculeSheet: View {    
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var coffeeculeName = ""
     @State private var isCreatingCoffeecule = false
     
-    @State private var shortCode = ""
+    @State private var inviteCode = ""
     @State private var isJoiningCoffeecule = false
     
     @Environment(\.dismiss) private var dismiss: DismissAction
@@ -86,9 +86,9 @@ struct SelectCoffeeculeSheet: View {
         .alert("Join A Coffeecule", isPresented: $isJoiningCoffeecule) {
             VStack {
                 TextField("Coffeecule Short Code",
-                          text: Binding { shortCode
+                          text: Binding { inviteCode
                 } set: { newValue in
-                    shortCode = newValue.uppercased()
+                    inviteCode = newValue.uppercased()
                 })
                 .autocorrectionDisabled()
                 HStack {

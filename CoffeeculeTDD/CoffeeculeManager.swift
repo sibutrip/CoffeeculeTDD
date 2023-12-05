@@ -33,7 +33,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     
     
     enum UserManagerError: Error {
-        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected, coffeeculeNameTaken
+        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected, coffeeculeNameTaken, noCoffeeculeFound
     }
     
     func createUserRelationships() throws {
@@ -104,16 +104,33 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
             throw UserManagerError.coffeeculeNameTaken
         }
         var coffeecule = Coffeecule(with: name)
-        var fetchedCule: Coffeecule? = try? await ckService.records(matchingValue: coffeecule.shortCode, inField: .shortCode).first
+        var fetchedCule: Coffeecule? = try? await ckService.records(matchingValue: coffeecule.inviteCode, inField: .inviteCode).first
         while fetchedCule != nil {
             coffeecule = Coffeecule(with: name)
-            fetchedCule = try? await ckService.records(matchingValue: coffeecule.shortCode, inField: .shortCode).first
+            fetchedCule = try? await ckService.records(matchingValue: coffeecule.inviteCode, inField: .inviteCode).first
         }
         let relationship = Relationship(user: user, coffecule: coffeecule)
         do {
             _ = try await ckService.save(record: coffeecule)
             _ = try await ckService.saveWithTwoParents(relationship)
             self.coffeecules.append(coffeecule)
+        } catch {
+            throw UserManagerError.failedToConnectToDatabase
+        }
+    }
+    
+    #warning("add to tests")
+    func joinCoffeecule(withInviteCode inviteCode: String) async throws {
+        guard let user else { throw UserManagerError.noUsersFound }
+        guard let ckService else { throw UserManagerError.noCkServiceAvailable }
+        let fetchedCoffeecules: [Coffeecule] = try await ckService.records(matchingValue: inviteCode, inField: .inviteCode)
+        guard let fetchedCoffeecule = fetchedCoffeecules.first else {
+            throw UserManagerError.noCoffeeculeFound
+        }
+        let relationship = Relationship(user: user, coffecule: fetchedCoffeecule)
+        do {
+            try await ckService.saveWithTwoParents(relationship)
+            self.coffeecules.append(fetchedCoffeecule)
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
