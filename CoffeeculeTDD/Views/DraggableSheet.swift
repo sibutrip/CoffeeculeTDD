@@ -12,6 +12,7 @@ import Charts
 
 struct DraggableSheet<Header: View, Content: View>: View {
     let geo: GeometryProxy
+    let maxHeight: CGFloat
     @Environment(\.editMode) var editMode
     
     @State private var dragDistance: CGFloat? = nil
@@ -97,12 +98,13 @@ struct DraggableSheet<Header: View, Content: View>: View {
     let header: () -> Header
     let content: () -> Content
     
-    init(geo: GeometryProxy, sheetAppears: Binding<Bool>, contentIsShowing: Binding<Bool>, header: @escaping () -> Header, content: @escaping () -> Content) {
+    init(geo: GeometryProxy, maxHeight: CGFloat? = nil, sheetAppears: Binding<Bool>, contentIsShowing: Binding<Bool>, header: @escaping () -> Header, content: @escaping () -> Content) {
         self.geo = geo
         _sheetAppears = sheetAppears
         _contentIsShowing = contentIsShowing
         self.header = header
         self.content = content
+        self.maxHeight = maxHeight ?? geo.size.height / 2
     }
     
     var body: some View {
@@ -127,7 +129,7 @@ struct DraggableSheet<Header: View, Content: View>: View {
                                     let newDistance = -newValue.translation.height + (dragDistance ?? 0)
                                     if newDistance < geo.size.height * 0.8 {
                                         self.dragDistance = newDistance
-                                        chartOpacity = min(max(0, newDistance - geo.size.height / 20) / (geo.size.height * 0.8 / 4), 1)
+                                        chartOpacity = min(max(0, newDistance - maxHeight / 10) / (maxHeight * 0.8 / 2), 1)
                                     }
                                 }
                                 .onEnded { newValue in
@@ -138,20 +140,20 @@ struct DraggableSheet<Header: View, Content: View>: View {
                                             incrementDragDistance(from: dragDistance, to: 0, with: +)
                                             incrementOpacity(with: -)
                                             contentIsShowing = false
-                                        } else if newDistance < (geo.size.height / 2) {
+                                        } else if newDistance < (maxHeight) {
                                             incrementDragDistance(from: dragDistance, to: 0, with: -)
                                             incrementOpacity(with: -)
                                             contentIsShowing = false
                                         } else {
-                                            incrementDragDistance(from: dragDistance, to: geo.size.height / 2, with: -)
+                                            incrementDragDistance(from: dragDistance, to: maxHeight, with: -)
                                         }
                                     } else {
-                                        if newDistance > geo.size.height / 2 {
-                                            incrementDragDistance(from: dragDistance, to: geo.size.height / 2, with: -)
+                                        if newDistance > maxHeight {
+                                            incrementDragDistance(from: dragDistance, to: maxHeight, with: -)
                                             incrementOpacity(with: +)
                                             contentIsShowing = true
                                         } else if newDistance > 0 {
-                                            incrementDragDistance(from: dragDistance, to: geo.size.height / 2, with: +)
+                                            incrementDragDistance(from: dragDistance, to: maxHeight, with: +)
                                             incrementOpacity(with: +)
                                             contentIsShowing = true
                                         } else {
@@ -165,7 +167,7 @@ struct DraggableSheet<Header: View, Content: View>: View {
                             let dragDistance = (dragDistance ?? 0)
                             if !contentIsShowing {
                                 incrementOpacity(with: +)
-                                incrementDragDistance(from: dragDistance, to: geo.size.height / 2, with: +)
+                                incrementDragDistance(from: dragDistance, to: maxHeight, with: +)
                                 contentIsShowing = true
                             } else {
                                 incrementDragDistance(from: dragDistance, to: 0, with: -)

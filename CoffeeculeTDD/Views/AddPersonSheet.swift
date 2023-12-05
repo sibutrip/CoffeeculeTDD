@@ -29,7 +29,7 @@ struct AddPersonSheet: View {
     @State private var colorChange: AnyCancellable?
     @State private var linkCopied = ""
     var body: some View {
-        DraggableSheet(geo: geo, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
+        DraggableSheet(geo: geo, maxHeight: geo.size.height / 4, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
             EqualWidthVStackLayout(spacing: 10) {
                 HStack {
                     if !contentIsShowing {
