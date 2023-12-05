@@ -95,6 +95,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
     }
     
+#warning("should check name updates, adds to coffecules, changes selected coffeecule")
     func createCoffeecule(with name: String) async throws {
         guard let user,
               let ckService else {
@@ -112,14 +113,16 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         let relationship = Relationship(user: user, coffecule: coffeecule)
         do {
             _ = try await ckService.save(record: coffeecule)
+            _ = try await ckService.update(record: user, updatingFields: [.name])
             _ = try await ckService.saveWithTwoParents(relationship)
             self.coffeecules.append(coffeecule)
+            self.selectedCoffeecule = coffeecule
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }
     }
     
-    #warning("add to tests")
+    #warning("add to tests. should check name updates, adds to coffecules, changes selected coffeecule")
     func joinCoffeecule(withInviteCode inviteCode: String) async throws {
         guard let user else { throw UserManagerError.noUsersFound }
         guard let ckService else { throw UserManagerError.noCkServiceAvailable }
@@ -129,6 +132,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
         let relationship = Relationship(user: user, coffecule: fetchedCoffeecule)
         do {
+            _ = try await ckService.update(record: user, updatingFields: [.name])
             try await ckService.saveWithTwoParents(relationship)
             self.coffeecules.append(fetchedCoffeecule)
             self.selectedCoffeecule = fetchedCoffeecule
@@ -153,6 +157,9 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     }
     
     func fetchUsersInCoffeecule() async throws {
+        guard let user else {
+            throw UserManagerError.noUsersFound
+        }
         guard let selectedCoffeecule else {
             throw UserManagerError.noCoffeeculeSelected
         }
@@ -161,8 +168,12 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
         do {
             let relationships: [Relationship] = try await ckService.twoParentChildren(of: nil, secondParent: selectedCoffeecule)
-            self.usersInSelectedCoffeecule = relationships
+            var usersInSelectedCoffeecule = relationships
                 .compactMap { $0.parent }
+            if !usersInSelectedCoffeecule.contains(where: {user.id == $0.id}) {
+                usersInSelectedCoffeecule.append(user)
+            }
+            self.usersInSelectedCoffeecule = usersInSelectedCoffeecule
                 .sorted { $0.name < $1.name}
         } catch {
             throw UserManagerError.failedToConnectToDatabase

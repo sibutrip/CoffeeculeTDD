@@ -61,7 +61,7 @@ struct AddPersonSheet: View {
                     Text("OR")
                         .font(.title2)
                         .foregroundStyle(Color.secondary)
-                    ShareLink(item: coffeecule.inviteCode, preview: SharePreview("Invite Code", image: "AppIcon")) {
+                    ShareLink(item: "Join my Coffeecule with this invite code: \(coffeecule.inviteCode)", preview: SharePreview("Invite Code", image: "AppIcon")) {
                         Label("Share Invite Code", systemImage: "square.and.arrow.up")
                             .font(.title2)
                             .foregroundStyle(buttonTextColor)

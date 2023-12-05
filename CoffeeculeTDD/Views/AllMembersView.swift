@@ -107,7 +107,6 @@ struct AllMembersView: View {
                     Label("Customize Your Cup", systemImage: "cup.and.saucer")
                 }
             }
-            if coffeeculeManager.coffeecules.count > 1 {
                 ToolbarItem {
                     Button {
                         viewingHistory = true
@@ -115,7 +114,6 @@ struct AllMembersView: View {
                         Label("Transaction History", systemImage: "dollarsign.arrow.circlepath")
                     }
                 }
-            }
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     addingPerson = true

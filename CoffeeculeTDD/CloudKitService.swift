@@ -36,7 +36,9 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
             do {
                 let userID = try await container.userRecordID()
                 guard let user: User = try? await records(matchingValue: userID.recordName, inField: .systemUserID).first else {
-                    self.user = User(systemUserID: userID.recordName)
+                    let user = User(systemUserID: userID.recordName)
+                    _ = try await self.save(record: user)
+                    self.user = user
                     return
                 }
                 self.user = user
