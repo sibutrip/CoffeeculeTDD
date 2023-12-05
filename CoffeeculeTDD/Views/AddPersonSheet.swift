@@ -24,10 +24,15 @@ struct AddPersonSheet: View {
     }
     @State private var contentIsShowing = false
     @State private var textColor = Color.primary
-    @State private var codeIsCopied = false
     var buttonTextColor: Color { colorScheme == .light ? .white : .primary }
     @State private var colorChange: AnyCancellable?
     @State private var linkCopied = ""
+    private var codeIsCopied: Binding<Bool> {
+        Binding {
+            !linkCopied.isEmpty
+        } set: { _ in }
+
+    }
     var body: some View {
         DraggableSheet(geo: geo, maxHeight: geo.size.height / 4, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
             EqualWidthVStackLayout(spacing: 10) {
@@ -63,21 +68,20 @@ struct AddPersonSheet: View {
                 EqualWidthVStackLayout(spacing: 0) {
                     Button {
                         linkCopied = coffeecule.inviteCode
-                        codeIsCopied = true
                     } label: {
                         ZStack {
-                            if codeIsCopied {
+                            if codeIsCopied.wrappedValue {
                                 Label("Copied!", systemImage: "list.bullet.clipboard")
                             }
                             Label("Copy Invite Code", systemImage: "rectangle.portrait.on.rectangle.portrait")
-                                .opacity(codeIsCopied ? 0.0 : 1.0)
+                                .opacity(codeIsCopied.wrappedValue ? 0.0 : 1.0)
                                 .foregroundStyle(buttonTextColor)
                         }
                         .font(.title2)
                         .padding(8)
                         .background {
                             RoundedRectangle(cornerRadius: 8)
-                                .foregroundStyle(codeIsCopied ? Color.secondary : Color.accentColor)
+                                .foregroundStyle(codeIsCopied.wrappedValue ? Color.secondary : Color.accentColor)
                         }
                     }
                     Text("OR")
@@ -93,6 +97,7 @@ struct AddPersonSheet: View {
             }
         }
         .onAppear {
+            self.linkCopied.removeAll()
             self.textColor = colorScheme == .light ? Color.white : Color.black
         }
         .onChangeiOS17Compatible(of: contentIsShowing) { contentIsShowing in
