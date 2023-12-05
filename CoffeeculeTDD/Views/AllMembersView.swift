@@ -9,7 +9,7 @@ import SwiftUI
 import CloudKit
 
 struct AllMembersView: View {
-    @State var editMode: EditMode = .inactive
+    @State private var addingPerson = false
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var viewingHistory = false
     @State private var customizingCup = false
@@ -58,16 +58,11 @@ struct AllMembersView: View {
                                     .animation(.bouncy, value: scaleAmount)
                                     .scaleEffect(scaleAmount)
                             }
-                            .disabled(editMode == .active)
                         }
                     }
                 }
                 IsBuyingSheet(geo: geo, someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
-                if editMode == .active {
-                    if let coffeecule = coffeeculeManager.selectedCoffeecule {
-                        AddPersonSheet(geo: geo, coffeecule: coffeecule)
-                    }
-                }
+
             }
             .gesture(
                 MagnifyGesture()
@@ -101,7 +96,7 @@ struct AllMembersView: View {
                 Button {
                     selectingCoffeecule = true
                 } label: {
-                    Label("Select Your Coffeecule", systemImage: "arrow.triangle.2.circlepath.circle")
+                    Label("Select Your Coffeecule", systemImage: "person.2.gobackward")
                 }
             }
             ToolbarItem {
@@ -121,7 +116,11 @@ struct AllMembersView: View {
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
-                EditButton()
+                Button {
+                    addingPerson = true
+                } label: {
+                    Label("Add Person to Coffeecule", systemImage: "plus")
+                }
             }
         }
         .sheet(isPresented: $viewingHistory) {
@@ -132,6 +131,12 @@ struct AllMembersView: View {
         }
         .sheet(isPresented: $selectingCoffeecule) {
             SelectCoffeeculeSheet()
+        }
+        .sheet(isPresented: $addingPerson) {
+            if let coffeecule = coffeeculeManager.selectedCoffeecule {
+                AddPersonSheet(coffeecule: coffeecule)
+                    .presentationDetents([.medium])
+            }
         }
         .alert("Are you sure you want to delete your Coffeecule? This action is not reversable.", isPresented: $isDeletingCoffeecule) {
             HStack {
@@ -150,7 +155,6 @@ struct AllMembersView: View {
                 
             }
         }
-        .environment(\.editMode, $editMode)
     }
     init(someoneElseBuying: Binding<Bool>, isBuying: Binding<Bool>, columnCount: Binding<Int>) {
         _someoneElseBuying = someoneElseBuying

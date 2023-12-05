@@ -10,7 +10,6 @@ import CloudKit
 import Combine
 
 struct AddPersonSheet: View {
-    let geo: GeometryProxy
     let coffeecule: Coffeecule
     @Environment(\.editMode) var editMode
     @Environment(\.colorScheme) var colorScheme
@@ -34,36 +33,9 @@ struct AddPersonSheet: View {
         
     }
     var body: some View {
-        DraggableSheet(geo: geo, maxHeight: geo.size.height / 4, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
-            EqualWidthVStackLayout(spacing: 10) {
-                HStack {
-                    if !contentIsShowing {
-                        Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
-                            .labelStyle(.iconOnly)
-                            .transition(.asymmetric(insertion: .scale.combined(with: .move(edge: .bottom)), removal: .identity))
-                    }
-                    Label("Add New Person", systemImage: "person.crop.circle.fill.badge.plus")
-                        .labelStyle(.titleOnly)
-                }
-                .animation(.default, value: contentIsShowing)
-                .font(.title2)
-                .padding(8)
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity)
-                .foregroundStyle(textColor)
-                .background {
-                    Group {
-                        if contentIsShowing { EmptyView() }
-                        else {
-                            RoundedRectangle(cornerRadius: 8)
-                                .foregroundStyle(Color.accentColor)
-                        }
-                    }
-                }
-            }
-            .padding(.vertical)
-        } content: {
+        NavigationStack {
             VStack {
+                Spacer()
                 Text("Invite With Code: \(coffeecule.inviteCode)")
                 EqualWidthVStackLayout(spacing: 0) {
                     Button {
@@ -72,6 +44,7 @@ struct AddPersonSheet: View {
                         ZStack {
                             if codeIsCopied.wrappedValue {
                                 Label("Copied!", systemImage: "list.bullet.clipboard")
+                                    .foregroundStyle(Color.white)
                             }
                             Label("Copy Invite Code", systemImage: "rectangle.portrait.on.rectangle.portrait")
                                 .opacity(codeIsCopied.wrappedValue ? 0.0 : 1.0)
@@ -100,7 +73,11 @@ struct AddPersonSheet: View {
                     }
                 }
                 Spacer()
+                Spacer()
+                Spacer()
             }
+            .navigationTitle("Add New Person")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
             self.linkCopied.removeAll()
@@ -113,10 +90,9 @@ struct AddPersonSheet: View {
 }
 
 #Preview {
-    GeometryReader { geo in
-        VStack {
-            Spacer()
-            AddPersonSheet(geo: geo, coffeecule: Coffeecule(with: "Test"))
+    Text("Title")
+        .sheet(isPresented: .constant(true)){
+            AddPersonSheet(coffeecule: Coffeecule(with: "Title"))
+                .presentationDetents([.medium])
         }
-    }
 }
