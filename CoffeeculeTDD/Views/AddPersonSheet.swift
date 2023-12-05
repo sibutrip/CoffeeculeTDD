@@ -31,7 +31,7 @@ struct AddPersonSheet: View {
         Binding {
             !linkCopied.isEmpty
         } set: { _ in }
-
+        
     }
     var body: some View {
         DraggableSheet(geo: geo, maxHeight: geo.size.height / 4, sheetAppears: .constant(true), contentIsShowing: $contentIsShowing) {
@@ -64,7 +64,7 @@ struct AddPersonSheet: View {
             .padding(.vertical)
         } content: {
             VStack {
-                    Text("Invite With Code: \(coffeecule.inviteCode)")
+                Text("Invite With Code: \(coffeecule.inviteCode)")
                 EqualWidthVStackLayout(spacing: 0) {
                     Button {
                         linkCopied = coffeecule.inviteCode

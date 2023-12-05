@@ -12,10 +12,10 @@ struct SomeoneElseBuying: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
-    private let columns = [
-        GridItem(.flexible(minimum: 10, maximum: .infinity)),
-        GridItem(.flexible(minimum: 10, maximum: .infinity))
-    ]
+    @Binding var columnCount: Int
+    private var columns: [GridItem] {
+        (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
+    }
     var hasBuyer: Bool {
         coffeeculeManager.selectedBuyer != nil
     }
@@ -75,5 +75,5 @@ struct SomeoneElseBuying: View {
 }
 
 #Preview {
-    SomeoneElseBuying(someoneElseBuying: .constant(true), isBuying: .constant(true))
+    SomeoneElseBuying(someoneElseBuying: .constant(true), isBuying: .constant(true), columnCount: .constant(2))
 }

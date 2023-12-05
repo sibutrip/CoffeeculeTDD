@@ -17,9 +17,9 @@ struct AllMembersView: View {
     @State private var selectingCoffeecule = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
+    @Binding var columnCount: Int
     @State private var currentMagnification: CGFloat = 1
     @State private var zoomDirection: ZoomDirection?
-    @AppStorage("Column Count") var columnCount = 2
     private var columns: [GridItem] {
         (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
     }
@@ -149,13 +149,14 @@ struct AllMembersView: View {
         }
         .environment(\.editMode, $editMode)
     }
-    init(someoneElseBuying: Binding<Bool>, isBuying: Binding<Bool>) {
+    init(someoneElseBuying: Binding<Bool>, isBuying: Binding<Bool>, columnCount: Binding<Int>) {
         _someoneElseBuying = someoneElseBuying
         _isBuying = isBuying
+        _columnCount = columnCount
     }
 }
 
 #Preview {
-    AllMembersView(someoneElseBuying: .constant(false), isBuying: .constant(false))
+    AllMembersView(someoneElseBuying: .constant(false), isBuying: .constant(false), columnCount: .constant(2))
         .environmentObject(CoffeeculeManager<CloudKitService<CKContainer>>())
 }

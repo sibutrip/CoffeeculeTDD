@@ -15,6 +15,7 @@ struct CoffeeculeView: View {
     @State var isDeletingCoffeecule = false
     @State private var errorText: String?
     @State private var isFetchingCoffeecules = true
+    @AppStorage("Column Count") var columnCount = 2
     var showingError: Binding<Bool> {
         Binding {
             errorText != nil
@@ -31,9 +32,9 @@ struct CoffeeculeView: View {
         NavigationStack {
             Group {
                 if !someoneElseBuying {
-                    AllMembersView(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
+                    AllMembersView(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying, columnCount: $columnCount)
                 } else {
-                    SomeoneElseBuying(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
+                    SomeoneElseBuying(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying, columnCount: $columnCount)
                 }
             }
             .refreshable {
