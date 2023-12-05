@@ -131,6 +131,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         do {
             try await ckService.saveWithTwoParents(relationship)
             self.coffeecules.append(fetchedCoffeecule)
+            self.selectedCoffeecule = fetchedCoffeecule
         } catch {
             throw UserManagerError.failedToConnectToDatabase
         }

@@ -95,7 +95,11 @@ struct SelectCoffeeculeSheet: View {
                     Button("Join") {
                         Task {
                             do {
-                                //                                try await coffeeculeManager.createCoffeecule(with: coffeeculeName)
+                                let inviteCode = inviteCode.uppercased()
+                                try await coffeeculeManager.joinCoffeecule(withInviteCode: inviteCode)
+                                try await coffeeculeManager.fetchUsersInCoffeecule()
+                                try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                                dismiss()
                             } catch {
                                 fatalError(error.localizedDescription)
                             }

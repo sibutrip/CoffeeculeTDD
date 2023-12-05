@@ -42,7 +42,7 @@ struct AddPersonSheet: View {
                 }
                 .animation(.default, value: contentIsShowing)
                 .font(.title2)
-                .padding(6)
+                .padding(8)
                 .padding(.horizontal)
                 .frame(maxWidth: .infinity)
                 .foregroundStyle(textColor)
@@ -59,38 +59,36 @@ struct AddPersonSheet: View {
             .padding(.vertical)
         } content: {
             VStack {
-                Spacer()
-                Spacer()
-                Button {
-                    linkCopied = coffeecule.inviteCode
-                    codeIsCopied = true
-                } label: {
-                    ZStack {
-                        if codeIsCopied {
-                            Label("Copied!", systemImage: "list.bullet.clipboard")
+                    Text("Invite With Code: \(coffeecule.inviteCode)")
+                EqualWidthVStackLayout(spacing: 0) {
+                    Button {
+                        linkCopied = coffeecule.inviteCode
+                        codeIsCopied = true
+                    } label: {
+                        ZStack {
+                            if codeIsCopied {
+                                Label("Copied!", systemImage: "list.bullet.clipboard")
+                            }
+                            Label("Copy Invite Code", systemImage: "rectangle.portrait.on.rectangle.portrait")
+                                .opacity(codeIsCopied ? 0.0 : 1.0)
+                                .foregroundStyle(buttonTextColor)
                         }
-                        Label("Copy Invite Code", systemImage: "rectangle.portrait.on.rectangle.portrait")
-                            .opacity(codeIsCopied ? 0.0 : 1.0)
-                            .foregroundStyle(buttonTextColor)
-                    }
-                    .font(.title2)
-                    .padding(8)
-                    .background {
-                        RoundedRectangle(cornerRadius: 8)
-                            .foregroundStyle(codeIsCopied ? Color.secondary : Color.accentColor)
-                    }
-                }
-                Spacer()
-                Text("OR")
-                    .font(.title2)
-                    .foregroundStyle(Color.secondary)
-                Spacer()
-                ShareLink(item: coffeecule.inviteCode, preview: SharePreview("Invite Code", image: "AppIcon")) {
-                    Label("Share Invite Code", systemImage: "square.and.arrow.up")
                         .font(.title2)
+                        .padding(8)
+                        .background {
+                            RoundedRectangle(cornerRadius: 8)
+                                .foregroundStyle(codeIsCopied ? Color.secondary : Color.accentColor)
+                        }
+                    }
+                    Text("OR")
+                        .font(.title2)
+                        .foregroundStyle(Color.secondary)
+                    ShareLink(item: coffeecule.inviteCode, preview: SharePreview("Invite Code", image: "AppIcon")) {
+                        Label("Share Invite Code", systemImage: "square.and.arrow.up")
+                            .font(.title2)
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                .buttonStyle(.borderedProminent)
-                Spacer()
                 Spacer()
             }
         }
