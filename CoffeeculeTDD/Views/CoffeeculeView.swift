@@ -86,7 +86,7 @@ struct CoffeeculeView: View {
                 }
             }
         }
-        .onChange(of: coffeeculeManager.selectedCoffeecule, { _, newValue in
+        .onChangeiOS17Compatible(of: coffeeculeManager.selectedCoffeecule) { newValue in
             Task {
                 do {
                     coffeeculeManager.usersInSelectedCoffeecule = []
@@ -97,7 +97,7 @@ struct CoffeeculeView: View {
                     errorText = error.localizedDescription
                 }
             }
-        })
+        }
         .onAppear {
             Task {
                 do {
