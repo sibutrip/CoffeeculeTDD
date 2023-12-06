@@ -14,7 +14,7 @@ struct CoffeeculeView: View {
     @State var isBuying = false
     @State var isDeletingCoffeecule = false
     @State private var errorText: String?
-    @State private var isFetchingCoffeecules = true
+//    @State private var isFetchingCoffeecules = true
     @AppStorage("Column Count") var columnCount = 2
     var showingError: Binding<Bool> {
         Binding {
@@ -66,21 +66,10 @@ struct CoffeeculeView: View {
             }
         }
         .onAppear {
-            Task {
-                do {
-                    try await coffeeculeManager.fetchCoffeecules()
-                    if let selectedCoffeecule = coffeeculeManager.coffeecules.first {
-                        coffeeculeManager.selectedCoffeecule = selectedCoffeecule
-                        try await coffeeculeManager.fetchUsersInCoffeecule()
-                        try await coffeeculeManager.fetchTransactionsInCoffeecule()
-                        try coffeeculeManager.createUserRelationships()
-                    } else {
-                        noCoffeecules = true
-                    }
-                } catch {
-                    errorText = error.localizedDescription
-                }
-                isFetchingCoffeecules = false
+            if coffeeculeManager.coffeecules.isEmpty {
+                noCoffeecules = true
+            } else {
+                noCoffeecules = false
             }
         }
         .onChangeiOS17Compatible(of: coffeeculeManager.coffeecules) { newValue in

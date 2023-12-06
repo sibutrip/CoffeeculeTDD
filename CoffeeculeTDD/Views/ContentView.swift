@@ -38,6 +38,13 @@ struct ContentView: View {
                     coffeeculeManager.ckService = ckService
                     coffeeculeManager.user = await ckService.user
                     isAuthenticated = true
+                    try await coffeeculeManager.fetchCoffeecules()
+                    if let selectedCoffeecule = coffeeculeManager.coffeecules.first {
+                        coffeeculeManager.selectedCoffeecule = selectedCoffeecule
+                        try await coffeeculeManager.fetchUsersInCoffeecule()
+                        try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                        try coffeeculeManager.createUserRelationships()
+                    }
                 } catch {
                     couldNotAuthenticate = true
                     errorText = error.localizedDescription
