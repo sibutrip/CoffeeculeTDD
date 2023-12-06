@@ -68,11 +68,11 @@ struct MemberView: View {
             }
             Text(name)
                 .multilineTextAlignment(.center)
-                .font(.title.weight(.semibold))
+                .font(.system(size: 36, weight: .semibold))
                 .foregroundColor(isPresent ? Color("background") : Color(color.colorName))
                 .minimumScaleFactor(0.3)
                 .lineLimit(2)
-                .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: icon.offsetPercentage.1 * zstackSize.height / 2)
+                .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: (icon.offsetPercentage.1 * zstackSize.height / 2))
                 .frame(maxWidth: icon.maxWidthPercentage * zstackSize.width)
         }
         .animation(.default, value: coffeeculeManager.selectedBuyer)
