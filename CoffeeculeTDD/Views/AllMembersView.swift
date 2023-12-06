@@ -128,6 +128,13 @@ struct AllMembersView: View {
                 .offset(y: !UIDevice.current.orientation.isLandscape ? -largeTextSize.height : 0)
             }
         }
+        .onChangeiOS17Compatible(of: coffeeculeManager.usersInSelectedCoffeecule, perform: { _ in
+            let oldColumnCount = columnCount
+            columnCount = 4
+            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(100))) {
+                columnCount = oldColumnCount
+            }
+        })
         .toolbar {
             ToolbarItem {
                 Button {
