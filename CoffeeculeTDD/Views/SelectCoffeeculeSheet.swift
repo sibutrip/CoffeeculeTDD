@@ -16,32 +16,46 @@ struct SelectCoffeeculeSheet: View {
     @State private var inviteCode = ""
     @State private var isJoiningCoffeecule = false
     
+    @State private var isLoading = false
+    
     @Environment(\.dismiss) private var dismiss: DismissAction
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
-                    ForEach(coffeeculeManager.coffeecules) { coffeecule in
-                        Button {
-                            coffeeculeManager.selectedCoffeecule = coffeecule
-                        } label: {
-                            HStack {
-                                if coffeeculeManager.selectedCoffeecule?.id == coffeecule.id {
-                                    Image(systemName: "checkmark.circle")
-                                } else {
-                                    Image(systemName: "circle")
+            ZStack {
+                VStack {
+                    List {
+                        ForEach(coffeeculeManager.coffeecules) { coffeecule in
+                            Button {
+                                coffeeculeManager.selectedCoffeecule = coffeecule
+                            } label: {
+                                VStack {
+                                    HStack {
+                                        if coffeeculeManager.selectedCoffeecule?.id == coffeecule.id {
+                                            Image(systemName: "checkmark.circle")
+                                        } else {
+                                            Image(systemName: "circle")
+                                        }
+                                        Text(coffeecule.name)
+                                    }
+                                    Text(coffeecule.inviteCode)
+                                        .foregroundStyle(Color.secondary)
+                                        .font(.caption)
                                 }
-                                Text(coffeecule.name)
                             }
                         }
+                        .foregroundStyle(Color.primary)
                     }
-                    .foregroundStyle(Color.primary)
                 }
                 VStack {
-                    CreateOrJoinView()
+                    if isLoading {
+                        LottieViewAnimated()
+                    } else {
+                        Spacer()
+                    }
+                    CreateOrJoinView(isLoading: $isLoading)
+                        .padding(.top, 5)
+                        .padding(.bottom, 40)
                 }
-                .padding(.top, 5)
-                .padding(.bottom, 40)
             }
             .toolbar {
                 Button("Done") { dismiss() }

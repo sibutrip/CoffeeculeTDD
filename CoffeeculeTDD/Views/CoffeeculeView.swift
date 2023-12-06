@@ -13,9 +13,10 @@ struct CoffeeculeView: View {
     @State var someoneElseBuying = false
     @State var isBuying = false
     @State var isDeletingCoffeecule = false
-    @State private var errorText: String?
 //    @State private var isFetchingCoffeecules = true
     @AppStorage("Column Count") var columnCount = 2
+    
+    @State private var errorText: String?
     var showingError: Binding<Bool> {
         Binding {
             errorText != nil

@@ -13,6 +13,8 @@ struct OnboardingView: View {
     
     @State private var nameIsSubmitted = false
     @State private var displayName = ""
+    
+    @State private var isLoading = false
 
     var body: some View {
         ZStack {
@@ -28,11 +30,17 @@ struct OnboardingView: View {
                             .onSubmit {
                                 coffeeculeManager.user?.name = displayName
                                 nameIsSubmitted = true
+                                Task {
+                                    try await coffeeculeManager.update(coffeeculeManager.user)
+                                }
                             }
                             .submitLabel(.next)
                         Button {
                             coffeeculeManager.user?.name = displayName
                             nameIsSubmitted = true
+                            Task {
+                                try await coffeeculeManager.update(coffeeculeManager.user)
+                            }
                         } label: {
                             Label("Submit", systemImage: "arrow.forward.circle")
                                 .labelStyle(.iconOnly)
@@ -42,14 +50,19 @@ struct OnboardingView: View {
                 }
                 .transition(.asymmetric(insertion: .identity, removal: .move(edge: .leading)))
             } else {
-                CreateOrJoinView()
+                CreateOrJoinView(isLoading: $isLoading)
                     .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .identity))
+                    .overlay {
+                        if isLoading {
+                            LottieViewAnimated()
+                        }
+                    }
             }
         }
         .animation(.default, value: nameIsSubmitted)
         .onAppear {
             if coffeeculeManager.user?.name != "TEST" {
-                nameIsSubmitted = false
+                nameIsSubmitted = true
             }
         }
     }

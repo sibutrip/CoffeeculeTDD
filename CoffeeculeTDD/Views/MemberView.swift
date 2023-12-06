@@ -29,11 +29,9 @@ struct MemberView: View {
         coffeeculeManager.selectedUsers.contains(where: { $0.id == user.id })
     }
     
-    @State private var zstackSize = CGSize.zero
-    
     var body: some View {
-        ZStack {
-            ChildSizeReader(size: $zstackSize) {
+        GeometryReader { geo in
+            ZStack {
                 Group {
                     if isPresent {
                         Image(icon.selectedImageBackground)
@@ -65,18 +63,20 @@ struct MemberView: View {
                             .foregroundColor(Color(color.colorName))
                     }
                 }
+                Text(name)
+                    .multilineTextAlignment(.center)
+                    .font(.title.weight(.semibold))
+                    .foregroundColor(isPresent ? Color("background") : Color(color.colorName))
+                    .minimumScaleFactor(0.3)
+                    .lineLimit(2)
+                    .offset(x: icon.offsetPercentage.0 * geo.size.width / 2, y: icon.offsetPercentage.1 * geo.size.width / 2)
+                    .frame(maxWidth: icon.maxWidthPercentage * geo.size.width)
             }
-            Text(name)
-                .multilineTextAlignment(.center)
-                .font(.title.weight(.semibold))
-                .foregroundColor(isPresent ? Color("background") : Color(color.colorName))
-                .minimumScaleFactor(0.3)
-                .lineLimit(2)
-                .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: icon.offsetPercentage.1 * zstackSize.height / 2)
-                .frame(maxWidth: icon.maxWidthPercentage * zstackSize.width)
+            .frame(height: geo.size.width)
+            .animation(.default, value: coffeeculeManager.selectedBuyer)
         }
-        .animation(.default, value: coffeeculeManager.selectedBuyer)
     }
+    
     init(with user: Binding<User>, someoneElseBuying: Bool = false) {
         _user = user
         self.someoneElseBuying = someoneElseBuying
