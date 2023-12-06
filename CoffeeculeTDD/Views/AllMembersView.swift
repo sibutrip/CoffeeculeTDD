@@ -20,6 +20,8 @@ struct AllMembersView: View {
     @Binding var columnCount: Int
     @State private var currentMagnification: CGFloat = 1
     @State private var zoomDirection: ZoomDirection?
+    @State private var largeTextSize: CGSize = .zero
+    @State private var refreshIconHeight: CGFloat = 0
     private var columns: [GridItem] {
         (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
     }
@@ -40,25 +42,34 @@ struct AllMembersView: View {
         GeometryReader { geo in
             VStack(spacing: 0) {
                 ScrollView {
-                    LazyVGrid(columns: columns) {
-                        ForEach($coffeeculeManager.usersInSelectedCoffeecule) { user in
-                            let userValue = user.wrappedValue
-                            Button {
-                                if coffeeculeManager.selectedUsers.contains(where: { $0 == userValue }) {
-                                    coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.filter { $0 != userValue }
-                                } else {
-                                    coffeeculeManager.selectedUsers.append(userValue)
-                                    coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.sorted {
-                                        $0.name < $1.name
+                    GeometryReader { scrollViewGeo in
+                        let viewYPosition = geo.frame(in: .named("refreshable")).minY
+                        let scrollDragAmount = scrollViewGeo.frame(in: .named("refreshable")).minY
+                        let refreshIconHeight = max(0, scrollDragAmount - viewYPosition)
+                        LazyVGrid(columns: columns) {
+                            ForEach($coffeeculeManager.usersInSelectedCoffeecule) { user in
+                                let userValue = user.wrappedValue
+                                Button {
+                                    if coffeeculeManager.selectedUsers.contains(where: { $0 == userValue }) {
+                                        coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.filter { $0 != userValue }
+                                    } else {
+                                        coffeeculeManager.selectedUsers.append(userValue)
+                                        coffeeculeManager.selectedUsers = coffeeculeManager.selectedUsers.sorted {
+                                            $0.name < $1.name
+                                        }
                                     }
+                                    try? coffeeculeManager.createUserRelationships()
+                                } label: {
+                                    MemberView(with: user)
+                                        .animation(.bouncy, value: scaleAmount)
+                                        .scaleEffect(scaleAmount)
                                 }
-                                try? coffeeculeManager.createUserRelationships()
-                            } label: {
-                                MemberView(with: user)
-                                    .animation(.bouncy, value: scaleAmount)
-                                    .scaleEffect(scaleAmount)
                             }
                         }
+                        .preference(key: RefreshIconPreferenceKey.self, value: refreshIconHeight)
+                    }
+                    .onPreferenceChange(RefreshIconPreferenceKey.self) { newValue in
+                        refreshIconHeight = newValue
                     }
                 }
                 .scrollDisabled(zoomDirection != nil)
@@ -91,6 +102,31 @@ struct AllMembersView: View {
             )
             .animation(.default, value: hasBuyer)
             .navigationTitle("Who's Here?")
+            .background {
+                VStack {
+                    ChildSizeReader(size: $largeTextSize) {
+                        Text("Who's Here?")
+                            .font(.largeTitle)
+                            .bold()
+                    }
+                    .frame(height: refreshIconHeight)
+                    .frame(maxWidth: .infinity)
+                    .opacity(0.0)
+                    .overlay {
+                        ZStack {
+                            if refreshIconHeight < geo.size.height / 20 {
+                                LottieView()
+                            } else {
+                                LottieViewAnimated()
+                            }
+                        }
+                        .padding(.bottom, 3)
+                        .frame(maxHeight: geo.size.height / 15)
+                    }
+                    Spacer()
+                }
+                .offset(y: !UIDevice.current.orientation.isLandscape ? -largeTextSize.height : 0)
+            }
         }
         .toolbar {
             ToolbarItem {
@@ -107,13 +143,13 @@ struct AllMembersView: View {
                     Label("Customize Your Cup", systemImage: "cup.and.saucer")
                 }
             }
-                ToolbarItem {
-                    Button {
-                        viewingHistory = true
-                    } label: {
-                        Label("Transaction History", systemImage: "dollarsign.arrow.circlepath")
-                    }
+            ToolbarItem {
+                Button {
+                    viewingHistory = true
+                } label: {
+                    Label("Transaction History", systemImage: "dollarsign.arrow.circlepath")
                 }
+            }
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     addingPerson = true
@@ -165,4 +201,13 @@ struct AllMembersView: View {
 #Preview {
     AllMembersView(someoneElseBuying: .constant(false), isBuying: .constant(false), columnCount: .constant(2))
         .environmentObject(CoffeeculeManager<CloudKitService<CKContainer>>())
+}
+
+struct RefreshIconPreferenceKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: Value = .zero
+    
+    static func reduce(value _: inout Value, nextValue: () -> Value) {
+        _ = nextValue()
+    }
 }

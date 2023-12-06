@@ -15,6 +15,10 @@
 		741EA1132B00148D00E0AA09 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA1122B00148D00E0AA09 /* CloudKitService.swift */; };
 		742F38212B1F628D00864FD3 /* View+If.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742F38202B1F628D00864FD3 /* View+If.swift */; };
 		742F38252B1F698500864FD3 /* CreateOrJoinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742F38242B1F698400864FD3 /* CreateOrJoinView.swift */; };
+		742F38282B1FB0BF00864FD3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 742F38272B1FB0BF00864FD3 /* Lottie */; };
+		742F382E2B1FB53C00864FD3 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742F382D2B1FB53C00864FD3 /* LottieView.swift */; };
+		742F38302B20010A00864FD3 /* CheersSplash.json in Resources */ = {isa = PBXBuildFile; fileRef = 742F382F2B20010A00864FD3 /* CheersSplash.json */; };
+		742F38322B20D86C00864FD3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742F38312B20D86C00864FD3 /* OnboardingView.swift */; };
 		74495BFC2B01968800C1C7F7 /* Coffeecule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495BFB2B01968800C1C7F7 /* Coffeecule.swift */; };
 		74495BFE2B019AB600C1C7F7 /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495BFD2B019AB600C1C7F7 /* DataContainer.swift */; };
 		74495C042B02774C00C1C7F7 /* ChildRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74495C032B02774C00C1C7F7 /* ChildRecord.swift */; };
@@ -80,6 +84,9 @@
 		741EA1122B00148D00E0AA09 /* CloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitService.swift; sourceTree = "<group>"; };
 		742F38202B1F628D00864FD3 /* View+If.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+If.swift"; sourceTree = "<group>"; };
 		742F38242B1F698400864FD3 /* CreateOrJoinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrJoinView.swift; sourceTree = "<group>"; };
+		742F382D2B1FB53C00864FD3 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
+		742F382F2B20010A00864FD3 /* CheersSplash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheersSplash.json; sourceTree = "<group>"; };
+		742F38312B20D86C00864FD3 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		74495BFB2B01968800C1C7F7 /* Coffeecule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coffeecule.swift; sourceTree = "<group>"; };
 		74495BFD2B019AB600C1C7F7 /* DataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
 		74495C032B02774C00C1C7F7 /* ChildRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildRecord.swift; sourceTree = "<group>"; };
@@ -132,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				742F38282B1FB0BF00864FD3 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +192,7 @@
 				74495C022B026DDD00C1C7F7 /* Models */,
 				74DF62E52B051CC1001D82D7 /* CoffeeculeManager.swift */,
 				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
+				742F382F2B20010A00864FD3 /* CheersSplash.json */,
 				741EA0EA2B00144700E0AA09 /* Assets.xcassets */,
 				741EA0EC2B00144700E0AA09 /* Preview Content */,
 			);
@@ -253,6 +262,7 @@
 			children = (
 				741EA0E82B00144600E0AA09 /* ContentView.swift */,
 				74A7DD052B13C2D900BE97FF /* CoffeeculeView.swift */,
+				742F38312B20D86C00864FD3 /* OnboardingView.swift */,
 				74A7DD032B13C2D900BE97FF /* AllMembersView.swift */,
 				74B139702B162C4F00683214 /* IsBuyingSheet.swift */,
 				74B1397A2B1A2AD300683214 /* DraggableSheet.swift */,
@@ -262,6 +272,7 @@
 				74A7DD062B13C2D900BE97FF /* SomeoneElseBuying.swift */,
 				74A7DD042B13C2D900BE97FF /* MemberView.swift */,
 				74565F3D2B0FC7B900458634 /* DebugCoffeeculeView.swift */,
+				742F382D2B1FB53C00864FD3 /* LottieView.swift */,
 				74A7DD072B13C2D900BE97FF /* Cups */,
 				74A7DD0D2B13C2D900BE97FF /* History */,
 				74A7DD2B2B13C4D500BE97FF /* Utilities */,
@@ -325,6 +336,9 @@
 			dependencies = (
 			);
 			name = CoffeeculeTDD;
+			packageProductDependencies = (
+				742F38272B1FB0BF00864FD3 /* Lottie */,
+			);
 			productName = CoffeeculeTDD;
 			productReference = 741EA0E32B00144600E0AA09 /* CoffeeculeTDD.app */;
 			productType = "com.apple.product-type.application";
@@ -375,6 +389,9 @@
 				Base,
 			);
 			mainGroup = 741EA0DA2B00144600E0AA09;
+			packageReferences = (
+				742F38262B1FB0BF00864FD3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+			);
 			productRefGroup = 741EA0E42B00144600E0AA09 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -392,6 +409,7 @@
 			files = (
 				741EA0EE2B00144700E0AA09 /* Preview Assets.xcassets in Resources */,
 				741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */,
+				742F38302B20010A00864FD3 /* CheersSplash.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +434,7 @@
 				74A7DD1A2B13C2DA00BE97FF /* CupPickerDetail.swift in Sources */,
 				74495BFE2B019AB600C1C7F7 /* DataContainer.swift in Sources */,
 				7402D2AC2B0C1CF200183682 /* Transaction.swift in Sources */,
+				742F38322B20D86C00864FD3 /* OnboardingView.swift in Sources */,
 				74495C042B02774C00C1C7F7 /* ChildRecord.swift in Sources */,
 				747BFA002B041DFB00296BCC /* Relationship.swift in Sources */,
 				74DF62E62B051CC1001D82D7 /* CoffeeculeManager.swift in Sources */,
@@ -436,6 +455,7 @@
 				74A7DD2A2B13C4D300BE97FF /* EqualWidthVStack.swift in Sources */,
 				74B139752B17A42C00683214 /* View+OnChange.swift in Sources */,
 				74B1397B2B1A2AD300683214 /* DraggableSheet.swift in Sources */,
+				742F382E2B1FB53C00864FD3 /* LottieView.swift in Sources */,
 				74A7DD1E2B13C2DA00BE97FF /* RelationshipWeb.swift in Sources */,
 				741EA0E72B00144600E0AA09 /* CoffeeculeTDDApp.swift in Sources */,
 				74A7DD1F2B13C2DA00BE97FF /* HistoryView.swift in Sources */,
@@ -621,12 +641,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.Coffeecule;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -653,12 +675,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.Coffeecule;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -735,6 +759,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		742F38262B1FB0BF00864FD3 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.3.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		742F38272B1FB0BF00864FD3 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 742F38262B1FB0BF00864FD3 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 741EA0DB2B00144600E0AA09 /* Project object */;
 }

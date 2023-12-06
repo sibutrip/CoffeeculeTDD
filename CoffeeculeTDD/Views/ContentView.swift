@@ -17,7 +17,8 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if isAuthenticating {
-                ProgressView()
+                LottieViewAnimated()
+                    .transition(.opacity)
             } else if isAuthenticated {
                 CoffeeculeView()
             } else {
@@ -27,6 +28,8 @@ struct ContentView: View {
                 }
             }
         }
+        .coordinateSpace(name: "refreshable")
+        .animation(.default, value: isAuthenticating)
         .environmentObject(coffeeculeManager)
         .onAppear {
             Task {

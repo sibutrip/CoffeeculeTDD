@@ -27,33 +27,9 @@ struct TransactionHistory: View {
         NavigationView {
             Group {
                 if isLoading {
-                    ProgressView()
+                    LottieViewAnimated()
                 } else {
                     VStack(spacing: 0) {
-//                        VStack(spacing: 0) {
-//                            Text("Transaction History")
-//                                .font(.headline)
-//                                .padding(.bottom)
-//                            HStack {
-//                                Text("Receiver")
-//                                    .foregroundStyle(Color.blue)
-//                                Spacer()
-//                                Text("Buyer")
-//                                    .foregroundStyle(Color.red)
-//                            }
-//                            .overlay { Image(systemName: "arrow.left") }
-//                        }
-//                        .frame(maxWidth: .infinity)
-//                        .padding()
-//                        .padding(.horizontal, 50)
-//                        .background {
-//                            Color("ListBackground")
-//                        }
-//                        .onTapGesture {
-//                            Task {
-//                                await datesAndTransactions[Date.now] = [Transaction(buyer: "Cory", receiver: "Tom", in: vm.repository)]
-//                            }
-//                        }
                         if datesAndTransactions.isEmpty {
                             Text("No previous transactions. Try to buy a coffee first!")
                                 .padding(.horizontal)
