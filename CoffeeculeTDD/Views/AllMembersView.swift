@@ -68,6 +68,7 @@ struct AllMembersView: View {
                         }
                         .preference(key: RefreshIconPreferenceKey.self, value: refreshIconHeight)
                     }
+                    .frame(height: geo.size.width / CGFloat(columnCount) * CGFloat(coffeeculeManager.usersInSelectedCoffeecule.count) / CGFloat(columnCount) * 1.1)
                     .onPreferenceChange(RefreshIconPreferenceKey.self) { newValue in
                         refreshIconHeight = newValue
                     }
