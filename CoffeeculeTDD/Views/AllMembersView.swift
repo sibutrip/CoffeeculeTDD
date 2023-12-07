@@ -15,6 +15,7 @@ struct AllMembersView: View {
     @State private var customizingCup = false
     @State private var isDeletingCoffeecule = false
     @State private var selectingCoffeecule = false
+    @State private var isRefreshing = false
     @Binding var someoneElseBuying: Bool
     @Binding var isBuying: Bool
     @Binding var columnCount: Int
@@ -25,6 +26,7 @@ struct AllMembersView: View {
     private var columns: [GridItem] {
         (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
     }
+    
     var hasBuyer: Bool {
         coffeeculeManager.selectedBuyer != nil
     }
@@ -36,6 +38,19 @@ struct AllMembersView: View {
     
     enum ZoomDirection {
         case `in`, out
+    }
+    
+    @State private var refreshTask: Task<Void, Error>?
+    
+    @State private var errorText: String?
+    var showingError: Binding<Bool> {
+        Binding {
+            errorText != nil
+        } set: { isShowingError in
+            if !isShowingError {
+                errorText = nil
+            }
+        }
     }
     
     var body: some View {
@@ -71,6 +86,9 @@ struct AllMembersView: View {
                     .frame(height: geo.size.width / CGFloat(columnCount) * CGFloat(coffeeculeManager.usersInSelectedCoffeecule.count) / CGFloat(columnCount) * 1.1)
                     .onPreferenceChange(RefreshIconPreferenceKey.self) { newValue in
                         refreshIconHeight = newValue
+                        if refreshIconHeight > geo.size.height / 20 {
+                            refresh()
+                        }
                     }
                 }
                 .scrollDisabled(zoomDirection != nil)
@@ -203,6 +221,23 @@ struct AllMembersView: View {
         _someoneElseBuying = someoneElseBuying
         _isBuying = isBuying
         _columnCount = columnCount
+    }
+}
+
+extension AllMembersView {
+    func refresh() {
+        if isRefreshing { return }
+        isRefreshing = true
+        Task {
+            do {
+                try await coffeeculeManager.fetchUsersInCoffeecule()
+                try await coffeeculeManager.fetchTransactionsInCoffeecule()
+            } catch {
+                errorText = error.localizedDescription
+                
+            }
+            isRefreshing = false
+        }
     }
 }
 

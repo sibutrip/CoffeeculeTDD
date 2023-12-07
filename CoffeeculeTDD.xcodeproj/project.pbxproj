@@ -98,6 +98,7 @@
 		74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoffeeculeTDD.entitlements; sourceTree = "<group>"; };
 		74565F3D2B0FC7B900458634 /* DebugCoffeeculeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCoffeeculeView.swift; sourceTree = "<group>"; };
 		747BF9FF2B041DFB00296BCC /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
+		7487064D2B220B6F0050D9A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		74A6DFFD2B07C6560076042D /* SecondMockRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondMockRecord.swift; sourceTree = "<group>"; };
 		74A6DFFF2B07C66A0076042D /* MockRecordWithTwoParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithTwoParents.swift; sourceTree = "<group>"; };
 		74A6E0012B07E33C0076042D /* MockRecordWithThreeParents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRecordWithThreeParents.swift; sourceTree = "<group>"; };
@@ -186,6 +187,7 @@
 		741EA0E52B00144600E0AA09 /* CoffeeculeTDD */ = {
 			isa = PBXGroup;
 			children = (
+				7487064D2B220B6F0050D9A7 /* Info.plist */,
 				74565F3C2B0FC52300458634 /* CoffeeculeTDD.entitlements */,
 				741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */,
 				74A7DD212B13C2EC00BE97FF /* Views */,
@@ -630,6 +632,7 @@
 				DEVELOPMENT_TEAM = 3UR85MK9RT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CoffeeculeTDD/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Coffeecule;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -641,7 +644,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.Coffeecule;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -664,6 +667,7 @@
 				DEVELOPMENT_TEAM = 3UR85MK9RT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CoffeeculeTDD/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Coffeecule;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -675,7 +679,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CoryTripathy.Coffeecule;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

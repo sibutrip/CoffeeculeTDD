@@ -43,16 +43,6 @@ struct CoffeeculeView: View {
                     }
                 }
             }
-//            .refreshable {
-//                Task {
-//                    do {
-//                        try await coffeeculeManager.fetchUsersInCoffeecule()
-//                        try await coffeeculeManager.fetchTransactionsInCoffeecule()
-//                    } catch {
-//                        errorText = error.localizedDescription
-//                    }
-//                }
-//            }
         }
         .onChangeiOS17Compatible(of: coffeeculeManager.selectedCoffeecule) { newValue in
             Task {
