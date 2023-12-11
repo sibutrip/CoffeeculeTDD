@@ -111,11 +111,11 @@ final class UserManagerTests: XCTestCase {
         XCTFail("fetchCoffeecules did not throw any errors")
     }
     
-    func test_fetchUsersInCoffeecule_addsUsersToManagerIfSuccessful() async throws {
+    func test_fetchUsersInCoffeecule_addsUserPlusUsersToManagerIfSuccessful() async throws {
         let sut = await makeSUT()
         sut.selectedCoffeecule = Coffeecule(with: "Test")
         try await sut.fetchUsersInCoffeecule()
-        XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 4)
+        XCTAssertEqual(sut.usersInSelectedCoffeecule.count, 5)
     }
     
     func test_fetchUsersInCoffeecule_throwsNoCoffeeculeSelectedIfNoneSelected() async {
@@ -425,6 +425,90 @@ final class UserManagerTests: XCTestCase {
         
         XCTAssertEqual(sut.transactionsInSelectedCoffeecule.first!.secondParent?.name, modifiedUser.name)
     }
+    
+    func test_updateTransactions_updatesTransactionsWithNewUserName() async {
+        let sut = await makeSUT()
+        let coffeecule = Coffeecule(with: "Test")
+        sut.selectedCoffeecule = coffeecule
+        let secondUser = User(systemUserID: UUID().uuidString)
+        
+        let transactions = [
+            Transaction(buyer: sut.user!, receiver: secondUser, in: coffeecule),
+            Transaction(buyer: secondUser, receiver: sut.user!, in: coffeecule)
+        ]
+        sut.transactionsInSelectedCoffeecule = transactions
+        
+        var userWithNewName = sut.user!
+        userWithNewName.name = "New Name"
+        sut.updateTransactions(withNewNameFrom: userWithNewName)
+        
+        let updatedTransactions = sut.transactionsInSelectedCoffeecule
+        let newUserNameFromTransactions = [updatedTransactions[0].secondParent!.name, updatedTransactions[1].thirdParent!.name]
+        XCTAssertEqual(newUserNameFromTransactions, [userWithNewName.name, userWithNewName.name])
+    }
+    
+    func test_updateTransactions_keepsNewNameIfNameNotChanged() async {
+        let sut = await makeSUT()
+        let coffeecule = Coffeecule(with: "Test")
+        sut.selectedCoffeecule = coffeecule
+        let secondUser = User(systemUserID: UUID().uuidString)
+        
+        let transactions = [
+            Transaction(buyer: sut.user!, receiver: secondUser, in: coffeecule),
+            Transaction(buyer: secondUser, receiver: sut.user!, in: coffeecule)
+        ]
+        sut.transactionsInSelectedCoffeecule = transactions
+        sut.updateTransactions(withNewNameFrom: sut.user!)
+        
+        let updatedTransactions = sut.transactionsInSelectedCoffeecule
+        let newUserNameFromTransactions = [updatedTransactions[0].secondParent!.name, updatedTransactions[1].thirdParent!.name]
+        XCTAssertEqual(newUserNameFromTransactions, [sut.user!.name, sut.user!.name])
+    }
+    
+    func test_updateTransactions_doesNotChangeTransactionsIfUserNotInCoffeecule() async {
+        let sut = await makeSUT()
+        let coffeecule = Coffeecule(with: "Test")
+        sut.selectedCoffeecule = coffeecule
+        let secondUser = User(systemUserID: UUID().uuidString)
+        
+        let transactions = [
+            Transaction(buyer: sut.user!, receiver: secondUser, in: coffeecule),
+            Transaction(buyer: secondUser, receiver: sut.user!, in: coffeecule)
+        ]
+        sut.transactionsInSelectedCoffeecule = transactions
+        sut.updateTransactions(withNewNameFrom: sut.user!)
+        
+        let updatedTransactions = sut.transactionsInSelectedCoffeecule
+        let newUserNameFromTransactions = [updatedTransactions[0].secondParent!.name, updatedTransactions[1].thirdParent!.name]
+        XCTAssertEqual(newUserNameFromTransactions, [sut.user!.name, sut.user!.name])
+    }
+    
+    func test_joinCoffeecule_setsSelectedCoffeeculeToFetchedCoffeeculeOnSuccess() async throws {
+        let sut = await makeSUT()
+        var coffeecule = Coffeecule(with: "Test")
+        coffeecule.inviteCode = "123123"
+        sut.joinCoffeecule(withInviteCode: <#T##String#>)
+    }
+    
+//    func joinCoffeecule(withInviteCode inviteCode: String) async throws {
+//        guard let user else { throw UserManagerError.noUsersFound }
+//        guard let ckService else { throw UserManagerError.noCkServiceAvailable }
+//        guard let fetchedCoffeecules: [Coffeecule] = try? await ckService.records(matchingValue: inviteCode, inField: .inviteCode) else {
+//            throw UserManagerError.noCoffeeculeFound
+//        }
+//        guard let fetchedCoffeecule = fetchedCoffeecules.first else {
+//            throw UserManagerError.noCoffeeculeFound
+//        }
+//        let relationship = Relationship(user: user, coffecule: fetchedCoffeecule)
+//        do {
+//            _ = try await ckService.update(record: user, updatingFields: [.name])
+//            try await ckService.saveWithTwoParents(relationship)
+//            self.coffeecules.append(fetchedCoffeecule)
+//            self.selectedCoffeecule = fetchedCoffeecule
+//        } catch {
+//            throw UserManagerError.failedToConnectToDatabase
+//        }
+//    }
     
     // MARK: - Helper methods
     

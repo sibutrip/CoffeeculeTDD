@@ -71,7 +71,7 @@ enum MugIcon: String, CaseIterable {
         case .latte:
             return 0.48
         case .mug:
-            return 0.55
+            return 0.48
         case .disposable:
             return 0.43
         }

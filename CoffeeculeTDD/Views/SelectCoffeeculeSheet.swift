@@ -8,7 +8,7 @@
 import SwiftUI
 import CloudKit
 
-struct SelectCoffeeculeSheet: View {    
+struct SelectCoffeeculeSheet: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var coffeeculeName = ""
     @State private var isCreatingCoffeecule = false

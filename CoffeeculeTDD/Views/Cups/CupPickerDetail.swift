@@ -34,7 +34,7 @@ struct CupPickerDetail: View {
                             .font(.title.weight(.semibold))
                             .foregroundColor(Color("background"))
                             .minimumScaleFactor(0.3)
-                            .lineLimit(2)
+                            .lineLimit(1)
                             .offset(x: icon.offsetPercentage.0 * zstackSize.width / 2, y: icon.offsetPercentage.1 * zstackSize.height / 2)
                             .frame(maxWidth: icon.maxWidthPercentage * zstackSize.width)
                     } else {

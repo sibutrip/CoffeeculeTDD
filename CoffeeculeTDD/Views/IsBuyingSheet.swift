@@ -85,6 +85,14 @@ extension IsBuyingSheet {
     var relationshipWebChart: some View {
         chart(coffeeculeManager.selectedUserDebts)
             .animation(.default, value: coffeeculeManager.selectedUsers)
+            .overlay {
+                let totalNumberOfDebts = coffeeculeManager.selectedUserDebts.reduce(0) { partialResult, debts in
+                    partialResult + abs(debts.value)
+                }
+                if totalNumberOfDebts == 0 {
+                    Text("No debts to display")
+                }
+            }
     }
     
     private func chart(_ debt: [User : Int])  -> some View {

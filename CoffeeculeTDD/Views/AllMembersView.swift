@@ -13,7 +13,6 @@ struct AllMembersView: View {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var viewingHistory = false
     @State private var customizingCup = false
-    @State private var isDeletingCoffeecule = false
     @State private var selectingCoffeecule = false
     @State private var isRefreshing = false
     @Binding var someoneElseBuying: Bool
@@ -23,6 +22,7 @@ struct AllMembersView: View {
     @State private var zoomDirection: ZoomDirection?
     @State private var largeTextSize: CGSize = .zero
     @State private var refreshIconHeight: CGFloat = 0
+
     private var columns: [GridItem] {
         (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
     }
@@ -95,30 +95,16 @@ struct AllMembersView: View {
                 IsBuyingSheet(geo: geo, someoneElseBuying: $someoneElseBuying, isBuying: $isBuying)
                     .transition(.slide)
             }
-            .highPriorityGesture(
-                MagnifyGesture()
-                    .onChanged { magnifyValue in
-                        withAnimation {
-                            if magnifyValue.magnification > currentMagnification {
-                                zoomDirection = .in
-                            } else {
-                                zoomDirection = .out
-                            }
-                        }
-                        currentMagnification = magnifyValue.magnification
+            .if(true) { view in
+                Group {
+                    if #available(iOS 17, *) {
+                        view
+                            .highPriorityGesture(pinchToZoomGesture(view), including: hasBuyer ? .subviews : .all)
+                    } else {
+                        view
                     }
-                    .onEnded { magnifyValue in
-                        if magnifyValue.magnification > 1 {
-                            if columnCount > 1 {
-                                columnCount -= 1
-                            }
-                        } else if columnCount < 4 {
-                            columnCount += 1
-                        }
-                        withAnimation { zoomDirection = nil }
-                        currentMagnification = 1
-                    }, including: hasBuyer ? .subviews : .all
-            )
+                }
+            }
             .animation(.default, value: hasBuyer)
             .navigationTitle("Who's Here?")
             .background {
@@ -147,13 +133,7 @@ struct AllMembersView: View {
                 .offset(y: !UIDevice.current.orientation.isLandscape ? -largeTextSize.height : 0)
             }
         }
-        .onChangeiOS17Compatible(of: coffeeculeManager.usersInSelectedCoffeecule, perform: { _ in
-            let oldColumnCount = columnCount
-            columnCount = 4
-            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(100))) {
-                columnCount = oldColumnCount
-            }
-        })
+        .animation(.default, value: columnCount)
         .toolbar {
             ToolbarItem {
                 Button {
@@ -199,23 +179,6 @@ struct AllMembersView: View {
                     .presentationDetents([.medium])
             }
         }
-        .alert("Are you sure you want to delete your Coffeecule? This action is not reversable.", isPresented: $isDeletingCoffeecule) {
-            HStack {
-                Button("Yes", role: .destructive) {
-                    //                    Task {
-                    //                        do {
-                    //                            try await vm.deleteCoffeecule()
-                    //                        } catch {
-                    //                            print(error.localizedDescription)
-                    //                        }
-                    //                    }
-                }
-                Button("No", role: .cancel) {
-                    isDeletingCoffeecule = false
-                }
-                
-            }
-        }
     }
     init(someoneElseBuying: Binding<Bool>, isBuying: Binding<Bool>, columnCount: Binding<Int>) {
         _someoneElseBuying = someoneElseBuying
@@ -238,6 +201,32 @@ extension AllMembersView {
             }
             isRefreshing = false
         }
+    }
+    
+    @available(iOS 17, *)
+    func pinchToZoomGesture<someView: View>(_ view: someView) -> some Gesture {
+            MagnifyGesture()
+                .onChanged { magnifyValue in
+                    withAnimation {
+                        if magnifyValue.magnification > currentMagnification {
+                            zoomDirection = .in
+                        } else {
+                            zoomDirection = .out
+                        }
+                    }
+                    currentMagnification = magnifyValue.magnification
+                }
+                .onEnded { magnifyValue in
+                    if magnifyValue.magnification > 1 {
+                        if columnCount > 1 {
+                            columnCount -= 1
+                        }
+                    } else if columnCount < 4 {
+                        columnCount += 1
+                    }
+                    withAnimation { zoomDirection = nil }
+                    currentMagnification = 1
+                }
     }
 }
 

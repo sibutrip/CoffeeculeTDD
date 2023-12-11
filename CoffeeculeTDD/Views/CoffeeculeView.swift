@@ -13,7 +13,6 @@ struct CoffeeculeView: View {
     @State var someoneElseBuying = false
     @State var isBuying = false
     @State var isDeletingCoffeecule = false
-//    @State private var isFetchingCoffeecules = true
     @AppStorage("Column Count") var columnCount = 2
     
     @State private var errorText: String?
@@ -66,7 +65,7 @@ struct CoffeeculeView: View {
         .onChangeiOS17Compatible(of: coffeeculeManager.coffeecules) { newValue in
             if !newValue.isEmpty { noCoffeecules = false }
         }
-        .alert("Uh oh", isPresented: showingError, actions: {
+        .alert("Uh oh!", isPresented: showingError, actions: {
             Button("ok") { }
         }, message: {
             Text(errorText ?? "")
