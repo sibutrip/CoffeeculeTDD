@@ -89,6 +89,12 @@ actor CloudKitService<Container: DataContainer>: CKServiceProtocol {
         guard let deleteResult = deleteResults.first else {
             throw CloudKitError.invalidRequest
         }
+        switch deleteResult.value {
+        case .success(_):
+            break
+        case .failure(let error):
+            throw error
+        }
         if deleteResult.key != record.recordID {
             throw CloudKitError.recordDoesNotExist
         }

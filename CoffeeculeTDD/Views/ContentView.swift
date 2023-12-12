@@ -20,6 +20,21 @@ struct ContentView: View, ErrorAlertable {
             if isLoading {
                 LottieViewAnimated()
                     .transition(.opacity)
+                    .onAppear {
+                        displayAlertIfFailsAsync {
+                            let ckService = try await CloudKitService(with: ContainerInfo.container)
+                            coffeeculeManager.ckService = ckService
+                            coffeeculeManager.user = await ckService.user
+                            isAuthenticated = true
+                            try await coffeeculeManager.fetchCoffeecules()
+                            if let selectedCoffeecule = coffeeculeManager.coffeecules.first {
+                                coffeeculeManager.selectedCoffeecule = selectedCoffeecule
+                                try await coffeeculeManager.fetchUsersInCoffeecule()
+                                try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                                try coffeeculeManager.createUserRelationships()
+                            }
+                        }
+                    }
             } else if isAuthenticated {
                 CoffeeculeView()
             } else {
@@ -35,21 +50,6 @@ struct ContentView: View, ErrorAlertable {
         .coordinateSpace(name: "refreshable")
         .animation(.default, value: isLoading)
         .environmentObject(coffeeculeManager)
-        .onAppear {
-            displayAlertIfFailsAsync {
-                let ckService = try await CloudKitService(with: ContainerInfo.container)
-                coffeeculeManager.ckService = ckService
-                coffeeculeManager.user = await ckService.user
-                isAuthenticated = true
-                try await coffeeculeManager.fetchCoffeecules()
-                if let selectedCoffeecule = coffeeculeManager.coffeecules.first {
-                    coffeeculeManager.selectedCoffeecule = selectedCoffeecule
-                    try await coffeeculeManager.fetchUsersInCoffeecule()
-                    try await coffeeculeManager.fetchTransactionsInCoffeecule()
-                    try coffeeculeManager.createUserRelationships()
-                }
-            }
-        }
         .displaysAlertIfActionFails(for: self)
     }
 }

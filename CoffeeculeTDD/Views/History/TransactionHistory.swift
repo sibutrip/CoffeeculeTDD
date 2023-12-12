@@ -8,20 +8,13 @@
 import CloudKit
 import SwiftUI
 
-struct TransactionHistory: View {
+struct TransactionHistory: View, ErrorAlertable {
+    
     @State var isLoading = true
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State var datesAndTransactions: [Date: [Transaction]] = [:]
-    @State private var errorText: String?
-    private var showingError: Binding<Bool> {
-        Binding {
-            errorText != nil
-        } set: { isShowingError in
-            if !isShowingError {
-                errorText = nil
-            }
-        }
-    }
+    @State var errorTitle: String?
+    @State var errorMessage: String?
     
     var body: some View {
         NavigationView {
@@ -50,24 +43,22 @@ struct TransactionHistory: View {
                                             ForEach(transactions) { transaction in
                                                 TransactionHistoryDetail(transaction: transaction)
                                                     .listRowSpacing(0)
-                                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                                    Button {
-                                                        withAnimation {
-                                                            datesAndTransactions[date] = datesAndTransactions[date]?
-                                                                .filter { $0.id != transaction.id }
-                                                        }
-                                                        Task {
-                                                            do {
-                                                                try await coffeeculeManager.remove(transaction)
-                                                            } catch {
-                                                                errorText = error.localizedDescription
+                                                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                                        Button {
+                                                            withAnimation {
+                                                                datesAndTransactions[date] = datesAndTransactions[date]?
+                                                                    .filter { $0.id != transaction.id }
                                                             }
+                                                            Task {
+                                                                displayAlertIfFailsAsync {
+                                                                    try await coffeeculeManager.remove(transaction)
+                                                                }
+                                                            }
+                                                        } label: {
+                                                            Label("Trash", systemImage: "trash")
                                                         }
-                                                    } label: {
-                                                        Label("Trash", systemImage: "trash")
+                                                        .tint(.red)
                                                     }
-                                                    .tint(.red)
-                                                }
                                             }
                                         }
                                     }
@@ -75,13 +66,13 @@ struct TransactionHistory: View {
                             }
                             .listStyle(.plain)
                             .refreshable {
-//                                Task {
-//                                    await vm.refreshData()
-//                                    let transactions = await vm.repository.transactions?.sorted { $0.creationDate! > $1.roundedDate! } ?? []
-//                                    let datesAndTransactions = Dictionary(grouping: transactions) { $0.roundedDate! }
-//                                    self.datesAndTransactions = datesAndTransactions
-//                                    //            transactions.forEach { print($0.buyerName) }
-//                                }
+                                //                                Task {
+                                //                                    await vm.refreshData()
+                                //                                    let transactions = await vm.repository.transactions?.sorted { $0.creationDate! > $1.roundedDate! } ?? []
+                                //                                    let datesAndTransactions = Dictionary(grouping: transactions) { $0.roundedDate! }
+                                //                                    self.datesAndTransactions = datesAndTransactions
+                                //                                    //            transactions.forEach { print($0.buyerName) }
+                                //                                }
                             }
                         }
                     }
@@ -90,6 +81,7 @@ struct TransactionHistory: View {
             .navigationTitle("Transaction History")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .displaysAlertIfActionFails(for: self)
         .task {
             isLoading = true
             let transactions = coffeeculeManager.transactionsInSelectedCoffeecule.sorted { first, second in
