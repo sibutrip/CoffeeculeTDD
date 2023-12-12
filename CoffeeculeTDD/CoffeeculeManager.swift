@@ -33,7 +33,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
     
     
     enum UserManagerError: LocalizedError {
-        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected, coffeeculeNameTaken, noCoffeeculeFound,noCoffeeculeNameGiven
+        case noCkServiceAvailable, failedToConnectToDatabase, noCoffeeculeSelected, noReceiversSelected, noUsersFound, invalidTransactionFormat, noBuyerSelected, coffeeculeNameTaken, noCoffeeculeFound,noCoffeeculeNameGiven, alreadyInCoffeecule
         public var errorDescription: String? {
             switch self {
             case .noCkServiceAvailable:
@@ -56,6 +56,34 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
                 NSLocalizedString("Coffeecule not found", comment: "Make sure your invite code is correct and try again")
             case .noCoffeeculeNameGiven:
                 NSLocalizedString("No Coffeecule name given", comment: "Enter a name and try again")
+            case .alreadyInCoffeecule:
+                NSLocalizedString("Already a member of that Coffeecule", comment: "Try a different code, or create your own Coffeecule")
+            }
+        }
+        public var recoverySuggestion: String? {
+            switch self {
+            case .noCkServiceAvailable:
+                "Make sure you're connected to the internet and try again"
+            case .failedToConnectToDatabase:
+                "Make sure you're connected to the internet and try again"
+            case .noCoffeeculeSelected:
+                "Select a coffeecule to continue."
+            case .noReceiversSelected:
+                "Reselect who's here"
+            case .noUsersFound:
+                "Refresh or relaunch the app"
+            case .invalidTransactionFormat:
+                "Refresh or relaunch the app"
+            case .noBuyerSelected:
+                "Choose a buyer and try again"
+            case .coffeeculeNameTaken:
+                "Choose a different name and try again"
+            case .noCoffeeculeFound:
+                "Make sure your invite code is correct and try again"
+            case .noCoffeeculeNameGiven:
+                "Enter a name and try again"
+            case .alreadyInCoffeecule:
+                "Try a different code, or create your own Coffeecule"
             }
         }
     }
@@ -149,7 +177,7 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
     }
     
-#warning("add to tests. should check name updates, adds to coffecules, changes selected coffeecule")
+#warning("add to tests. should check name updates, adds to coffecules, changes selected coffeecule. add already in coffeecule")
     func joinCoffeecule(withInviteCode inviteCode: String) async throws {
         guard let user else { throw UserManagerError.noUsersFound }
         guard let ckService else { throw UserManagerError.noCkServiceAvailable }
@@ -158,6 +186,10 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         }
         guard let fetchedCoffeecule = fetchedCoffeecules.first else {
             throw UserManagerError.noCoffeeculeFound
+        }
+        try await fetchCoffeecules()
+        if self.coffeecules.contains(where: { $0.inviteCode == inviteCode}) {
+            throw UserManagerError.alreadyInCoffeecule
         }
         let relationship = Relationship(user: user, coffecule: fetchedCoffeecule)
         do {

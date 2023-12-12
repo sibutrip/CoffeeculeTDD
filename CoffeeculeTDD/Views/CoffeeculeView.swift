@@ -8,23 +8,17 @@
 import CloudKit
 import SwiftUI
 
-struct CoffeeculeView: View {
+struct CoffeeculeView: View, ErrorAlertable {
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State var someoneElseBuying = false
     @State var isBuying = false
     @State var isDeletingCoffeecule = false
     @AppStorage("Column Count") var columnCount = 2
     
-    @State private var errorText: String?
-    var showingError: Binding<Bool> {
-        Binding {
-            errorText != nil
-        } set: { isShowingError in
-            if !isShowingError {
-                errorText = nil
-            }
-        }
-    }
+    @State var errorTitle: String?
+    @State var errorMessage: String?
+    @State var isLoading = false
+    
     @State var noCoffeecules = false
     var hasBuyer: Bool {
         coffeeculeManager.selectedBuyer != nil
@@ -44,15 +38,11 @@ struct CoffeeculeView: View {
             }
         }
         .onChangeiOS17Compatible(of: coffeeculeManager.selectedCoffeecule) { newValue in
-            Task {
-                do {
-                    coffeeculeManager.usersInSelectedCoffeecule = []
-                    try await coffeeculeManager.fetchUsersInCoffeecule()
-                    try await coffeeculeManager.fetchTransactionsInCoffeecule()
-                    try coffeeculeManager.createUserRelationships()
-                } catch {
-                    errorText = error.localizedDescription
-                }
+            displayAlertIfFailsAsync {
+                coffeeculeManager.usersInSelectedCoffeecule = []
+                try await coffeeculeManager.fetchUsersInCoffeecule()
+                try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                try coffeeculeManager.createUserRelationships()
             }
         }
         .onAppear {
@@ -65,11 +55,6 @@ struct CoffeeculeView: View {
         .onChangeiOS17Compatible(of: coffeeculeManager.coffeecules) { newValue in
             if !newValue.isEmpty { noCoffeecules = false }
         }
-        .alert("Uh oh!", isPresented: showingError, actions: {
-            Button("ok") { }
-        }, message: {
-            Text(errorText ?? "")
-        })
         .alert("Is \(coffeeculeManager.selectedBuyer?.name ?? "") buying coffee?", isPresented: $isBuying) {
             HStack {
                 Button("Yes") {
@@ -83,6 +68,7 @@ struct CoffeeculeView: View {
                 }
             }
         }
+        .displaysAlertIfActionFails(for: self)
         .animation(.default, value: someoneElseBuying)
     }
 }

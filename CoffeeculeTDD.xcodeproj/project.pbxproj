@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7402D2AC2B0C1CF200183682 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7402D2AB2B0C1CF200183682 /* Transaction.swift */; };
+		740A50432B28B9B000311DED /* ErrorAlertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740A50422B28B9B000311DED /* ErrorAlertable.swift */; };
 		741EA0E72B00144600E0AA09 /* CoffeeculeTDDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */; };
 		741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E82B00144600E0AA09 /* ContentView.swift */; };
 		741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0EA2B00144700E0AA09 /* Assets.xcassets */; };
@@ -76,6 +77,7 @@
 
 /* Begin PBXFileReference section */
 		7402D2AB2B0C1CF200183682 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		740A50422B28B9B000311DED /* ErrorAlertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertable.swift; sourceTree = "<group>"; };
 		741EA0E32B00144600E0AA09 /* CoffeeculeTDD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoffeeculeTDD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDApp.swift; sourceTree = "<group>"; };
 		741EA0E82B00144600E0AA09 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				74DF62E72B064E07001D82D7 /* CKServiceProtocol.swift */,
 				74495BFD2B019AB600C1C7F7 /* DataContainer.swift */,
 				74D8DAF72B004564005811AD /* Database.swift */,
+				740A50422B28B9B000311DED /* ErrorAlertable.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 				74B139792B1A27A100683214 /* AddPersonSheet.swift in Sources */,
 				74A7DD172B13C2DA00BE97FF /* ColorPickerDetail.swift in Sources */,
 				74A7DD1D2B13C2DA00BE97FF /* TransactionHistoryDetail.swift in Sources */,
+				740A50432B28B9B000311DED /* ErrorAlertable.swift in Sources */,
 				74A7DD2A2B13C4D300BE97FF /* EqualWidthVStack.swift in Sources */,
 				74B139752B17A42C00683214 /* View+OnChange.swift in Sources */,
 				74B1397B2B1A2AD300683214 /* DraggableSheet.swift in Sources */,

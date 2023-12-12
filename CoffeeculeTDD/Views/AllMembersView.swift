@@ -8,7 +8,7 @@
 import SwiftUI
 import CloudKit
 
-struct AllMembersView: View {
+struct AllMembersView: View, ErrorAlertable {
     @State private var addingPerson = false
     @EnvironmentObject var coffeeculeManager: CoffeeculeManager<CloudKitService<CKContainer>>
     @State private var viewingHistory = false
@@ -22,6 +22,7 @@ struct AllMembersView: View {
     @State private var zoomDirection: ZoomDirection?
     @State private var largeTextSize: CGSize = .zero
     @State private var refreshIconHeight: CGFloat = 0
+    
 
     private var columns: [GridItem] {
         (0..<columnCount).map { _ in GridItem(.flexible(minimum: 10, maximum: .infinity),spacing: 0) }
@@ -42,16 +43,9 @@ struct AllMembersView: View {
     
     @State private var refreshTask: Task<Void, Error>?
     
-    @State private var errorText: String?
-    var showingError: Binding<Bool> {
-        Binding {
-            errorText != nil
-        } set: { isShowingError in
-            if !isShowingError {
-                errorText = nil
-            }
-        }
-    }
+    @State var errorTitle: String?
+    @State var errorMessage: String?
+    @State var isLoading = false
     
     var body: some View {
         GeometryReader { geo in
@@ -179,6 +173,7 @@ struct AllMembersView: View {
                     .presentationDetents([.medium])
             }
         }
+        .displaysAlertIfActionFails(for: self)
     }
     init(someoneElseBuying: Binding<Bool>, isBuying: Binding<Bool>, columnCount: Binding<Int>) {
         _someoneElseBuying = someoneElseBuying
@@ -189,17 +184,10 @@ struct AllMembersView: View {
 
 extension AllMembersView {
     func refresh() {
-        if isRefreshing { return }
-        isRefreshing = true
-        Task {
-            do {
-                try await coffeeculeManager.fetchUsersInCoffeecule()
-                try await coffeeculeManager.fetchTransactionsInCoffeecule()
-            } catch {
-                errorText = error.localizedDescription
-                
-            }
-            isRefreshing = false
+        if isLoading { return }
+        displayAlertIfFailsAsync {
+            try await coffeeculeManager.fetchUsersInCoffeecule()
+            try await coffeeculeManager.fetchTransactionsInCoffeecule()
         }
     }
     

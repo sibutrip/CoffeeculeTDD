@@ -8,15 +8,16 @@
 import SwiftUI
 import CloudKit
 
-struct ContentView: View {
+struct ContentView: View, ErrorAlertable {
     @StateObject var coffeeculeManager = CoffeeculeManager<CloudKitService<CKContainer>>()
-    @State private var isAuthenticating = true
     @State private var isAuthenticated = false
-    @State private var couldNotAuthenticate = false
-    @State private var errorText = ""
+    @State var errorTitle: String?
+    @State var errorMessage: String?
+    @State var isLoading = true
+    
     var body: some View {
         VStack {
-            if isAuthenticating {
+            if isLoading {
                 LottieViewAnimated()
                     .transition(.opacity)
             } else if isAuthenticated {
@@ -24,39 +25,32 @@ struct ContentView: View {
             } else {
                 VStack {
                     Text("Not authenticated")
-                    Text(errorText)
+                    Text(errorTitle ?? "")
+                    Text(errorMessage ?? "")
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
                 }
             }
         }
         .coordinateSpace(name: "refreshable")
-        .animation(.default, value: isAuthenticating)
+        .animation(.default, value: isLoading)
         .environmentObject(coffeeculeManager)
         .onAppear {
-            Task {
-                do {
-                    let ckService = try await CloudKitService(with: ContainerInfo.container)
-                    coffeeculeManager.ckService = ckService
-                    coffeeculeManager.user = await ckService.user
-                    isAuthenticated = true
-                    try await coffeeculeManager.fetchCoffeecules()
-                    if let selectedCoffeecule = coffeeculeManager.coffeecules.first {
-                        coffeeculeManager.selectedCoffeecule = selectedCoffeecule
-                        try await coffeeculeManager.fetchUsersInCoffeecule()
-                        try await coffeeculeManager.fetchTransactionsInCoffeecule()
-                        try coffeeculeManager.createUserRelationships()
-                    }
-                } catch {
-                    couldNotAuthenticate = true
-                    errorText = error.localizedDescription
+            displayAlertIfFailsAsync {
+                let ckService = try await CloudKitService(with: ContainerInfo.container)
+                coffeeculeManager.ckService = ckService
+                coffeeculeManager.user = await ckService.user
+                isAuthenticated = true
+                try await coffeeculeManager.fetchCoffeecules()
+                if let selectedCoffeecule = coffeeculeManager.coffeecules.first {
+                    coffeeculeManager.selectedCoffeecule = selectedCoffeecule
+                    try await coffeeculeManager.fetchUsersInCoffeecule()
+                    try await coffeeculeManager.fetchTransactionsInCoffeecule()
+                    try coffeeculeManager.createUserRelationships()
                 }
-                isAuthenticating = false
             }
         }
-        .alert("Could not authenticate", isPresented: $couldNotAuthenticate) {
-            Button("OK") { }
-        } message: {
-            Text(errorText)
-        }
+        .displaysAlertIfActionFails(for: self)
     }
 }
 
