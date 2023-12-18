@@ -14,6 +14,7 @@ struct CoffeeculeView: View, ErrorAlertable {
     @State var isBuying = false
     @State var isDeletingCoffeecule = false
     @AppStorage("Column Count") var columnCount = 2
+    @State var processingTransaction = false
     
     @State var errorTitle: String?
     @State var errorMessage: String?
@@ -34,6 +35,11 @@ struct CoffeeculeView: View, ErrorAlertable {
                     } else {
                         SomeoneElseBuying(someoneElseBuying: $someoneElseBuying, isBuying: $isBuying, columnCount: $columnCount)
                     }
+                }
+            }
+            .overlay {
+                if processingTransaction {
+                    LottieViewAnimated(animationName: "CheersTransaction", loopMode: .playOnce, isShowing: $processingTransaction)
                 }
             }
         }
@@ -58,6 +64,7 @@ struct CoffeeculeView: View, ErrorAlertable {
         .alert("Is \(coffeeculeManager.selectedBuyer?.name ?? "") buying coffee?", isPresented: $isBuying) {
             HStack {
                 Button("Yes") {
+                    processingTransaction = true
                     Task(priority: .userInitiated) {
                         try await coffeeculeManager.addTransaction()
                     }

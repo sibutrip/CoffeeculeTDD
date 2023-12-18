@@ -40,9 +40,13 @@ struct SomeoneElseBuying: View {
                         Button {
                             isBuying = true
                         } label: {
-                            Text("\(selectedBuyer.name) is buying")
+                            HStack(spacing: 0) {
+                                Text(selectedBuyer.name)
+                                    .lineLimit(1)
+                                Text(" is buying")
+                            }
                                 .font(.title2)
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: geo.size.width * 0.8)
                         }
                         .buttonStyle(.borderedProminent)
                         Button {
@@ -61,6 +65,7 @@ struct SomeoneElseBuying: View {
                     .transition(transition)
                 }
             }
+            .frame(width: geo.size.width)
             .animation(.default, value: hasBuyer)
             .navigationTitle(someoneElseBuying ? "Who's Buying?" : "Who's Here?")
         }

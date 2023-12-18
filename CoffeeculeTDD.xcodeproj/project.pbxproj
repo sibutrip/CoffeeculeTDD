@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7402D2AC2B0C1CF200183682 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7402D2AB2B0C1CF200183682 /* Transaction.swift */; };
 		740A50432B28B9B000311DED /* ErrorAlertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740A50422B28B9B000311DED /* ErrorAlertable.swift */; };
+		740A50452B2A47F900311DED /* CheersTransaction.json in Resources */ = {isa = PBXBuildFile; fileRef = 740A50442B2A47F900311DED /* CheersTransaction.json */; };
 		741EA0E72B00144600E0AA09 /* CoffeeculeTDDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */; };
 		741EA0E92B00144600E0AA09 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741EA0E82B00144600E0AA09 /* ContentView.swift */; };
 		741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 741EA0EA2B00144700E0AA09 /* Assets.xcassets */; };
@@ -78,6 +79,7 @@
 /* Begin PBXFileReference section */
 		7402D2AB2B0C1CF200183682 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		740A50422B28B9B000311DED /* ErrorAlertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertable.swift; sourceTree = "<group>"; };
+		740A50442B2A47F900311DED /* CheersTransaction.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheersTransaction.json; sourceTree = "<group>"; };
 		741EA0E32B00144600E0AA09 /* CoffeeculeTDD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoffeeculeTDD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		741EA0E62B00144600E0AA09 /* CoffeeculeTDDApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeculeTDDApp.swift; sourceTree = "<group>"; };
 		741EA0E82B00144600E0AA09 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				74495C022B026DDD00C1C7F7 /* Models */,
 				74DF62E52B051CC1001D82D7 /* CoffeeculeManager.swift */,
 				741EA1122B00148D00E0AA09 /* CloudKitService.swift */,
+				740A50442B2A47F900311DED /* CheersTransaction.json */,
 				742F382F2B20010A00864FD3 /* CheersSplash.json */,
 				741EA0EA2B00144700E0AA09 /* Assets.xcassets */,
 				741EA0EC2B00144700E0AA09 /* Preview Content */,
@@ -414,6 +417,7 @@
 			files = (
 				741EA0EE2B00144700E0AA09 /* Preview Assets.xcassets in Resources */,
 				741EA0EB2B00144700E0AA09 /* Assets.xcassets in Resources */,
+				740A50452B2A47F900311DED /* CheersTransaction.json in Resources */,
 				742F38302B20010A00864FD3 /* CheersSplash.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

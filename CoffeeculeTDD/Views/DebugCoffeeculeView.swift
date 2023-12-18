@@ -26,7 +26,7 @@ struct DebugCoffeeculeView: View {
         VStack {
             Spacer()
             if isFetchingCoffeecules {
-                LottieViewAnimated()
+                LottieViewAnimated(animationName: "CheersSplash")
             } else if !coffeeculeManager.coffeecules.isEmpty {
                 Picker("Select A Coffeecule", selection: $coffeeculeManager.selectedCoffeecule) {
                     ForEach(coffeeculeManager.coffeecules) { coffeecule in

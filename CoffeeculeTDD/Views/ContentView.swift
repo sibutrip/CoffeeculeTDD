@@ -18,7 +18,7 @@ struct ContentView: View, ErrorAlertable {
     var body: some View {
         VStack {
             if isLoading {
-                LottieViewAnimated()
+                LottieViewAnimated(animationName: "CheersSplash")
                     .transition(.opacity)
                     .onAppear {
                         displayAlertIfFailsAsync {

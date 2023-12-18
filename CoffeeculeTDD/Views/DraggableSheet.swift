@@ -13,7 +13,38 @@ import Charts
 struct DraggableSheet<Header: View, Content: View>: View {
     let geo: GeometryProxy
     let maxHeight: CGFloat
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.editMode) var editMode
+    var dynamicTextScale: CGFloat {
+        return switch dynamicTypeSize {
+        case .xSmall:
+            0.8
+        case .small:
+            0.9
+        case .medium:
+            1
+        case .large:
+            1
+        case .xLarge:
+            1.325
+        case .xxLarge:
+            1.65
+        case .xxxLarge:
+            1.975
+        case .accessibility1:
+            2.3
+        case .accessibility2:
+            2.625
+        case .accessibility3:
+            2.95
+        case .accessibility4:
+            3.275
+        case .accessibility5:
+            3.6
+        @unknown default:
+            1
+        }
+    }
     
     @State private var dragDistance: CGFloat? = nil
     
@@ -113,7 +144,7 @@ struct DraggableSheet<Header: View, Content: View>: View {
                 Group {
                     header()
                         .frame(width: geo.size.width)
-                        .padding(.bottom, 40 + (dragDistance ?? 0) )
+                        .padding(.bottom, 40 * dynamicTextScale + (dragDistance ?? 0) )
                         .overlay {
                             VStack {
                                 Spacer()

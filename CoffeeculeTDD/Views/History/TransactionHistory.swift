@@ -20,7 +20,7 @@ struct TransactionHistory: View, ErrorAlertable {
         NavigationView {
             Group {
                 if isLoading {
-                    LottieViewAnimated()
+                    LottieViewAnimated(animationName: "CheersSplash")
                 } else {
                     VStack(spacing: 0) {
                         if datesAndTransactions.isEmpty {
@@ -50,9 +50,7 @@ struct TransactionHistory: View, ErrorAlertable {
                                                                     .filter { $0.id != transaction.id }
                                                             }
                                                             Task {
-                                                                displayAlertIfFailsAsync {
-                                                                    try await coffeeculeManager.remove(transaction)
-                                                                }
+                                                                try await coffeeculeManager.remove(transaction)
                                                             }
                                                         } label: {
                                                             Label("Trash", systemImage: "trash")

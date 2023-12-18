@@ -48,7 +48,7 @@ struct SelectCoffeeculeSheet: View {
                 }
                 VStack {
                     if isLoading {
-                        LottieViewAnimated()
+                        LottieViewAnimated(animationName: "CheersSplash")
                     } else {
                         Spacer()
                     }

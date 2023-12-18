@@ -54,7 +54,7 @@ struct OnboardingView: View {
                     .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .identity))
                     .overlay {
                         if isLoading {
-                            LottieViewAnimated()
+                            LottieViewAnimated(animationName: "CheersSplash")
                         }
                     }
             }

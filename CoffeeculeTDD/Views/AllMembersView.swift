@@ -114,9 +114,9 @@ struct AllMembersView: View, ErrorAlertable {
                     .overlay {
                         ZStack {
                             if refreshIconHeight < geo.size.height / 20 {
-                                LottieView()
+                                LottieView(animationName: "CheersSplash")
                             } else {
-                                LottieViewAnimated()
+                                LottieViewAnimated(animationName: "CheersSplash")
                             }
                         }
                         .padding(.bottom, 3)

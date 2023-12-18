@@ -53,9 +53,17 @@ struct IsBuyingSheet: View {
                             Button {
                                 isBuying = true
                             } label: {
-                                Text("\(coffeeculeManager.selectedBuyer?.name ?? "") is buying")
-                                    .font(.title2)
-                                    .frame(maxWidth: .infinity)
+                                VStack {
+                                    HStack(spacing: 0) {
+                                        Text(coffeeculeManager.selectedBuyer?.name ?? "")
+                                            .lineLimit(1)
+                                        Text(" is Buying")
+                                    }
+                                        .font(.title2)
+                                        .frame(maxWidth: .infinity)
+                                    Text("It's their turn")
+                                }
+                                .frame(maxWidth: geo.size.width * 0.8)
                             }
                             .buttonStyle(.borderedProminent)
                             
@@ -65,11 +73,14 @@ struct IsBuyingSheet: View {
                                 Text("Someone else is buying")
                                     .font(.title2)
                                     .frame(maxWidth: .infinity)
+                                    .frame(maxWidth: geo.size.width * 0.8)
                             }
                             .buttonStyle(.bordered)
                         }
                     }
                     .padding(.top, 5)
+                    .padding(.horizontal)
+                    .padding(.bottom, 40)
                     .transition(.asymmetric(insertion: .opacity, removal: .identity))
                 }
             }

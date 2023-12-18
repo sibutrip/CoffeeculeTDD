@@ -55,6 +55,7 @@ struct TransactionHistoryDetail: View {
             ChildSizeReader(size: $textSize) {
                 Text(receiverName)
                     .font(.title2)
+                    .lineLimit(1)
                     .foregroundStyle(Color(receiverColor.colorName))
             }
             Spacer()
@@ -64,6 +65,7 @@ struct TransactionHistoryDetail: View {
             ChildSizeReader(size: $textSize) {
                 Text(buyerName)
                     .font(.title2)
+                    .lineLimit(1)
                     .foregroundStyle(Color(buyerColor.colorName))
             }
             ZStack {

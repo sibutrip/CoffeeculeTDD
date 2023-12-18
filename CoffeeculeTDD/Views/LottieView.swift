@@ -10,7 +10,9 @@ import Lottie
 
 struct LottieViewAnimated: UIViewRepresentable {
     
-    let animationName = "CheersSplash"
+    let animationName: String
+    var loopMode: LottieLoopMode = .loop
+    @Binding var isShowing: Bool
     
     func makeUIView(context: Context) -> some UIView {
         let view = UIView(frame: .zero)
@@ -20,8 +22,10 @@ struct LottieViewAnimated: UIViewRepresentable {
         
         animationView.animation = animation
         animationView.contentMode = .scaleAspectFit
-        animationView.loopMode = .loop
-        animationView.play()
+        animationView.loopMode = loopMode
+        animationView.play { _ in
+            isShowing = false
+        }
                 
         animationView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(animationView)
@@ -37,11 +41,18 @@ struct LottieViewAnimated: UIViewRepresentable {
     func updateUIView(_ uiView: UIViewType, context: Context) {
         
     }
+    
+    init(animationName: String, loopMode: LottieLoopMode = .loop, isShowing: Binding<Bool> = .constant(true)) {
+        _isShowing = isShowing
+        self.animationName = animationName
+        self.loopMode = loopMode
+    }
 }
 
 struct LottieView: UIViewRepresentable {
     
-    let animationName = "CheersSplash"
+    let animationName: String
+    
     
     func makeUIView(context: Context) -> some UIView {
         let view = UIView(frame: .zero)
@@ -52,7 +63,6 @@ struct LottieView: UIViewRepresentable {
         animationView.animation = animation
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = .loop
-//        animationView.play()
                 
         animationView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(animationView)
@@ -71,5 +81,5 @@ struct LottieView: UIViewRepresentable {
 }
 
 #Preview {
-    LottieView()
+    LottieView(animationName: "CheersSplash")
 }
