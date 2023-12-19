@@ -18,7 +18,7 @@ struct CustomizeCupView: View {
         Binding {
             coffeeculeManager.user?.name ?? ""
         } set: { newName in
-            if !newName.isEmpty {
+            if !newName.isEmpty && !newName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 coffeeculeManager.user?.name = newName
             }
         }
