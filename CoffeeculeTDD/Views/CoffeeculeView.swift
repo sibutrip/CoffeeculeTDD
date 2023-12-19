@@ -39,9 +39,21 @@ struct CoffeeculeView: View, ErrorAlertable {
             }
             .overlay {
                 if processingTransaction {
-                    LottieViewAnimated(animationName: "CheersTransaction", loopMode: .playOnce, isShowing: $processingTransaction)
+                    ZStack {
+                        LottieViewAnimated(animationName: "CheersTransaction", loopMode: .playOnce, isShowing: $processingTransaction)
+                        Text("\(coffeeculeManager.selectedBuyer?.name ?? "") bought coffee!")
+                            .font(.title2)
+                            .padding()
+                            .background { 
+                                Color.primary.colorInvert()
+                                    .opacity(0.85)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
+                    }
+                    .transition(.move(edge: .bottom))
                 }
             }
+            .animation(.default, value: processingTransaction)
         }
         .onChangeiOS17Compatible(of: coffeeculeManager.selectedCoffeecule) { newValue in
             displayAlertIfFailsAsync {
@@ -69,6 +81,11 @@ struct CoffeeculeView: View, ErrorAlertable {
                         try await coffeeculeManager.addTransaction()
                     }
                     someoneElseBuying = false
+                    DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(2000))) {
+                        displayAlertIfFails {
+                            try coffeeculeManager.createUserRelationships()
+                        }
+                    }
                 }
                 Button("Cancel", role: .cancel) {
                     isBuying = false

@@ -282,7 +282,6 @@ class CoffeeculeManager<CKService: CKServiceProtocol>: ObservableObject {
         if uploadedTransactions.count != transactions.count {
             throw UserManagerError.failedToConnectToDatabase
         }
-        try createUserRelationships()
     }
     
     func update(_ userToUpdate: User?) async throws {

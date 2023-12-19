@@ -24,7 +24,9 @@ struct LottieViewAnimated: UIViewRepresentable {
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = loopMode
         animationView.play { _ in
-            isShowing = false
+            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(1000))) {
+                isShowing = false
+            }
         }
                 
         animationView.translatesAutoresizingMaskIntoConstraints = false
