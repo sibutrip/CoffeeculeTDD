@@ -82,8 +82,9 @@ struct CoffeeculeView: View, ErrorAlertable {
                     }
                     someoneElseBuying = false
                     DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(2000))) {
-                        displayAlertIfFails {
-                            try coffeeculeManager.createUserRelationships()
+                        withAnimation {
+                            coffeeculeManager.selectedBuyer = nil
+                            coffeeculeManager.selectedUsers = []
                         }
                     }
                 }

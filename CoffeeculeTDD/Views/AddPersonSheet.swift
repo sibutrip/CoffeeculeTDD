@@ -40,6 +40,7 @@ struct AddPersonSheet: View {
                 EqualWidthVStackLayout(spacing: 0) {
                     Button {
                         linkCopied = coffeecule.inviteCode
+                        UIPasteboard.general.string = "Join my Coffeecule with this invite code: \(linkCopied)"
                     } label: {
                         ZStack {
                             if codeIsCopied.wrappedValue {
